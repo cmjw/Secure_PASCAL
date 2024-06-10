@@ -2,3 +2,6 @@
 shell
 shell.o
 old_compiler/hello
+test.pas
+user_shell
+user_shell.o
