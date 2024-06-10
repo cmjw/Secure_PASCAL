@@ -1,0 +1,109 @@
+
+
+Pascal Grammar:   file pasgram.txt
+
+/* leave out IDENTIFIER below; it will cause trouble. */
+unsigned_constant : IDENTIFIER | NUMBER | NIL | STRING
+
+sign : PLUS | MINUS
+
+constant : sign? IDENTIFIER | sign? NUMBER | STRING
+
+id_list : IDENTIFIER ( COMMA IDENTIFIER )*
+
+simple_type : IDENTIFIER
+            | LPAREN id_list RPAREN
+            | constant DOTDOT constant
+
+simple_type_list : simple_type ( COMMA simple_type )*
+
+type : simple_type
+     | ARRAY LBRACKET simple_type_list RBRACKET OF type
+     | RECORD field_list END
+     | POINT IDENTIFIER
+
+fields : id_list COLON type
+
+field_list : fields ( SEMICOLON fields )*
+
+expr_list : expression ( COMMA expression )*
+
+variable : IDENTIFIER
+         | variable LBRACKET expr_list RBRACKET
+         | variable DOT IDENTIFIER
+         | variable POINT
+
+factor : unsigned_constant
+       | variable
+       | funcall
+       | LPAREN expression RPAREN
+       | NOT factor
+
+funcall : IDENTIFIER LPAREN expr_list RPAREN
+
+times_op : TIMES | DIVIDE | DIV | MOD | AND
+
+term : term times_op factor
+     | factor
+
+plus_op : PLUS | MINUS | OR
+
+simple_expression : sign? term
+                  | simple_expression plus_op term
+
+compare_op : EQ | LT | GT | NE | LE | GE | IN
+
+expression : expression compare_op simple_expression
+           | simple_expression
+
+program : PROGRAM IDENTIFIER LPAREN id_list RPAREN SEMICOLON lblock DOT
+
+numlist : NUMBER ( COMMA NUMBER )*
+
+
+
+
+
+
+lblock : LABEL numlist SEMICOLON cblock
+       | cblock
+
+cdef : IDENTIFIER EQ constant
+
+cdef_list : ( cdef SEMICOLON )*
+
+cblock : CONST cdef_list tblock
+       | tblock
+
+tdef : IDENTIFIER EQ type
+
+tdef_list : ( tdef SEMICOLON )*
+
+tblock : TYPE tdef_list vblock
+       | vblock
+
+vdef : id_list COLON type
+
+vdef_list : ( vdef SEMICOLON )*
+
+vblock : VAR vdef_list block
+       | block
+
+block : BEGINBEGIN statement endpart
+
+endpart : SEMICOLON statement endpart
+        | END
+
+label : NUMBER COLON statement
+
+statement : BEGINBEGIN statement endpart
+          | IF expression THEN statement ( ELSE statement )?
+          | variable ASSIGN expression
+          | funcall
+          | WHILE expression DO statement
+          | REPEAT statement_list UNTIL expression
+          | FOR IDENTIFIER ASSIGN expression TO expression DO statement
+          | GOTO NUMBER
+          | label
+
+statement_list : statement ( SEMICOLON statement )*
