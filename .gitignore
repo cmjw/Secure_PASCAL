@@ -5,3 +5,5 @@ old_compiler/hello
 test.pas
 user_shell
 user_shell.o
+*.o
+sys_call_handler
