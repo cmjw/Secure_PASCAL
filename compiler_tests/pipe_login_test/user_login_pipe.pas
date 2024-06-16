@@ -1,10 +1,9 @@
 program UserProgram;
 
-
-
 var
   inputPassword: string;
-  pipe: Text;
+  res: string;
+  outputPipe, inputPipe: Text;
   
 begin
   writeln('User Program');
@@ -14,10 +13,15 @@ begin
   readln(inputPassword);
   
   // Write the password to a pipe
-  assign(pipe, 'pipe_to_privileged');
-  rewrite(pipe);
-  writeln(pipe, inputPassword);
-  close(pipe);
+  assign(outputPipe, 'pipe_to_privileged');
+  rewrite(outputPipe);
+  writeln(outputPipe, inputPassword);
+  close(outputPipe);
   
   writeln('Password sent for verification.');
+
+  assign(inputPipe, 'pipe_to_user');
+  readln(inputPipe, res);
+  writeln(res);
+
 end.

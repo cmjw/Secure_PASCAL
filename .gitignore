@@ -8,3 +8,5 @@ user_shell.o
 *.o
 sys_call_handler
 compiler_tests/pipe_login_test/user_login_pipe
+compiler_tests/pipe_login_test/priv_login_pipe
+compiler_tests/pipe_login_test/user_login_pipe
