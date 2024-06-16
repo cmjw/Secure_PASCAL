@@ -1,7 +1,6 @@
 program UserProgram;
 
-uses
-  SysUtils;
+
 
 var
   inputPassword: string;

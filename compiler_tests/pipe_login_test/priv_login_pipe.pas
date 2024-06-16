@@ -4,7 +4,7 @@ uses
   SysUtils;
 
 const
-  PASSWORD = 'pascal123'; { Predefined password }
+  PASSWORD = 'pascal'; 
 
 var
   inputPassword: string;

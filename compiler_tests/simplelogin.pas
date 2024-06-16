@@ -2,10 +2,10 @@ program SimpleLogin;
 
 const   
   {privileged} PASSWORD = 'pascal'; 
+  { moved entirely to priv program}
 
 var
   inputPassword: string;
-  attempts: integer;
   authenticated: boolean;
 
 begin
@@ -20,7 +20,12 @@ begin
     readln(inputPassword);
 
     { move to privileged function that returns bool }
-    {  }
+    { inputPassword is a privileged constant }
+    { this expression is bool := logical expression: [unpriv string] = [priv string] }
+    { two options: 1. send password to priv to check, send back answer; 2. send, auth is done in priv}
+    { if (...) then becomes }
+    { if (bool received from priv) then }
+    { and priv program gets line checking input from unpriv, and sends back bool } 
     if inputPassword = PASSWORD then
     begin
       authenticated := true;
