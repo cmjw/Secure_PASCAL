@@ -19,6 +19,7 @@ begin
   close(outputPipe);
   
   writeln('Password sent for verification.');
+  reset(inputPipe);
 
   assign(inputPipe, 'pipe_to_user');
   readln(inputPipe, res);

@@ -17,7 +17,7 @@ begin
   close(inputPipe);
 
   assign(outputPipe, 'pipe_to_user');
-  reset(outputPipe);
+  rewrite(outputPipe);
 
   if inputPassword = PASSWORD then
   begin
