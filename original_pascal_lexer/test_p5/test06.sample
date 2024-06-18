@@ -1,8 +1,0 @@
-yyparse result =        0
-Symbol table level 1
- 93845041229296           i  VAR    0 typ integer  lvl  1  siz     4  off     0
-(program graph1 (progn output)
-                (progn (funcall write 'i = ')
-                       (funcall writelni i)
-                       (funcall write 'Fred loc im = ')
-                       (funcall writelnf 3.140000e+00)))
