@@ -1,0 +1,20 @@
+yyparse result =        0
+Symbol table level 1
+ 94368205758320         red  CONST  typ INTEGER  val  0
+ 94368205758416       white  CONST  typ INTEGER  val  1
+ 94368205758512        blue  CONST  typ INTEGER  val  2
+ 94368205758704       color  TYPE   typ 94368205758608  lvl  1  siz     4  off     0
+  0 ..   2
+ 94368205760048         aco  VAR    0 typ 94368205759952  lvl  1  siz   120  off     0
+(ARRAY   1 ..  10 (ARRAY   0 ..   2   0 ..   2))
+ 94368205761264        acoX  VAR    0 typ 94368205761168  lvl  1  siz    60  off   128
+(ARRAY   2 ..   6 (ARRAY   0 ..   2   0 ..   2))
+(program graph1 (progn output)
+                (progn (:= (aref aco 40)
+                           2)
+                       (:= (aref aco 20)
+                           0)
+                       (:= (aref acoX 40)
+                           2)
+                       (:= (aref acoX 20)
+                           0)))

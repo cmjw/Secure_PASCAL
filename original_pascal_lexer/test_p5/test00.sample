@@ -1,0 +1,28 @@
+yyparse result =        0
+Symbol table level 1
+ 94771001571056   newcolor0  CONST  typ INTEGER  val  0
+ 94771001571152   newcolor1  CONST  typ INTEGER  val  1
+ 94771001571248   newcolor2  CONST  typ INTEGER  val  2
+ 94771001571344         red  CONST  typ INTEGER  val  3
+ 94771001571440      orange  CONST  typ INTEGER  val  4
+ 94771001571536      yellow  CONST  typ INTEGER  val  5
+ 94771001571632       green  CONST  typ INTEGER  val  6
+ 94771001571728        cyan  CONST  typ INTEGER  val  7
+ 94771001571824        blue  CONST  typ INTEGER  val  8
+ 94771001571920      indigo  CONST  typ INTEGER  val  9
+ 94771001572016      violet  CONST  typ INTEGER  val  10
+ 94771001572112      purple  CONST  typ INTEGER  val  11
+ 94771001572208     magenta  CONST  typ INTEGER  val  12
+ 94771001572304        pink  CONST  typ INTEGER  val  13
+ 94771001572400       brown  CONST  typ INTEGER  val  14
+ 94771001572496       white  CONST  typ INTEGER  val  15
+ 94771001572592        gray  CONST  typ INTEGER  val  16
+ 94771001572688       black  CONST  typ INTEGER  val  17
+ 94771001572880       color  TYPE   typ 94771001572784  lvl  1  siz     4  off     0
+  0 ..  17
+ 94771001573488           c  VAR    0 typ 94771001572784  lvl  1  siz     4  off     0
+  0 ..  17
+ 94771001573584           d  VAR    0 typ 94771001572784  lvl  1  siz     4  off     4
+  0 ..  17
+(program graph1 (progn output)
+                (progn (:= c 0)))

@@ -1,0 +1,68 @@
+yyparse result =        0
+Symbol table level 1
+ 93998283038800     complex  TYPE   typ 93998283038704  lvl  1  siz    16  off     0
+(RECORD (re real)
+        (im real))
+ 93998283039216      person  TYPE   typ 93998283041168  lvl  1  siz    48  off     0
+(RECORD (age integer)
+        (friend (^ person))
+        (location (RECORD (re real)
+                          (im real)))
+        (salary real))
+ 93998283039408          pp  TYPE   typ 93998283039312  lvl  1  siz     8  off     0
+(^ person)
+ 93998283042416    complexX  TYPE   typ 93998283042320  lvl  1  siz    32  off     0
+(RECORD (re real)
+        (im real)
+        (dummy real))
+ 93998283045328     personX  TYPE   typ 93998283045232  lvl  1  siz    80  off     0
+(RECORD (age integer)
+        (friend (^ person))
+        (location (RECORD (re real)
+                          (im real)
+                          (dummy real)))
+        (salary real)
+        (height integer)
+        (weight integer)
+        (birthMonth integer))
+ 93998283045936           c  VAR    0 typ 93998283038704  lvl  1  siz    16  off     0
+(RECORD (re real)
+        (im real))
+ 93998283046032           d  VAR    0 typ 93998283038704  lvl  1  siz    16  off    16
+(RECORD (re real)
+        (im real))
+ 93998283046384           i  VAR    0 typ integer  lvl  1  siz     4  off    32
+ 93998283047120        john  VAR    4 typ 93998283039312  lvl  1  siz     8  off    40
+(^ person)
+ 93998283047216        mary  VAR    4 typ 93998283039312  lvl  1  siz     8  off    48
+(^ person)
+ 93998283047312        fred  VAR    4 typ 93998283039312  lvl  1  siz     8  off    56
+(^ person)
+ 93998283047408         ptr  VAR    4 typ 93998283039312  lvl  1  siz     8  off    64
+(^ person)
+ 93998283048144         you  VAR    0 typ 93998283041168  lvl  1  siz    48  off    80
+(RECORD (age integer)
+        (friend (^ person))
+        (location (RECORD (re real)
+                          (im real)))
+        (salary real))
+ 93998283048240          he  VAR    0 typ 93998283041168  lvl  1  siz    48  off   128
+(RECORD (age integer)
+        (friend (^ person))
+        (location (RECORD (re real)
+                          (im real)))
+        (salary real))
+ 93998283048336         she  VAR    0 typ 93998283041168  lvl  1  siz    48  off   176
+(RECORD (age integer)
+        (friend (^ person))
+        (location (RECORD (re real)
+                          (im real)))
+        (salary real))
+ 93998283048432          me  VAR    0 typ 93998283041168  lvl  1  siz    48  off   224
+(RECORD (age integer)
+        (friend (^ person))
+        (location (RECORD (re real)
+                          (im real)))
+        (salary real))
+(program graph1 (progn output)
+                (progn (:= i 1)))

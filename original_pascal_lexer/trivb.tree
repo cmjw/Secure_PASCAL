@@ -1,0 +1,36 @@
+This is the tree structure for the test program trivb.pas .
+All downward links are operands; all horizontal links are link.
+
+program
+   /
+  /
+ graph1 -- progn -- progn
+            /        /
+           /        /
+        output     := --- progn
+                  /        /
+                 /        /
+               lim -- 7  := ---- label -- if
+                        /         /      /
+                       /         /      /
+                      i -- 0    0      <= ----- progn
+                                      /          /
+                                     /          /
+                                    i -- lim  funcall ------- := ---- goto
+                                              /               /        /
+                                             /               /        /
+                                           writeln -- '*'   i -- +   0
+                                                                /
+                                                               /
+                                                              i -- 1
+
+
+
+(program graph1 (progn output)
+                (progn (:= lim 7)
+                       (progn (:= i 0)
+                              (label 0)
+                              (if (<= i lim)
+                                  (progn (funcall writeln '*')
+                                         (:= i (+ i 1))
+                                         (goto 0))))))
