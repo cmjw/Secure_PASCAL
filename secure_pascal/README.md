@@ -11,3 +11,7 @@ bash ./build.sh
 
 flex lexer.l
 gcc -o lexer lex.yy.c -lfl
+
+OR 
+
+bash ./build_lexer.sh
