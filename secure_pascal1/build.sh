@@ -1,8 +1,15 @@
-#!/bin/bash
+#!/bin.bash
 
-echo "Build Secure Pascal project"
+echo "Building Secure Pascal lexer"
 
-bison -d parser.y
 flex lexer.l
 
-gcc -o lexer lex.yy.c -lfl
+make lexer
+
+echo "Building Secure Pascal parser"
+
+echo "TBD"
+
+echo "Building Secure Pascal codegen"
+
+echo "TBD"
