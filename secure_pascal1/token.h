@@ -27,18 +27,24 @@
 #include <stdlib.h>
 #include <ctype.h>
 
+
 /* token data structure */
 typedef struct tokn {
-  int    tokentype;  /* OPERATOR, DELIMITER, RESERVED, etc */
-  int    basicdt;   /* INTEGER, REAL, STRINGTYPE, BOOLETYPE, or POINTER */
-  struct symtbr * symtype;
-  struct symtbr * symentry;
-  struct tokn * operands;
-  struct tokn * link;
-  union { char  tokenstring[16];   /* values of different types, overlapped */
-          int   which;
-          int   intnum;
-          double realnum; } tokenval;
+   int tokentype; 
+   /* OPERATOR, DELIMITER, RESERVED, etc */
+   int basicdt;   
+   /* INTEGER, REAL, STRINGTYPE, BOOLETYPE, or POINTER */
+
+   struct symtbr * symtype;
+   struct symtbr * symentry;
+   struct tokn * operands;
+   struct tokn * link;
+
+   union { 
+      char  tokenstring[16];   /* values of different types, overlapped */
+      int   which;
+      int   intnum;
+      double realnum; } tokenval;
   } *TOKEN;
 
 
@@ -52,7 +58,6 @@ TOKEN talloc();
 #define realval   tokenval.realnum
 #define stringval tokenval.tokenstring
 
-
  /* token types */
 #define OPERATOR       0        
 #define DELIMITER      1
@@ -60,7 +65,6 @@ TOKEN talloc();
 #define IDENTIFIERTOK  3
 #define STRINGTOK      4
 #define NUMBERTOK      5
-
 
 /* operator numbers */
 #define PLUSOP         1         
@@ -92,7 +96,6 @@ TOKEN talloc();
 #define FLOATOP       27
 #define FIXOP         28
 
-
 /* number types */
 #define INTEGER    0             
 #define REAL       1
@@ -103,12 +106,10 @@ TOKEN talloc();
 /* record size must be a multiple of this */
 #define RECORDALIGN    16        
 
-
 /* token types for use with YACC */
 #define IDENTIFIER 258          
 #define STRING 259
 #define NUMBER 260
-
 
 /* subtract OPERATOR_BIAS from the following to get operator numbers */
 #define PLUS 261
