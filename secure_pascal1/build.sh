@@ -1,15 +1,18 @@
 #!/bin.bash
 
-echo "Building Secure Pascal lexer"
+GREEN="\e[33m"
+WHITE="\e[0m"
+
+echo -e "${GREEN}Building Secure Pascal lexer${WHITE}"
 
 flex lexer.l
 
 make lexer
 
-echo "Building Secure Pascal parser"
+echo -e "${GREEN}Building Secure Pascal parser${WHITE}"
 
 echo "TBD"
 
-echo "Building Secure Pascal codegen"
+echo -e "${GREEN}Building Secure Pascal codegen${WHITE}"
 
 echo "TBD"

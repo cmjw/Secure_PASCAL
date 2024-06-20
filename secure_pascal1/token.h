@@ -23,6 +23,9 @@
 /* 09 Feb 00; 06 Jul 12; 01 Aug 12; 24 Dec 12
  */
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
 
 /* token data structure */
 typedef struct tokn {
@@ -39,6 +42,7 @@ typedef struct tokn {
   } *TOKEN;
 
 
+TOKEN talloc();
 
 
 /* The following alternative kinds of values share storage in the token

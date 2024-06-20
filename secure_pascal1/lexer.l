@@ -3,11 +3,13 @@
 */
 
 #include "lexer.h"
+#include "token.h"
 
 #define DEBUG 1
 
-int make_token();
+int make_token(int tokentype, int whichtoken);
 int make_identifier();
+int make_string();
 int make_int();
 int make_float();
 
@@ -33,6 +35,117 @@ string      '(.*?)'
 
 {whitespace} { /* do nothing */ }
 
+"{"       { while (input() != '}'); }
 
+"(*"      { jum:
+            while (input() != '*');
+            int c = input();
+            if (c != ')'){
+              unput(c);
+              goto jum;
+            }
+          }
+
+"+"       {return(make_token(OPERATOR, PLUS));} /* Operators */
+"-"       {return(make_token(OPERATOR, MINUS));}
+"*"       {return(make_token(OPERATOR, TIMES));}
+"/"       {return(make_token(OPERATOR, DIVIDE));}
+":="      {return(make_token(OPERATOR, ASSIGN));}
+"="       {return(make_token(OPERATOR, EQ));}
+"<>"      {return(make_token(OPERATOR, NE));}
+"<"       {return(make_token(OPERATOR, LT));}
+"<="      {return(make_token(OPERATOR, LE));}
+">="      {return(make_token(OPERATOR, GE));}
+">"       {return(make_token(OPERATOR, GT));}
+"^"       {return(make_token(OPERATOR, POINT));}
+"."       {return(make_token(OPERATOR, DOT));}
+and       {return(make_token(OPERATOR, AND));}
+or        {return(make_token(OPERATOR, OR));}
+not       {return(make_token(OPERATOR, NOT));}
+div       {return(make_token(OPERATOR, DIV));}
+mod       {return(make_token(OPERATOR, MOD));}
+in        {return(make_token(OPERATOR, IN));}
+
+
+","       {return(make_token(DELIMITER, COMMA));} /* Delimiters */
+";"       {return(make_token(DELIMITER, SEMICOLON));}
+":"       {return(make_token(DELIMITER, COLON));}
+"("       {return(make_token(DELIMITER, LPAREN));}
+")"       {return(make_token(DELIMITER, RPAREN));}
+"["       {return(make_token(DELIMITER, LBRACKET));}
+"]"       {return(make_token(DELIMITER, RBRACKET));}
+".."      {return(make_token(DELIMITER, DOTDOT));}  
+
+
+array        {return(make_token(RESERVED, ARRAY));} /* Reserved Words */
+begin        {return(make_token(RESERVED, BEGINBEGIN));}
+case         {return(make_token(RESERVED, CASE));}
+const        {return(make_token(RESERVED, CONST));}
+do           {return(make_token(RESERVED, DO));}
+downto       {return(make_token(RESERVED, DOWNTO));}
+else         {return(make_token(RESERVED, ELSE));}
+end          {return(make_token(RESERVED, END));}
+file         {return(make_token(RESERVED, FILEFILE));}
+for          {return(make_token(RESERVED, FOR));}
+function     {return(make_token(RESERVED, FUNCTION));}
+goto         {return(make_token(RESERVED, GOTO));}
+if           {return(make_token(RESERVED, IF));}
+label        {return(make_token(RESERVED, LABEL));}
+nil          {return(make_token(RESERVED, NIL));}
+of           {return(make_token(RESERVED, OF));}
+packed       {return(make_token(RESERVED, PACKED));}
+procedure    {return(make_token(RESERVED, PROCEDURE));}
+program      {return(make_token(RESERVED, PROGRAM));}
+record       {return(make_token(RESERVED, RECORD));}
+repeat       {return(make_token(RESERVED, REPEAT));}
+set          {return(make_token(RESERVED, SET));}
+then         {return(make_token(RESERVED, THEN));}
+to           {return(make_token(RESERVED, TO));}
+type         {return(make_token(RESERVED, TYPE));}
+until        {return(make_token(RESERVED, UNTIL));}
+var          {return(make_token(RESERVED, VAR));}
+while        {return(make_token(RESERVED, WHILE));}
+with         {return(make_token(RESERVED, WITH));}
+
+{id}         {return(make_identifier());}
+
+{string}     {return(make_string());}
+
+{intnumber}  {return(make_int());}
+{fnumber}    {return(make_float());}
 
 %%
+
+/* Make a token */
+int make_token(int tokentype, int whichtoken) {
+    yyval = (TOKEN) talloc();
+    yyval->tokentype = tokentype;
+
+    // reserved keyword
+    if (tokentype == RESERVED) {
+        yyval->whichval = whichtoken - RESERVED_BIAS;
+    }
+}
+
+/* Make an identifier */
+int make_identifier() {
+
+}
+
+/* Make a string */
+int make_string() {
+
+}
+
+/* Make a integer */
+int make_int() {
+
+}
+
+/* Make a floating point number */
+int make_float() {
+    
+}
+
+/* lex may need this. */
+int yywrap() {  return(1);  }   
