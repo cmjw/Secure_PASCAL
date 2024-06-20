@@ -129,12 +129,27 @@ int make_token(int tokentype, int whichtoken) {
 
 /* Make an identifier */
 int make_identifier() {
+    yyval = (TOKEN) talloc();
+    yyval->tokentype = IDENTIFIERTOK;
 
+    /* max length of 15*/
+    int n = yyleng;
+    if (n > 15) { n = 15; }
+
+    int ch;
+    for (int i = 0; i < n; i++) {
+        ch = yytext[i];
+        yyval->stringval[i] = ch;
+    }
+
+    yyval->stringval[n] = '\0';
+
+    return IDENTIFIER;
 }
 
 /* Make a string */
 int make_string() {
-
+    
 }
 
 /* Make a integer */
@@ -144,7 +159,7 @@ int make_int() {
 
 /* Make a floating point number */
 int make_float() {
-    
+
 }
 
 /* lex may need this. */

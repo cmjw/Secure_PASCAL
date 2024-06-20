@@ -132,6 +132,10 @@ TOKEN talloc();
 #define MOD 278
 #define IN 279
 
+/* Double colon for scope*/
+#define DOUBLECOLON 317
+/* May want to renumber later */
+
 
 /* subtract DELIMITER_BIAS from the following to get delimiter numbers */
 #define COMMA 280
