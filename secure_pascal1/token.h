@@ -97,6 +97,8 @@ TOKEN talloc();
 #define FLOATOP       27
 #define FIXOP         28
 
+#define SCOPEOP       29
+
 /* number types */
 #define INTEGER    0             
 #define REAL       1

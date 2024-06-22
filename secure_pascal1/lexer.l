@@ -119,18 +119,24 @@ with         {return(make_token(RESERVED, WITH));}
 
 /* Make simple tokens. */
 int make_token(int type, int which) {
-   yylval = (TOKEN) talloc();
-   yylval->tokentype = type;
+    yylval = (TOKEN) talloc();
+    yylval->tokentype = type;
 
-   if (type == RESERVED)
-      yylval->whichval = which - RESERVED_BIAS;
-   else if (type == OPERATOR)
-      yylval->whichval = which - OPERATOR_BIAS;
-   else if (type == DELIMITER)
-      yylval->whichval = which - DELIMITER_BIAS;
-   else yylval->whichval = which;
+    if (which == DOUBLECOLON) {
+        /* temporary fix */
+        yylval->whichval = SCOPEOP;
+        return which;
+    }
+
+    if (type == RESERVED)
+        yylval->whichval = which - RESERVED_BIAS;
+    else if (type == OPERATOR)
+        yylval->whichval = which - OPERATOR_BIAS;
+    else if (type == DELIMITER)
+        yylval->whichval = which - DELIMITER_BIAS;
+    else yylval->whichval = which;
    
-   return(which);
+    return which;
 }
 
 int make_identifiertok() { 
@@ -202,7 +208,7 @@ int make_floattok() {  /* Note -- you may use sscanf for this assignment. */
    yylval->basicdt = REAL;
 
    if (DEBUG) {printf("num %10s   n = %4d\n",yytext,yyleng);} 
-   
+
    sscanf(yytext, "%f", &fnum);
    yylval->realval = fnum;
 
