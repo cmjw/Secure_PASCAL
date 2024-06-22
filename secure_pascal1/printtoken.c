@@ -1,6 +1,9 @@
 /* Routines to print tokens for debugging */
 
-#include "printtoken.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include "token.h"
 
 
 static char* opprnt[] = {" ", "+", "-", "*", "/", ":=", "=", "<>", "<", "<=",
