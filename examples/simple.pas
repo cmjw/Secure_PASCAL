@@ -1,7 +1,8 @@
-program Simple;
+program simple(ouput); 
+{ must have output for now }
 
-var i:integer;
+var i : integer;
 
 begin
-    i := 1;
-end;
+    i := 1 { last statement has no end semicolon }
+end.
