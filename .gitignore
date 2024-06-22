@@ -1,0 +1,17 @@
+
+shell
+shell.o
+old_compiler/hello
+test.pas
+user_shell
+user_shell.o
+*.o
+sys_call_handler
+compiler_tests/pipe_login_test/user_login_pipe
+compiler_tests/pipe_login_test/priv_login_pipe
+compiler_tests/pipe_login_test/user_login_pipe
+compiler_tests/pipe_login_test/priv_login_pipe
+compiler_tests/pipe_login_test/user_login_pipe
+/compiler_tests/split_ignore_not_working
+secure_pascal/lex
+secure_pascal/lexer
