@@ -5,7 +5,7 @@
 #include "lexer.h"
 #include "token.h"
 
-TOKEN yyval;
+TOKEN yylval;
 
 int main() {
     int result, done = 0;
@@ -17,7 +17,7 @@ int main() {
 
         if (result != 0) {
             printf("yylex() = %4d    \n", result);
-            printtoken(yyval);
+            printtoken(yylval);
         } else {
             done = 1;
         }

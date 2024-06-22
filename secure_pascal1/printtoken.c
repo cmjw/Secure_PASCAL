@@ -24,23 +24,8 @@ static char *tokentypes[] = {"operator", "delimiter", "reserved", "identifier", 
   "number"};
 
 
-/* Print a TOKEN */
+
 void printtoken(TOKEN tok) {
-  switch (tok->tokentype) {
-    case NUMBERTOK:
-      printf("tokentype: %d (%s) ", tok->tokentype, tokentypes[tok->tokentype]);
-
-      break;
-
-    case IDENTIFIERTOK: case STRINGTOK:
-      break;
-
-    
-  }
-}
-
-
-void printtok(TOKEN tok) {
   switch (tok->tokentype) {
     case OPERATOR:
       printf ("tokentype: %2d  which: %4d   %10s\n",

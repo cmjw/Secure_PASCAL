@@ -5,18 +5,18 @@
 #include "lexer.h"
 #include "token.h"
 
-#define DEBUG 1
+#define DEBUG 0
 
 int make_token(int tokentype, int whichtoken);
-int make_identifier();
-int make_string();
-int make_int();
-int make_float();
+int make_identifiertok();
+int make_stringtok();
+int make_integertok();
+int make_floattok();
 
 int yywrap();
 
 /* lexer result type */
-TOKEN yyval;
+TOKEN yylval;
 
 %}
 
@@ -108,104 +108,107 @@ var          {return(make_token(RESERVED, VAR));}
 while        {return(make_token(RESERVED, WHILE));}
 with         {return(make_token(RESERVED, WITH));}
 
-{id}         {return(make_identifier());}
+{id}         {return(make_identifiertok());}
 
-{string}     {return(make_string());}
+{string}     {return(make_stringtok());}
 
-{intnumber}  {return(make_int());}
-{fnumber}    {return(make_float());}
+{intnumber}  {return(make_integertok());}
+{fnumber}    {return(make_floattok());}
 
 %%
 
-/* Make a token */
-int make_token(int tokentype, int whichtoken) {
-    yyval = (TOKEN) talloc();
-    yyval->tokentype = tokentype;
+/* Make simple tokens. */
+int make_token(int type, int which) {
+   yylval = (TOKEN) talloc();
+   yylval->tokentype = type;
 
-    // reserved keyword
-    if (tokentype == RESERVED) {
-        yyval->whichval = whichtoken - RESERVED_BIAS;
-    }
-
-    return whichtoken;
+   if (type == RESERVED)
+      yylval->whichval = which - RESERVED_BIAS;
+   else if (type == OPERATOR)
+      yylval->whichval = which - OPERATOR_BIAS;
+   else if (type == DELIMITER)
+      yylval->whichval = which - DELIMITER_BIAS;
+   else yylval->whichval = which;
+   
+   return(which);
 }
 
-/* Make an identifier */
-int make_identifier() {
-    yyval = (TOKEN) talloc();
-    yyval->tokentype = IDENTIFIERTOK;
+int make_identifiertok() { 
+   int i, c, n;
+   yylval = (TOKEN) talloc();  /* Make new token, set yylval to point to it */
+   yylval->tokentype = IDENTIFIERTOK;
+   n = yyleng;            /* number of characters */
+   
+   if (n > 15) n = 15;
 
-    /* max length of 15*/
-    int n = yyleng;
-    if (n > 15) { n = 15; }
+   for (i = 0; i < n ; i++) { 
+      c = yytext[i];
+          /* if (islower(c)) c = toupper(c); */ /* to raise to upper case */
+     yylval->stringval[i] = c;
+   }
 
-    int ch;
-    for (int i = 0; i < n; i++) {
-        ch = yytext[i];
-        yyval->stringval[i] = ch;
-    }
+   yylval->stringval[n] = '\0';
+   
+   if (DEBUG) {printf("id  %10s   n = %4d\n", yytext, n);}
 
-    yyval->stringval[n] = '\0';
+   return(IDENTIFIER);
+ }
 
-    return IDENTIFIER;
-}
+int make_stringtok() { 
+    yylval = (TOKEN) talloc(); 
+    yylval->tokentype = STRINGTOK;
+    int len = yyleng;            
+    char str[len];
 
-/* Make a string */
-int make_string() {
-    yyval = (TOKEN) talloc();
-    yyval->tokentype = STRINGTOK;
-    int n = yyleng;
-
-    char str[n];
     int ch, s = 0;
-
-    for (int i = 0; i < n; i++) {
-        ch = yytext[i];
-        if (i == 0 || i == (n-1)) {
-            /* ignore quote marks */
+    for (int i = 0; i < len ; i++) { 
+        ch = yytext[i];       
+        if (i == 0 || i == (len - 1)) {
+            /* ignore the first quote mark */
         } else {
             str[s] = ch;
+            if (ch == '\'') { i++; }
             s++;
-
-            if (ch == '\'') {
-                i++;
-            }
-        }
+        } 
     }
 
-    if (s > 15) { s = 15; } /* max length 15 */
+    if (s > 15) { s = 15; }
 
     str[s] = '\0';
-    strcpy(yyval->stringval, str);
+    strcpy(yylval->stringval, str);
 
     return STRING;
 }
 
-/* Make a integer */
-int make_int() {
-    yyval = (TOKEN) talloc();
-    yyval->tokentype = NUMBERTOK;
-    yyval->basicdt = INTEGER;
+int make_integertok() {  
+   int num;
+   yylval = (TOKEN) talloc();   /* Make new token, set yylval to point to it */
 
-    int num;
-    sscanf(yytext, "%d", &num);
-    yyval->intval = num;
+   yylval->tokentype = NUMBERTOK;
+   yylval->basicdt = INTEGER;
 
-    return NUMBER;
+   if (DEBUG) {printf("num %10s   n = %4d\n",yytext,yyleng);}
+
+   sscanf(yytext, "%d", &num);
+   yylval->intval = num;
+
+   return(NUMBER);
 }
 
-/* Make a floating point number */
-int make_float() {
-    yyval = (TOKEN) talloc();
-    yyval->tokentype = NUMBERTOK;
-    yyval->basicdt = REAL;
+int make_floattok() {  /* Note -- you may use sscanf for this assignment. */
+   float fnum;
+   yylval = (TOKEN) talloc();   /* Make new token, set yylval to point to it */
+   yylval->tokentype = NUMBERTOK;
+   yylval->basicdt = REAL;
 
-    float num;
-    sscanf(yytext, "%f", &num);
-    yyval->realval = num;
+   if (DEBUG) {printf("num %10s   n = %4d\n",yytext,yyleng);} 
+   
+   sscanf(yytext, "%f", &fnum);
+   yylval->realval = fnum;
 
-    return NUMBER;
+   return(NUMBER);
 }
+
 
 /* lex may need this. */
-int yywrap() {  return(1);  }   
+int yywrap() {  return(1);  }       
