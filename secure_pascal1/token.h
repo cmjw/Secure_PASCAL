@@ -35,17 +35,18 @@ typedef struct tokn {
    int basicdt;   
    /* INTEGER, REAL, STRINGTYPE, BOOLETYPE, or POINTER */
 
-   struct symtbr * symtype;
-   struct symtbr * symentry;
-   struct tokn * operands;
-   struct tokn * link;
+   struct symtbr *symtype;
+   struct symtbr *symentry;
+   struct tokn *operands;
+   struct tokn *link;
 
    union { 
       char  tokenstring[16];   /* values of different types, overlapped */
       int   which;
       int   intnum;
-      double realnum; } tokenval;
-  } *TOKEN;
+      double realnum; 
+   } tokenval;
+} *TOKEN;
 
 
 TOKEN talloc();

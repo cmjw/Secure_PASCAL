@@ -65,6 +65,7 @@ not       {return(make_token(OPERATOR, NOT));}
 div       {return(make_token(OPERATOR, DIV));}
 mod       {return(make_token(OPERATOR, MOD));}
 in        {return(make_token(OPERATOR, IN));}
+"::"      {return(make_token(OPERATOR, DOUBLECOLON));}
 
 
 ","       {return(make_token(DELIMITER, COMMA));} /* Delimiters */
@@ -125,6 +126,8 @@ int make_token(int tokentype, int whichtoken) {
     if (tokentype == RESERVED) {
         yyval->whichval = whichtoken - RESERVED_BIAS;
     }
+
+    return whichtoken;
 }
 
 /* Make an identifier */
@@ -149,17 +152,59 @@ int make_identifier() {
 
 /* Make a string */
 int make_string() {
-    
+    yyval = (TOKEN) talloc();
+    yyval->tokentype = STRINGTOK;
+    int n = yyleng;
+
+    char str[n];
+    int ch, s = 0;
+
+    for (int i = 0; i < n; i++) {
+        ch = yytext[i];
+        if (i == 0 || i == (n-1)) {
+            /* ignore quote marks */
+        } else {
+            str[s] = ch;
+            s++;
+
+            if (ch == '\'') {
+                i++;
+            }
+        }
+    }
+
+    if (s > 15) { s = 15; } /* max length 15 */
+
+    str[s] = '\0';
+    strcpy(yyval->stringval, str);
+
+    return STRING;
 }
 
 /* Make a integer */
 int make_int() {
+    yyval = (TOKEN) talloc();
+    yyval->tokentype = NUMBERTOK;
+    yyval->basicdt = INTEGER;
 
+    int num;
+    sscanf(yytext, "%d", &num);
+    yyval->intval = num;
+
+    return NUMBER;
 }
 
 /* Make a floating point number */
 int make_float() {
+    yyval = (TOKEN) talloc();
+    yyval->tokentype = NUMBERTOK;
+    yyval->basicdt = REAL;
 
+    float num;
+    sscanf(yytext, "%f", &num);
+    yyval->realval = num;
+
+    return NUMBER;
 }
 
 /* lex may need this. */

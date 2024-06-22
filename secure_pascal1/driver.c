@@ -8,6 +8,19 @@
 TOKEN yyval;
 
 int main() {
-    
-    return 1;
+    int result, done = 0;
+
+    printf("Begin lexer\n");
+
+    while (!done) {
+        result = yylex();
+
+        if (result != 0) {
+            printf("yylex() = %4d    \n", result);
+            printtoken(yyval);
+        } else {
+            done = 1;
+        }
+    }
+    return 0;
 }

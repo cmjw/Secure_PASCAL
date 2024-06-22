@@ -1,4 +1,4 @@
-/* Routines to print tokens for debuggin */
+/* Routines to print tokens for debugging */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -7,22 +7,40 @@
 
 
 static char* opprnt[] = {" ", "+", "-", "*", "/", ":=", "=", "<>", "<", "<=",
-    ">=", ">",  "^", ".", "and", "or", "not", "div",
-    "mod", "in", "if", "goto", "progn", "label",
-    "funcall", "aref", "program", "float"};
+  ">=", ">",  "^", ".", "and", "or", "not", "div",
+  "mod", "in", "if", "goto", "progn", "label",
+  "funcall", "aref", "program", "float"};
 
 static char *delprnt[] = { "  ", " ,", " ;", " :", " (", " )", " [", " ]", ".."};
 
 static char *resprnt[] = { " ", "array", "begin", "case", "const", "do",
-    "downto", "else", "end", "file", "for",
+  "downto", "else", "end", "file", "for",
 	"function", "goto", "if", "label", "nil",
-    "of", "packed", "procedure", "program", "record",
-    "repeat", "set", "then", "to", "type",
+  "of", "packed", "procedure", "program", "record",
+  "repeat", "set", "then", "to", "type",
 	"until", "var", "while", "with" };
 
+static char *tokentypes[] = {"operator", "delimiter", "reserved", "identifier", "string", 
+  "number"};
 
 
+/* Print a TOKEN */
 void printtoken(TOKEN tok) {
+  switch (tok->tokentype) {
+    case NUMBERTOK:
+      printf("tokentype: %d (%s) ", tok->tokentype, tokentypes[tok->tokentype]);
+
+      break;
+
+    case IDENTIFIERTOK: case STRINGTOK:
+      break;
+
+    
+  }
+}
+
+
+void printtok(TOKEN tok) {
   switch (tok->tokentype) {
     case OPERATOR:
       printf ("tokentype: %2d  which: %4d   %10s\n",
