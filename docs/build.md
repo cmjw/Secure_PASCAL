@@ -1,23 +1,29 @@
 # Build Instructions
 
+## Dependencies
+
+lex/flex
+
+yacc/bison
+
 ## Build Everything
 
 To build everything, navigate to /secure_pascal and run 
 
-bash ./build.sh
+> bash ./build.sh
 
 Then run either
 
-./lexer or ./parser
+> ./lexer or ./parser
 
 ## Build Manually
 
 To build manually without using the build script, run:
 
-bison -d parser.y
+> bison -d parser.y
 
-flex lexer.l
+> flex lexer.l
 
-make lexer
+> make lexer
 
-make parser
+> make parser
