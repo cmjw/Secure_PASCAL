@@ -109,9 +109,7 @@ while        {return(make_token(RESERVED, WHILE));}
 with         {return(make_token(RESERVED, WITH));}
 
 {id}         {return(make_identifiertok());}
-
 {string}     {return(make_stringtok());}
-
 {intnumber}  {return(make_integertok());}
 {fnumber}    {return(make_floattok());}
 
@@ -133,27 +131,29 @@ int make_token(int type, int which) {
     return which;
 }
 
+/* Make an identifier token */
 int make_identifiertok() { 
-   int i, c, n;
-   yylval = (TOKEN) talloc();  /* Make new token, set yylval to point to it */
-   yylval->tokentype = IDENTIFIERTOK;
-   n = yyleng;            /* number of characters */
+    yylval = (TOKEN) talloc();  /* Make new token, set yylval to point to it */
+    yylval->tokentype = IDENTIFIERTOK;
+    int len = yyleng;            /* number of characters */
    
-   if (n > 15) n = 15;
+    if (len > 15) { len = 15; } /* max length 15 */
 
-   for (i = 0; i < n ; i++) { 
-      c = yytext[i];
+    int ch;
+    for (int i = 0; i < len ; i++) { 
+        ch = yytext[i];
           /* if (islower(c)) c = toupper(c); */ /* to raise to upper case */
-     yylval->stringval[i] = c;
-   }
+        yylval->stringval[i] = ch;
+    }
 
-   yylval->stringval[n] = '\0';
+    yylval->stringval[len] = '\0';
    
-   if (DEBUG) {printf("id  %10s   n = %4d\n", yytext, n);}
+    if (DEBUG) {printf("id  %10s   n = %4d\n", yytext, len);}
 
-   return(IDENTIFIER);
- }
+    return(IDENTIFIER);
+}
 
+/* Make a string token */
 int make_stringtok() { 
     yylval = (TOKEN) talloc(); 
     yylval->tokentype = STRINGTOK;
@@ -172,7 +172,7 @@ int make_stringtok() {
         } 
     }
 
-    if (s > 15) { s = 15; }
+    if (s > 15) { s = 15; } /* max length 15 */
 
     str[s] = '\0';
     strcpy(yylval->stringval, str);
@@ -180,6 +180,7 @@ int make_stringtok() {
     return STRING;
 }
 
+/* Make an integer token */
 int make_integertok() {  
    int num;
    yylval = (TOKEN) talloc();   /* Make new token, set yylval to point to it */
@@ -195,9 +196,10 @@ int make_integertok() {
    return(NUMBER);
 }
 
-int make_floattok() {  /* Note -- you may use sscanf for this assignment. */
+/* Make a floating point number token */
+int make_floattok() {  
    float fnum;
-   yylval = (TOKEN) talloc();   /* Make new token, set yylval to point to it */
+   yylval = (TOKEN) talloc();  
    yylval->tokentype = NUMBERTOK;
    yylval->basicdt = REAL;
 
