@@ -87,7 +87,7 @@ TOKEN talloc();
 #define DIVOP         17
 #define MODOP         18
 #define INOP          19
-#define SCOPEOP       20 /* double colon scope operator */
+#define SCOPEOP       20   /* double colon scope operator */
 /* end of operator bias */
 #define IFOP          21
 #define GOTOOP        22
@@ -108,78 +108,78 @@ TOKEN talloc();
 #define POINTER    4
 
 /* record size must be a multiple of this */
-#define RECORDALIGN    16        
+#define RECORDALIGN 16        
 
 /* token types for use with YACC */
 #define IDENTIFIER 258          
-#define STRING 259
-#define NUMBER 260
+#define STRING     259
+#define NUMBER     260
 
 /* subtract OPERATOR_BIAS from the following to get operator numbers */
-#define PLUS 261
+#define PLUS        261
 #define OPERATOR_BIAS  (PLUS - 1)    /* added to Operators */
-#define MINUS 262
-#define TIMES 263
-#define DIVIDE 264
-#define ASSIGN 265
-#define EQ 266
-#define NE 267
-#define LT 268
-#define LE 269
-#define GE 270
-#define GT 271
-#define POINT 272
-#define DOT 273
-#define AND 274
-#define OR 275
-#define NOT 276
-#define DIV 277
-#define MOD 278
-#define IN 279
+#define MINUS       262
+#define TIMES       263
+#define DIVIDE      264
+#define ASSIGN      265
+#define EQ          266
+#define NE          267
+#define LT          268
+#define LE          269
+#define GE          270
+#define GT          271
+#define POINT       272
+#define DOT         273
+#define AND         274
+#define OR          275
+#define NOT         276
+#define DIV         277
+#define MOD         278
+#define IN          279
 #define DOUBLECOLON 280
 
 /* subtract DELIMITER_BIAS from the following to get delimiter numbers */
-#define COMMA 281
+#define COMMA       281
 #define DELIMITER_BIAS (COMMA - 1)   /* added to Delimiters */
-#define SEMICOLON 282
-#define COLON 283
-#define LPAREN 284
-#define RPAREN 285
-#define LBRACKET 286
-#define RBRACKET 287
-#define DOTDOT 288
+#define SEMICOLON   282
+#define COLON       283
+#define LPAREN      284
+#define RPAREN      285
+#define LBRACKET    286
+#define RBRACKET    287
+#define DOTDOT      288
 
 
 /* subtract RESERVED_BIAS from the following to get reserved word numbers */
-#define ARRAY 289
+#define ARRAY       289
 #define RESERVED_BIAS  (ARRAY - 1)   /* added to reserved words */
-#define BEGINBEGIN 290              /* begin */
-#define CASE 291
-#define CONST 292
-#define DO 293
-#define DOWNTO 294
-#define ELSE 295
-#define END 296
-#define FILEFILE 297                 /* file */
-#define FOR 298
-#define FUNCTION 299
-#define GOTO 300
-#define IF 301
-#define LABEL 302
-#define NIL 303
-#define OF 304
-#define PACKED 305
-#define PROCEDURE 306
-#define PROGRAM 307
-#define RECORD 308
-#define REPEAT 309
-#define SET 310
-#define THEN 312
-#define TO 312
-#define TYPE 313
-#define UNTIL 314
-#define VAR 315
-#define WHILE 316
-#define WITH 317
+#define BEGINBEGIN  290              /* begin */
+#define CASE        291
+#define CONST       292
+#define DO          293
+#define DOWNTO      294
+#define ELSE        295
+#define END         296
+#define FILEFILE    297                 /* file */
+#define FOR         298
+#define FUNCTION    299
+#define GOTO        300
+#define IF          301
+#define LABEL       302
+#define NIL         303
+#define OF          304
+#define PACKED      305
+#define PROCEDURE   306
+#define PROGRAM     307
+#define RECORD      308
+#define REPEAT      309
+#define SET         310
+#define THEN        311
+#define TO          312
+#define TYPE        313
+#define UNTIL       314
+#define VAR         315
+#define WHILE       316
+#define WITH        317
 
 #define YYTOKENTYPE 0
