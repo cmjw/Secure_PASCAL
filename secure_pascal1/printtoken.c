@@ -8,7 +8,7 @@
 
 static char* opprnt[] = {" ", "+", "-", "*", "/", ":=", "=", "<>", "<", "<=",
   ">=", ">",  "^", ".", "and", "or", "not", "div",
-  "mod", "in", "if", "goto", "progn", "label",
+  "mod", "in", "scope", "if", "goto", "progn", "label",
   "funcall", "aref", "program", "float"};
 
 static char *delprnt[] = { "  ", " ,", " ;", " :", " (", " )", " [", " ]", ".."};

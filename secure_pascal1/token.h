@@ -87,17 +87,18 @@ TOKEN talloc();
 #define DIVOP         17
 #define MODOP         18
 #define INOP          19
-#define IFOP          20
-#define GOTOOP        21
-#define PROGNOP       22
-#define LABELOP       23
-#define FUNCALLOP     24
-#define AREFOP        25
-#define PROGRAMOP     26
-#define FLOATOP       27
-#define FIXOP         28
+#define SCOPEOP       20 /* double colon scope operator */
+/* end of operator bias */
+#define IFOP          21
+#define GOTOOP        22
+#define PROGNOP       23
+#define LABELOP       24
+#define FUNCALLOP     25
+#define AREFOP        26
+#define PROGRAMOP     27
+#define FLOATOP       28
+#define FIXOP         29
 
-#define SCOPEOP       29
 
 /* number types */
 #define INTEGER    0             
@@ -135,54 +136,50 @@ TOKEN talloc();
 #define DIV 277
 #define MOD 278
 #define IN 279
-
-/* Double colon for scope*/
-#define DOUBLECOLON 317
-/* May want to renumber later */
-
+#define DOUBLECOLON 280
 
 /* subtract DELIMITER_BIAS from the following to get delimiter numbers */
-#define COMMA 280
+#define COMMA 281
 #define DELIMITER_BIAS (COMMA - 1)   /* added to Delimiters */
-#define SEMICOLON 281
-#define COLON 282
-#define LPAREN 283
-#define RPAREN 284
-#define LBRACKET 285
-#define RBRACKET 286
-#define DOTDOT 287
+#define SEMICOLON 282
+#define COLON 283
+#define LPAREN 284
+#define RPAREN 285
+#define LBRACKET 286
+#define RBRACKET 287
+#define DOTDOT 288
 
 
 /* subtract RESERVED_BIAS from the following to get reserved word numbers */
-#define ARRAY 288
+#define ARRAY 289
 #define RESERVED_BIAS  (ARRAY - 1)   /* added to reserved words */
-#define BEGINBEGIN 289               /* begin */
-#define CASE 290
-#define CONST 291
-#define DO 292
-#define DOWNTO 293
-#define ELSE 294
-#define END 295
-#define FILEFILE 296                 /* file */
-#define FOR 297
-#define FUNCTION 298
-#define GOTO 299
-#define IF 300
-#define LABEL 301
-#define NIL 302
-#define OF 303
-#define PACKED 304
-#define PROCEDURE 305
-#define PROGRAM 306
-#define RECORD 307
-#define REPEAT 308
-#define SET 309
-#define THEN 310
-#define TO 311
-#define TYPE 312
-#define UNTIL 313
-#define VAR 314
-#define WHILE 315
-#define WITH 316
+#define BEGINBEGIN 290              /* begin */
+#define CASE 291
+#define CONST 292
+#define DO 293
+#define DOWNTO 294
+#define ELSE 295
+#define END 296
+#define FILEFILE 297                 /* file */
+#define FOR 298
+#define FUNCTION 299
+#define GOTO 300
+#define IF 301
+#define LABEL 302
+#define NIL 303
+#define OF 304
+#define PACKED 305
+#define PROCEDURE 306
+#define PROGRAM 307
+#define RECORD 308
+#define REPEAT 309
+#define SET 310
+#define THEN 312
+#define TO 312
+#define TYPE 313
+#define UNTIL 314
+#define VAR 315
+#define WHILE 316
+#define WITH 317
 
 #define YYTOKENTYPE 0
