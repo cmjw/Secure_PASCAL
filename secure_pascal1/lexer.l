@@ -122,12 +122,6 @@ int make_token(int type, int which) {
     yylval = (TOKEN) talloc();
     yylval->tokentype = type;
 
-    if (which == DOUBLECOLON) {
-        /* temporary fix */
-        yylval->whichval = SCOPEOP;
-        return which;
-    }
-
     if (type == RESERVED)
         yylval->whichval = which - RESERVED_BIAS;
     else if (type == OPERATOR)
