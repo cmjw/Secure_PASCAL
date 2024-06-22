@@ -5,6 +5,7 @@
 #include <ctype.h>
 #include "token.h"
 
+void printtoken(TOKEN tok);
 
 static char* opprnt[] = {" ", "+", "-", "*", "/", ":=", "=", "<>", "<", "<=",
   ">=", ">",  "^", ".", "and", "or", "not", "div",

@@ -4,7 +4,6 @@
 #include <ctype.h>
 #include "lexer.h"
 #include "token.h"
-#include "printtoken.h"
 
 TOKEN yylval;
 
