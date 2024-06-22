@@ -13,7 +13,6 @@ int main() {
     printf("Begin lexer input (CTRL+C / CTRL+D to end)\n");
 
     while (!done) {
-        printf("input: ");
         result = yylex();
 
         if (result != 0) {
