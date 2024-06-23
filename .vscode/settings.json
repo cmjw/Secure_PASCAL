@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "token.h": "c",
-        "pprint.h": "c"
+        "pprint.h": "c",
+        "lexer.h": "c"
     }
 }
