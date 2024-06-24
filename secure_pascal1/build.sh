@@ -1,4 +1,5 @@
-#!/bin.bash
+#!/bin/bash
+
 
 GREEN="\e[33m"
 WHITE="\e[0m"
