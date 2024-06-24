@@ -15,3 +15,4 @@ compiler_tests/pipe_login_test/user_login_pipe
 /compiler_tests/split_ignore_not_working
 secure_pascal/lex
 secure_pascal/lexer
+secure_pascal/lex.yy.c
