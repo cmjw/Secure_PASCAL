@@ -25,7 +25,7 @@ static char *resprnt[] = { " ", "array", "begin", "case", "const", "do",
 	"function", "goto", "if", "label", "nil",
   "of", "packed", "procedure", "program", "record",
   "repeat", "set", "then", "to", "type",
-	"until", "var", "while", "with" };
+	"until", "var", "while", "with", "priv", "unpriv"};
 
 static char *tokentypes[] = {"operator", "delimiter", "reserved", "identifier", "string", 
   "number"};

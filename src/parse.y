@@ -63,7 +63,7 @@ TOKEN parseresult;
 %token ARRAY BEGINBEGIN           /* Lex uses BEGIN */
 %token CASE CONST DO DOWNTO ELSE END FILEFILE FOR FUNCTION GOTO IF LABEL NIL
 %token OF PACKED PROCEDURE PROGRAM RECORD REPEAT SET THEN TO TYPE UNTIL
-%token VAR WHILE WITH
+%token VAR WHILE WITH PRIV 
 
 %right thenthen ELSE // Same precedence, but "shift" wins.
 
@@ -131,7 +131,7 @@ TOKEN parseresult;
          ;
 
   vblock : VAR vdef_list block    { $$ = $3; }
-         |  block
+         | block
          ;
 
   vdef_list : vdef SEMICOLON vdef_list   
@@ -156,8 +156,11 @@ TOKEN parseresult;
               | constant DOTDOT constant    { $$ = instdotdot($1, $2, $3);}
               ;
 
-  block : BEGINBEGIN statement endpart    { $$ = makeprogn($1,cons($2, $3)); }  
+  block : BEGINBEGIN statement endpart    { $$ = makeprogn($1,cons($2, $3)); } 
+        | privblock
         ;
+
+  privblock : PRIV DOUBLECOLON BEGINBEGIN statement endpart { $$ = makeprogn($3,cons($4, $5)); }
 
   statement  :  BEGINBEGIN statement endpart         { $$ = makeprogn($1,cons($2, $3)); }
              |  IF expression THEN statement endif   { $$ = makeif($1, $2, $4, $5); }
@@ -176,6 +179,8 @@ TOKEN parseresult;
   endpart    :  SEMICOLON statement endpart    { $$ = cons($2, $3); }
              |  SEMICOLON END                  { $$ = NULL; }
              |  END                            { $$ = NULL; }
+             |  PRIV DOUBLECOLON END           { $$ = NULL; }
+             |  SEMICOLON PRIV DOUBLECOLON END { $$ = NULL; }
              ;
 
   endif      :  ELSE statement                 { $$ = $2; }
