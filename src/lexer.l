@@ -107,6 +107,9 @@ until        {return(make_token(RESERVED, UNTIL));}
 var          {return(make_token(RESERVED, VAR));}
 while        {return(make_token(RESERVED, WHILE));}
 with         {return(make_token(RESERVED, WITH));}
+unpriv       {return(make_token(RESERVED, UNPRIV));}
+priv         {return(make_token(RESERVED, PRIV));}
+
 
 {id}         {return(make_identifiertok());}
 {string}     {return(make_stringtok());}
