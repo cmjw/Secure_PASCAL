@@ -183,7 +183,7 @@ TOKEN parseresult;
              |  variable DOT IDENTIFIER                { $$ = reducedot($1, $2, $3); }
              |  variable POINT                         { $$ = dopoint($1, $2); } 
 
-             | IDENTIFIER DOUBLECOLON IDENTIFIER       { $$ = scoperef($1, $2, $3); } /* scope operator */
+             /*| IDENTIFIER DOUBLECOLON IDENTIFIER       { $$ = scoperef($1, $2, $3); } /* scope operator */
              ;
 
   plus_op : PLUS | MINUS | OR ;

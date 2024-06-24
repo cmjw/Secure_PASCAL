@@ -6,12 +6,12 @@ echo "..."
 
 make clean
 
-#bison -d parse.y
+bison -d parse.y
 
 flex lexer.l
 
 make lexer
 
-#make parser
+make parser
 
 echo "Run ./parser"
