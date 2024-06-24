@@ -4,5 +4,6 @@ program Example1(ouput);
 var i : integer;
 
 begin
+    i := 1; 
     i := 1 { last statement has no end semicolon }
 end.

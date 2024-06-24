@@ -174,6 +174,7 @@ TOKEN parseresult;
              ;
 
   endpart    :  SEMICOLON statement endpart    { $$ = cons($2, $3); }
+             |  SEMICOLON END                  { $$ = NULL; }
              |  END                            { $$ = NULL; }
              ;
 
