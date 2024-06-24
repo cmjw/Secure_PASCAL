@@ -8,7 +8,7 @@ The src directory contains the main project code and build instructions.
 
 >$ bash build.sh
 
->$ bash run.sh ../example/simple.pas
+>$ bash run.sh ../examples/simple.pas
 
 # Examples
 
