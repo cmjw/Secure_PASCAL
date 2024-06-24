@@ -1,0 +1,2301 @@
+Terminals unused in grammar
+
+    DOUBLECOLON
+    CASE
+    DOWNTO
+    FILEFILE
+    FUNCTION
+    PACKED
+    PROCEDURE
+    SET
+    WITH
+    thenthen
+
+
+State 147 conflicts: 1 shift/reduce
+
+
+Grammar
+
+    0 $accept: program $end
+
+    1 program: PROGRAM IDENTIFIER LPAREN id_list RPAREN SEMICOLON lblock DOT
+
+    2 unsigned_constant: NUMBER
+    3                  | NIL
+    4                  | STRING
+
+    5 sign: PLUS
+    6     | MINUS
+
+    7 constant: sign IDENTIFIER
+    8         | IDENTIFIER
+    9         | sign NUMBER
+   10         | NUMBER
+   11         | STRING
+
+   12 id_list: IDENTIFIER COMMA id_list
+   13        | IDENTIFIER
+
+   14 numlist: NUMBER COMMA numlist
+   15        | NUMBER
+
+   16 cdef: IDENTIFIER EQ constant
+
+   17 cdef_list: cdef SEMICOLON cdef_list
+   18          | cdef SEMICOLON
+
+   19 tdef: IDENTIFIER EQ type
+
+   20 tdef_list: tdef SEMICOLON tdef_list
+   21          | tdef SEMICOLON
+
+   22 statement_list: statement SEMICOLON statement_list
+   23               | statement
+
+   24 fields: id_list COLON type
+
+   25 field_list: fields SEMICOLON field_list
+   26           | fields
+
+   27 label: NUMBER COLON statement
+
+   28 lblock: LABEL numlist SEMICOLON cblock
+   29       | cblock
+
+   30 cblock: CONST cdef_list tblock
+   31       | tblock
+
+   32 tblock: TYPE tdef_list vblock
+   33       | vblock
+
+   34 vblock: VAR vdef_list block
+   35       | block
+
+   36 vdef_list: vdef SEMICOLON vdef_list
+   37          | vdef SEMICOLON
+
+   38 vdef: id_list COLON type
+
+   39 type: simple_type
+   40     | ARRAY LBRACKET simple_type_list RBRACKET OF type
+   41     | RECORD field_list END
+   42     | POINT IDENTIFIER
+
+   43 simple_type_list: simple_type COMMA simple_type_list
+   44                 | simple_type
+
+   45 simple_type: IDENTIFIER
+   46            | LPAREN id_list RPAREN
+   47            | constant DOTDOT constant
+
+   48 block: BEGINBEGIN statement endpart
+
+   49 statement: BEGINBEGIN statement endpart
+   50          | IF expression THEN statement endif
+   51          | assignment
+   52          | funcall
+   53          | WHILE expression DO statement
+   54          | FOR assignment TO expression DO statement
+   55          | REPEAT statement_list UNTIL expression
+   56          | GOTO NUMBER
+   57          | label
+
+   58 funcall: IDENTIFIER LPAREN expr_list RPAREN
+
+   59 endpart: SEMICOLON statement endpart
+   60        | END
+
+   61 endif: ELSE statement
+   62      | %empty
+
+   63 assignment: variable ASSIGN expression
+
+   64 variable: IDENTIFIER
+   65         | variable LBRACKET expr_list RBRACKET
+   66         | variable DOT IDENTIFIER
+   67         | variable POINT
+
+   68 plus_op: PLUS
+   69        | MINUS
+   70        | OR
+
+   71 compare_op: EQ
+   72           | LT
+   73           | GT
+   74           | NE
+   75           | LE
+   76           | GE
+   77           | IN
+
+   78 times_op: TIMES
+   79         | DIVIDE
+   80         | DIV
+   81         | MOD
+   82         | AND
+
+   83 simple_expression: sign term
+   84                  | term
+   85                  | simple_expression plus_op term
+
+   86 expression: expression compare_op simple_expression
+   87           | simple_expression
+
+   88 expr_list: expression COMMA expr_list
+   89          | expression
+
+   90 term: term times_op factor
+   91     | factor
+
+   92 factor: unsigned_constant
+   93       | variable
+   94       | LPAREN expression RPAREN
+   95       | funcall
+   96       | NOT factor
+
+
+Terminals, with rules where they appear
+
+    $end (0) 0
+    error (256)
+    IDENTIFIER (258) 1 7 8 12 13 16 19 42 45 58 64 66
+    STRING (259) 4 11
+    NUMBER (260) 2 9 10 14 15 27 56
+    PLUS (261) 5 68
+    MINUS (262) 6 69
+    TIMES (263) 78
+    DIVIDE (264) 79
+    ASSIGN (265) 63
+    EQ (266) 16 19 71
+    NE (267) 74
+    LT (268) 72
+    LE (269) 75
+    GE (270) 76
+    GT (271) 73
+    POINT (272) 42 67
+    DOT (273) 1 66
+    AND (274) 82
+    OR (275) 70
+    NOT (276) 96
+    DIV (277) 80
+    MOD (278) 81
+    IN (279) 77
+    DOUBLECOLON (280)
+    COMMA (281) 12 14 43 88
+    SEMICOLON (282) 1 17 18 20 21 22 25 28 36 37 59
+    COLON (283) 24 27 38
+    LPAREN (284) 1 46 58 94
+    RPAREN (285) 1 46 58 94
+    LBRACKET (286) 40 65
+    RBRACKET (287) 40 65
+    DOTDOT (288) 47
+    ARRAY (289) 40
+    BEGINBEGIN (290) 48 49
+    CASE (291)
+    CONST (292) 30
+    DO (293) 53 54
+    DOWNTO (294)
+    ELSE (295) 61
+    END (296) 41 60
+    FILEFILE (297)
+    FOR (298) 54
+    FUNCTION (299)
+    GOTO (300) 56
+    IF (301) 50
+    LABEL (302) 28
+    NIL (303) 3
+    OF (304) 40
+    PACKED (305)
+    PROCEDURE (306)
+    PROGRAM (307) 1
+    RECORD (308) 41
+    REPEAT (309) 55
+    SET (310)
+    THEN (311) 50
+    TO (312) 54
+    TYPE (313) 32
+    UNTIL (314) 55
+    VAR (315) 34
+    WHILE (316) 53
+    WITH (317)
+    thenthen (318)
+
+
+Nonterminals, with rules where they appear
+
+    $accept (64)
+        on left: 0
+    program (65)
+        on left: 1
+        on right: 0
+    unsigned_constant (66)
+        on left: 2 3 4
+        on right: 92
+    sign (67)
+        on left: 5 6
+        on right: 7 9 83
+    constant (68)
+        on left: 7 8 9 10 11
+        on right: 16 47
+    id_list (69)
+        on left: 12 13
+        on right: 1 12 24 38 46
+    numlist (70)
+        on left: 14 15
+        on right: 14 28
+    cdef (71)
+        on left: 16
+        on right: 17 18
+    cdef_list (72)
+        on left: 17 18
+        on right: 17 30
+    tdef (73)
+        on left: 19
+        on right: 20 21
+    tdef_list (74)
+        on left: 20 21
+        on right: 20 32
+    statement_list (75)
+        on left: 22 23
+        on right: 22 55
+    fields (76)
+        on left: 24
+        on right: 25 26
+    field_list (77)
+        on left: 25 26
+        on right: 25 41
+    label (78)
+        on left: 27
+        on right: 57
+    lblock (79)
+        on left: 28 29
+        on right: 1
+    cblock (80)
+        on left: 30 31
+        on right: 28 29
+    tblock (81)
+        on left: 32 33
+        on right: 30 31
+    vblock (82)
+        on left: 34 35
+        on right: 32 33
+    vdef_list (83)
+        on left: 36 37
+        on right: 34 36
+    vdef (84)
+        on left: 38
+        on right: 36 37
+    type (85)
+        on left: 39 40 41 42
+        on right: 19 24 38 40
+    simple_type_list (86)
+        on left: 43 44
+        on right: 40 43
+    simple_type (87)
+        on left: 45 46 47
+        on right: 39 43 44
+    block (88)
+        on left: 48
+        on right: 34 35
+    statement (89)
+        on left: 49 50 51 52 53 54 55 56 57
+        on right: 22 23 27 48 49 50 53 54 59 61
+    funcall (90)
+        on left: 58
+        on right: 52 95
+    endpart (91)
+        on left: 59 60
+        on right: 48 49 59
+    endif (92)
+        on left: 61 62
+        on right: 50
+    assignment (93)
+        on left: 63
+        on right: 51 54
+    variable (94)
+        on left: 64 65 66 67
+        on right: 63 65 66 67 93
+    plus_op (95)
+        on left: 68 69 70
+        on right: 85
+    compare_op (96)
+        on left: 71 72 73 74 75 76 77
+        on right: 86
+    times_op (97)
+        on left: 78 79 80 81 82
+        on right: 90
+    simple_expression (98)
+        on left: 83 84 85
+        on right: 85 86 87
+    expression (99)
+        on left: 86 87
+        on right: 50 53 54 55 63 86 88 89 94
+    expr_list (100)
+        on left: 88 89
+        on right: 58 65 88
+    term (101)
+        on left: 90 91
+        on right: 83 84 85 90
+    factor (102)
+        on left: 92 93 94 95 96
+        on right: 90 91 96
+
+
+State 0
+
+    0 $accept: . program $end
+
+    PROGRAM  shift, and go to state 1
+
+    program  go to state 2
+
+
+State 1
+
+    1 program: PROGRAM . IDENTIFIER LPAREN id_list RPAREN SEMICOLON lblock DOT
+
+    IDENTIFIER  shift, and go to state 3
+
+
+State 2
+
+    0 $accept: program . $end
+
+    $end  shift, and go to state 4
+
+
+State 3
+
+    1 program: PROGRAM IDENTIFIER . LPAREN id_list RPAREN SEMICOLON lblock DOT
+
+    LPAREN  shift, and go to state 5
+
+
+State 4
+
+    0 $accept: program $end .
+
+    $default  accept
+
+
+State 5
+
+    1 program: PROGRAM IDENTIFIER LPAREN . id_list RPAREN SEMICOLON lblock DOT
+
+    IDENTIFIER  shift, and go to state 6
+
+    id_list  go to state 7
+
+
+State 6
+
+   12 id_list: IDENTIFIER . COMMA id_list
+   13        | IDENTIFIER .
+
+    COMMA  shift, and go to state 8
+
+    $default  reduce using rule 13 (id_list)
+
+
+State 7
+
+    1 program: PROGRAM IDENTIFIER LPAREN id_list . RPAREN SEMICOLON lblock DOT
+
+    RPAREN  shift, and go to state 9
+
+
+State 8
+
+   12 id_list: IDENTIFIER COMMA . id_list
+
+    IDENTIFIER  shift, and go to state 6
+
+    id_list  go to state 10
+
+
+State 9
+
+    1 program: PROGRAM IDENTIFIER LPAREN id_list RPAREN . SEMICOLON lblock DOT
+
+    SEMICOLON  shift, and go to state 11
+
+
+State 10
+
+   12 id_list: IDENTIFIER COMMA id_list .
+
+    $default  reduce using rule 12 (id_list)
+
+
+State 11
+
+    1 program: PROGRAM IDENTIFIER LPAREN id_list RPAREN SEMICOLON . lblock DOT
+
+    BEGINBEGIN  shift, and go to state 12
+    CONST       shift, and go to state 13
+    LABEL       shift, and go to state 14
+    TYPE        shift, and go to state 15
+    VAR         shift, and go to state 16
+
+    lblock  go to state 17
+    cblock  go to state 18
+    tblock  go to state 19
+    vblock  go to state 20
+    block   go to state 21
+
+
+State 12
+
+   48 block: BEGINBEGIN . statement endpart
+
+    IDENTIFIER  shift, and go to state 22
+    NUMBER      shift, and go to state 23
+    BEGINBEGIN  shift, and go to state 24
+    FOR         shift, and go to state 25
+    GOTO        shift, and go to state 26
+    IF          shift, and go to state 27
+    REPEAT      shift, and go to state 28
+    WHILE       shift, and go to state 29
+
+    label       go to state 30
+    statement   go to state 31
+    funcall     go to state 32
+    assignment  go to state 33
+    variable    go to state 34
+
+
+State 13
+
+   30 cblock: CONST . cdef_list tblock
+
+    IDENTIFIER  shift, and go to state 35
+
+    cdef       go to state 36
+    cdef_list  go to state 37
+
+
+State 14
+
+   28 lblock: LABEL . numlist SEMICOLON cblock
+
+    NUMBER  shift, and go to state 38
+
+    numlist  go to state 39
+
+
+State 15
+
+   32 tblock: TYPE . tdef_list vblock
+
+    IDENTIFIER  shift, and go to state 40
+
+    tdef       go to state 41
+    tdef_list  go to state 42
+
+
+State 16
+
+   34 vblock: VAR . vdef_list block
+
+    IDENTIFIER  shift, and go to state 6
+
+    id_list    go to state 43
+    vdef_list  go to state 44
+    vdef       go to state 45
+
+
+State 17
+
+    1 program: PROGRAM IDENTIFIER LPAREN id_list RPAREN SEMICOLON lblock . DOT
+
+    DOT  shift, and go to state 46
+
+
+State 18
+
+   29 lblock: cblock .
+
+    $default  reduce using rule 29 (lblock)
+
+
+State 19
+
+   31 cblock: tblock .
+
+    $default  reduce using rule 31 (cblock)
+
+
+State 20
+
+   33 tblock: vblock .
+
+    $default  reduce using rule 33 (tblock)
+
+
+State 21
+
+   35 vblock: block .
+
+    $default  reduce using rule 35 (vblock)
+
+
+State 22
+
+   58 funcall: IDENTIFIER . LPAREN expr_list RPAREN
+   64 variable: IDENTIFIER .
+
+    LPAREN  shift, and go to state 47
+
+    $default  reduce using rule 64 (variable)
+
+
+State 23
+
+   27 label: NUMBER . COLON statement
+
+    COLON  shift, and go to state 48
+
+
+State 24
+
+   49 statement: BEGINBEGIN . statement endpart
+
+    IDENTIFIER  shift, and go to state 22
+    NUMBER      shift, and go to state 23
+    BEGINBEGIN  shift, and go to state 24
+    FOR         shift, and go to state 25
+    GOTO        shift, and go to state 26
+    IF          shift, and go to state 27
+    REPEAT      shift, and go to state 28
+    WHILE       shift, and go to state 29
+
+    label       go to state 30
+    statement   go to state 49
+    funcall     go to state 32
+    assignment  go to state 33
+    variable    go to state 34
+
+
+State 25
+
+   54 statement: FOR . assignment TO expression DO statement
+
+    IDENTIFIER  shift, and go to state 50
+
+    assignment  go to state 51
+    variable    go to state 34
+
+
+State 26
+
+   56 statement: GOTO . NUMBER
+
+    NUMBER  shift, and go to state 52
+
+
+State 27
+
+   50 statement: IF . expression THEN statement endif
+
+    IDENTIFIER  shift, and go to state 22
+    STRING      shift, and go to state 53
+    NUMBER      shift, and go to state 54
+    PLUS        shift, and go to state 55
+    MINUS       shift, and go to state 56
+    NOT         shift, and go to state 57
+    LPAREN      shift, and go to state 58
+    NIL         shift, and go to state 59
+
+    unsigned_constant  go to state 60
+    sign               go to state 61
+    funcall            go to state 62
+    variable           go to state 63
+    simple_expression  go to state 64
+    expression         go to state 65
+    term               go to state 66
+    factor             go to state 67
+
+
+State 28
+
+   55 statement: REPEAT . statement_list UNTIL expression
+
+    IDENTIFIER  shift, and go to state 22
+    NUMBER      shift, and go to state 23
+    BEGINBEGIN  shift, and go to state 24
+    FOR         shift, and go to state 25
+    GOTO        shift, and go to state 26
+    IF          shift, and go to state 27
+    REPEAT      shift, and go to state 28
+    WHILE       shift, and go to state 29
+
+    statement_list  go to state 68
+    label           go to state 30
+    statement       go to state 69
+    funcall         go to state 32
+    assignment      go to state 33
+    variable        go to state 34
+
+
+State 29
+
+   53 statement: WHILE . expression DO statement
+
+    IDENTIFIER  shift, and go to state 22
+    STRING      shift, and go to state 53
+    NUMBER      shift, and go to state 54
+    PLUS        shift, and go to state 55
+    MINUS       shift, and go to state 56
+    NOT         shift, and go to state 57
+    LPAREN      shift, and go to state 58
+    NIL         shift, and go to state 59
+
+    unsigned_constant  go to state 60
+    sign               go to state 61
+    funcall            go to state 62
+    variable           go to state 63
+    simple_expression  go to state 64
+    expression         go to state 70
+    term               go to state 66
+    factor             go to state 67
+
+
+State 30
+
+   57 statement: label .
+
+    $default  reduce using rule 57 (statement)
+
+
+State 31
+
+   48 block: BEGINBEGIN statement . endpart
+
+    SEMICOLON  shift, and go to state 71
+    END        shift, and go to state 72
+
+    endpart  go to state 73
+
+
+State 32
+
+   52 statement: funcall .
+
+    $default  reduce using rule 52 (statement)
+
+
+State 33
+
+   51 statement: assignment .
+
+    $default  reduce using rule 51 (statement)
+
+
+State 34
+
+   63 assignment: variable . ASSIGN expression
+   65 variable: variable . LBRACKET expr_list RBRACKET
+   66         | variable . DOT IDENTIFIER
+   67         | variable . POINT
+
+    ASSIGN    shift, and go to state 74
+    POINT     shift, and go to state 75
+    DOT       shift, and go to state 76
+    LBRACKET  shift, and go to state 77
+
+
+State 35
+
+   16 cdef: IDENTIFIER . EQ constant
+
+    EQ  shift, and go to state 78
+
+
+State 36
+
+   17 cdef_list: cdef . SEMICOLON cdef_list
+   18          | cdef . SEMICOLON
+
+    SEMICOLON  shift, and go to state 79
+
+
+State 37
+
+   30 cblock: CONST cdef_list . tblock
+
+    BEGINBEGIN  shift, and go to state 12
+    TYPE        shift, and go to state 15
+    VAR         shift, and go to state 16
+
+    tblock  go to state 80
+    vblock  go to state 20
+    block   go to state 21
+
+
+State 38
+
+   14 numlist: NUMBER . COMMA numlist
+   15        | NUMBER .
+
+    COMMA  shift, and go to state 81
+
+    $default  reduce using rule 15 (numlist)
+
+
+State 39
+
+   28 lblock: LABEL numlist . SEMICOLON cblock
+
+    SEMICOLON  shift, and go to state 82
+
+
+State 40
+
+   19 tdef: IDENTIFIER . EQ type
+
+    EQ  shift, and go to state 83
+
+
+State 41
+
+   20 tdef_list: tdef . SEMICOLON tdef_list
+   21          | tdef . SEMICOLON
+
+    SEMICOLON  shift, and go to state 84
+
+
+State 42
+
+   32 tblock: TYPE tdef_list . vblock
+
+    BEGINBEGIN  shift, and go to state 12
+    VAR         shift, and go to state 16
+
+    vblock  go to state 85
+    block   go to state 21
+
+
+State 43
+
+   38 vdef: id_list . COLON type
+
+    COLON  shift, and go to state 86
+
+
+State 44
+
+   34 vblock: VAR vdef_list . block
+
+    BEGINBEGIN  shift, and go to state 12
+
+    block  go to state 87
+
+
+State 45
+
+   36 vdef_list: vdef . SEMICOLON vdef_list
+   37          | vdef . SEMICOLON
+
+    SEMICOLON  shift, and go to state 88
+
+
+State 46
+
+    1 program: PROGRAM IDENTIFIER LPAREN id_list RPAREN SEMICOLON lblock DOT .
+
+    $default  reduce using rule 1 (program)
+
+
+State 47
+
+   58 funcall: IDENTIFIER LPAREN . expr_list RPAREN
+
+    IDENTIFIER  shift, and go to state 22
+    STRING      shift, and go to state 53
+    NUMBER      shift, and go to state 54
+    PLUS        shift, and go to state 55
+    MINUS       shift, and go to state 56
+    NOT         shift, and go to state 57
+    LPAREN      shift, and go to state 58
+    NIL         shift, and go to state 59
+
+    unsigned_constant  go to state 60
+    sign               go to state 61
+    funcall            go to state 62
+    variable           go to state 63
+    simple_expression  go to state 64
+    expression         go to state 89
+    expr_list          go to state 90
+    term               go to state 66
+    factor             go to state 67
+
+
+State 48
+
+   27 label: NUMBER COLON . statement
+
+    IDENTIFIER  shift, and go to state 22
+    NUMBER      shift, and go to state 23
+    BEGINBEGIN  shift, and go to state 24
+    FOR         shift, and go to state 25
+    GOTO        shift, and go to state 26
+    IF          shift, and go to state 27
+    REPEAT      shift, and go to state 28
+    WHILE       shift, and go to state 29
+
+    label       go to state 30
+    statement   go to state 91
+    funcall     go to state 32
+    assignment  go to state 33
+    variable    go to state 34
+
+
+State 49
+
+   49 statement: BEGINBEGIN statement . endpart
+
+    SEMICOLON  shift, and go to state 71
+    END        shift, and go to state 72
+
+    endpart  go to state 92
+
+
+State 50
+
+   64 variable: IDENTIFIER .
+
+    $default  reduce using rule 64 (variable)
+
+
+State 51
+
+   54 statement: FOR assignment . TO expression DO statement
+
+    TO  shift, and go to state 93
+
+
+State 52
+
+   56 statement: GOTO NUMBER .
+
+    $default  reduce using rule 56 (statement)
+
+
+State 53
+
+    4 unsigned_constant: STRING .
+
+    $default  reduce using rule 4 (unsigned_constant)
+
+
+State 54
+
+    2 unsigned_constant: NUMBER .
+
+    $default  reduce using rule 2 (unsigned_constant)
+
+
+State 55
+
+    5 sign: PLUS .
+
+    $default  reduce using rule 5 (sign)
+
+
+State 56
+
+    6 sign: MINUS .
+
+    $default  reduce using rule 6 (sign)
+
+
+State 57
+
+   96 factor: NOT . factor
+
+    IDENTIFIER  shift, and go to state 22
+    STRING      shift, and go to state 53
+    NUMBER      shift, and go to state 54
+    NOT         shift, and go to state 57
+    LPAREN      shift, and go to state 58
+    NIL         shift, and go to state 59
+
+    unsigned_constant  go to state 60
+    funcall            go to state 62
+    variable           go to state 63
+    factor             go to state 94
+
+
+State 58
+
+   94 factor: LPAREN . expression RPAREN
+
+    IDENTIFIER  shift, and go to state 22
+    STRING      shift, and go to state 53
+    NUMBER      shift, and go to state 54
+    PLUS        shift, and go to state 55
+    MINUS       shift, and go to state 56
+    NOT         shift, and go to state 57
+    LPAREN      shift, and go to state 58
+    NIL         shift, and go to state 59
+
+    unsigned_constant  go to state 60
+    sign               go to state 61
+    funcall            go to state 62
+    variable           go to state 63
+    simple_expression  go to state 64
+    expression         go to state 95
+    term               go to state 66
+    factor             go to state 67
+
+
+State 59
+
+    3 unsigned_constant: NIL .
+
+    $default  reduce using rule 3 (unsigned_constant)
+
+
+State 60
+
+   92 factor: unsigned_constant .
+
+    $default  reduce using rule 92 (factor)
+
+
+State 61
+
+   83 simple_expression: sign . term
+
+    IDENTIFIER  shift, and go to state 22
+    STRING      shift, and go to state 53
+    NUMBER      shift, and go to state 54
+    NOT         shift, and go to state 57
+    LPAREN      shift, and go to state 58
+    NIL         shift, and go to state 59
+
+    unsigned_constant  go to state 60
+    funcall            go to state 62
+    variable           go to state 63
+    term               go to state 96
+    factor             go to state 67
+
+
+State 62
+
+   95 factor: funcall .
+
+    $default  reduce using rule 95 (factor)
+
+
+State 63
+
+   65 variable: variable . LBRACKET expr_list RBRACKET
+   66         | variable . DOT IDENTIFIER
+   67         | variable . POINT
+   93 factor: variable .
+
+    POINT     shift, and go to state 75
+    DOT       shift, and go to state 76
+    LBRACKET  shift, and go to state 77
+
+    $default  reduce using rule 93 (factor)
+
+
+State 64
+
+   85 simple_expression: simple_expression . plus_op term
+   87 expression: simple_expression .
+
+    PLUS   shift, and go to state 97
+    MINUS  shift, and go to state 98
+    OR     shift, and go to state 99
+
+    $default  reduce using rule 87 (expression)
+
+    plus_op  go to state 100
+
+
+State 65
+
+   50 statement: IF expression . THEN statement endif
+   86 expression: expression . compare_op simple_expression
+
+    EQ    shift, and go to state 101
+    NE    shift, and go to state 102
+    LT    shift, and go to state 103
+    LE    shift, and go to state 104
+    GE    shift, and go to state 105
+    GT    shift, and go to state 106
+    IN    shift, and go to state 107
+    THEN  shift, and go to state 108
+
+    compare_op  go to state 109
+
+
+State 66
+
+   84 simple_expression: term .
+   90 term: term . times_op factor
+
+    TIMES   shift, and go to state 110
+    DIVIDE  shift, and go to state 111
+    AND     shift, and go to state 112
+    DIV     shift, and go to state 113
+    MOD     shift, and go to state 114
+
+    $default  reduce using rule 84 (simple_expression)
+
+    times_op  go to state 115
+
+
+State 67
+
+   91 term: factor .
+
+    $default  reduce using rule 91 (term)
+
+
+State 68
+
+   55 statement: REPEAT statement_list . UNTIL expression
+
+    UNTIL  shift, and go to state 116
+
+
+State 69
+
+   22 statement_list: statement . SEMICOLON statement_list
+   23               | statement .
+
+    SEMICOLON  shift, and go to state 117
+
+    $default  reduce using rule 23 (statement_list)
+
+
+State 70
+
+   53 statement: WHILE expression . DO statement
+   86 expression: expression . compare_op simple_expression
+
+    EQ  shift, and go to state 101
+    NE  shift, and go to state 102
+    LT  shift, and go to state 103
+    LE  shift, and go to state 104
+    GE  shift, and go to state 105
+    GT  shift, and go to state 106
+    IN  shift, and go to state 107
+    DO  shift, and go to state 118
+
+    compare_op  go to state 109
+
+
+State 71
+
+   59 endpart: SEMICOLON . statement endpart
+
+    IDENTIFIER  shift, and go to state 22
+    NUMBER      shift, and go to state 23
+    BEGINBEGIN  shift, and go to state 24
+    FOR         shift, and go to state 25
+    GOTO        shift, and go to state 26
+    IF          shift, and go to state 27
+    REPEAT      shift, and go to state 28
+    WHILE       shift, and go to state 29
+
+    label       go to state 30
+    statement   go to state 119
+    funcall     go to state 32
+    assignment  go to state 33
+    variable    go to state 34
+
+
+State 72
+
+   60 endpart: END .
+
+    $default  reduce using rule 60 (endpart)
+
+
+State 73
+
+   48 block: BEGINBEGIN statement endpart .
+
+    $default  reduce using rule 48 (block)
+
+
+State 74
+
+   63 assignment: variable ASSIGN . expression
+
+    IDENTIFIER  shift, and go to state 22
+    STRING      shift, and go to state 53
+    NUMBER      shift, and go to state 54
+    PLUS        shift, and go to state 55
+    MINUS       shift, and go to state 56
+    NOT         shift, and go to state 57
+    LPAREN      shift, and go to state 58
+    NIL         shift, and go to state 59
+
+    unsigned_constant  go to state 60
+    sign               go to state 61
+    funcall            go to state 62
+    variable           go to state 63
+    simple_expression  go to state 64
+    expression         go to state 120
+    term               go to state 66
+    factor             go to state 67
+
+
+State 75
+
+   67 variable: variable POINT .
+
+    $default  reduce using rule 67 (variable)
+
+
+State 76
+
+   66 variable: variable DOT . IDENTIFIER
+
+    IDENTIFIER  shift, and go to state 121
+
+
+State 77
+
+   65 variable: variable LBRACKET . expr_list RBRACKET
+
+    IDENTIFIER  shift, and go to state 22
+    STRING      shift, and go to state 53
+    NUMBER      shift, and go to state 54
+    PLUS        shift, and go to state 55
+    MINUS       shift, and go to state 56
+    NOT         shift, and go to state 57
+    LPAREN      shift, and go to state 58
+    NIL         shift, and go to state 59
+
+    unsigned_constant  go to state 60
+    sign               go to state 61
+    funcall            go to state 62
+    variable           go to state 63
+    simple_expression  go to state 64
+    expression         go to state 89
+    expr_list          go to state 122
+    term               go to state 66
+    factor             go to state 67
+
+
+State 78
+
+   16 cdef: IDENTIFIER EQ . constant
+
+    IDENTIFIER  shift, and go to state 123
+    STRING      shift, and go to state 124
+    NUMBER      shift, and go to state 125
+    PLUS        shift, and go to state 55
+    MINUS       shift, and go to state 56
+
+    sign      go to state 126
+    constant  go to state 127
+
+
+State 79
+
+   17 cdef_list: cdef SEMICOLON . cdef_list
+   18          | cdef SEMICOLON .
+
+    IDENTIFIER  shift, and go to state 35
+
+    $default  reduce using rule 18 (cdef_list)
+
+    cdef       go to state 36
+    cdef_list  go to state 128
+
+
+State 80
+
+   30 cblock: CONST cdef_list tblock .
+
+    $default  reduce using rule 30 (cblock)
+
+
+State 81
+
+   14 numlist: NUMBER COMMA . numlist
+
+    NUMBER  shift, and go to state 38
+
+    numlist  go to state 129
+
+
+State 82
+
+   28 lblock: LABEL numlist SEMICOLON . cblock
+
+    BEGINBEGIN  shift, and go to state 12
+    CONST       shift, and go to state 13
+    TYPE        shift, and go to state 15
+    VAR         shift, and go to state 16
+
+    cblock  go to state 130
+    tblock  go to state 19
+    vblock  go to state 20
+    block   go to state 21
+
+
+State 83
+
+   19 tdef: IDENTIFIER EQ . type
+
+    IDENTIFIER  shift, and go to state 131
+    STRING      shift, and go to state 124
+    NUMBER      shift, and go to state 125
+    PLUS        shift, and go to state 55
+    MINUS       shift, and go to state 56
+    POINT       shift, and go to state 132
+    LPAREN      shift, and go to state 133
+    ARRAY       shift, and go to state 134
+    RECORD      shift, and go to state 135
+
+    sign         go to state 126
+    constant     go to state 136
+    type         go to state 137
+    simple_type  go to state 138
+
+
+State 84
+
+   20 tdef_list: tdef SEMICOLON . tdef_list
+   21          | tdef SEMICOLON .
+
+    IDENTIFIER  shift, and go to state 40
+
+    $default  reduce using rule 21 (tdef_list)
+
+    tdef       go to state 41
+    tdef_list  go to state 139
+
+
+State 85
+
+   32 tblock: TYPE tdef_list vblock .
+
+    $default  reduce using rule 32 (tblock)
+
+
+State 86
+
+   38 vdef: id_list COLON . type
+
+    IDENTIFIER  shift, and go to state 131
+    STRING      shift, and go to state 124
+    NUMBER      shift, and go to state 125
+    PLUS        shift, and go to state 55
+    MINUS       shift, and go to state 56
+    POINT       shift, and go to state 132
+    LPAREN      shift, and go to state 133
+    ARRAY       shift, and go to state 134
+    RECORD      shift, and go to state 135
+
+    sign         go to state 126
+    constant     go to state 136
+    type         go to state 140
+    simple_type  go to state 138
+
+
+State 87
+
+   34 vblock: VAR vdef_list block .
+
+    $default  reduce using rule 34 (vblock)
+
+
+State 88
+
+   36 vdef_list: vdef SEMICOLON . vdef_list
+   37          | vdef SEMICOLON .
+
+    IDENTIFIER  shift, and go to state 6
+
+    $default  reduce using rule 37 (vdef_list)
+
+    id_list    go to state 43
+    vdef_list  go to state 141
+    vdef       go to state 45
+
+
+State 89
+
+   86 expression: expression . compare_op simple_expression
+   88 expr_list: expression . COMMA expr_list
+   89          | expression .
+
+    EQ     shift, and go to state 101
+    NE     shift, and go to state 102
+    LT     shift, and go to state 103
+    LE     shift, and go to state 104
+    GE     shift, and go to state 105
+    GT     shift, and go to state 106
+    IN     shift, and go to state 107
+    COMMA  shift, and go to state 142
+
+    $default  reduce using rule 89 (expr_list)
+
+    compare_op  go to state 109
+
+
+State 90
+
+   58 funcall: IDENTIFIER LPAREN expr_list . RPAREN
+
+    RPAREN  shift, and go to state 143
+
+
+State 91
+
+   27 label: NUMBER COLON statement .
+
+    $default  reduce using rule 27 (label)
+
+
+State 92
+
+   49 statement: BEGINBEGIN statement endpart .
+
+    $default  reduce using rule 49 (statement)
+
+
+State 93
+
+   54 statement: FOR assignment TO . expression DO statement
+
+    IDENTIFIER  shift, and go to state 22
+    STRING      shift, and go to state 53
+    NUMBER      shift, and go to state 54
+    PLUS        shift, and go to state 55
+    MINUS       shift, and go to state 56
+    NOT         shift, and go to state 57
+    LPAREN      shift, and go to state 58
+    NIL         shift, and go to state 59
+
+    unsigned_constant  go to state 60
+    sign               go to state 61
+    funcall            go to state 62
+    variable           go to state 63
+    simple_expression  go to state 64
+    expression         go to state 144
+    term               go to state 66
+    factor             go to state 67
+
+
+State 94
+
+   96 factor: NOT factor .
+
+    $default  reduce using rule 96 (factor)
+
+
+State 95
+
+   86 expression: expression . compare_op simple_expression
+   94 factor: LPAREN expression . RPAREN
+
+    EQ      shift, and go to state 101
+    NE      shift, and go to state 102
+    LT      shift, and go to state 103
+    LE      shift, and go to state 104
+    GE      shift, and go to state 105
+    GT      shift, and go to state 106
+    IN      shift, and go to state 107
+    RPAREN  shift, and go to state 145
+
+    compare_op  go to state 109
+
+
+State 96
+
+   83 simple_expression: sign term .
+   90 term: term . times_op factor
+
+    TIMES   shift, and go to state 110
+    DIVIDE  shift, and go to state 111
+    AND     shift, and go to state 112
+    DIV     shift, and go to state 113
+    MOD     shift, and go to state 114
+
+    $default  reduce using rule 83 (simple_expression)
+
+    times_op  go to state 115
+
+
+State 97
+
+   68 plus_op: PLUS .
+
+    $default  reduce using rule 68 (plus_op)
+
+
+State 98
+
+   69 plus_op: MINUS .
+
+    $default  reduce using rule 69 (plus_op)
+
+
+State 99
+
+   70 plus_op: OR .
+
+    $default  reduce using rule 70 (plus_op)
+
+
+State 100
+
+   85 simple_expression: simple_expression plus_op . term
+
+    IDENTIFIER  shift, and go to state 22
+    STRING      shift, and go to state 53
+    NUMBER      shift, and go to state 54
+    NOT         shift, and go to state 57
+    LPAREN      shift, and go to state 58
+    NIL         shift, and go to state 59
+
+    unsigned_constant  go to state 60
+    funcall            go to state 62
+    variable           go to state 63
+    term               go to state 146
+    factor             go to state 67
+
+
+State 101
+
+   71 compare_op: EQ .
+
+    $default  reduce using rule 71 (compare_op)
+
+
+State 102
+
+   74 compare_op: NE .
+
+    $default  reduce using rule 74 (compare_op)
+
+
+State 103
+
+   72 compare_op: LT .
+
+    $default  reduce using rule 72 (compare_op)
+
+
+State 104
+
+   75 compare_op: LE .
+
+    $default  reduce using rule 75 (compare_op)
+
+
+State 105
+
+   76 compare_op: GE .
+
+    $default  reduce using rule 76 (compare_op)
+
+
+State 106
+
+   73 compare_op: GT .
+
+    $default  reduce using rule 73 (compare_op)
+
+
+State 107
+
+   77 compare_op: IN .
+
+    $default  reduce using rule 77 (compare_op)
+
+
+State 108
+
+   50 statement: IF expression THEN . statement endif
+
+    IDENTIFIER  shift, and go to state 22
+    NUMBER      shift, and go to state 23
+    BEGINBEGIN  shift, and go to state 24
+    FOR         shift, and go to state 25
+    GOTO        shift, and go to state 26
+    IF          shift, and go to state 27
+    REPEAT      shift, and go to state 28
+    WHILE       shift, and go to state 29
+
+    label       go to state 30
+    statement   go to state 147
+    funcall     go to state 32
+    assignment  go to state 33
+    variable    go to state 34
+
+
+State 109
+
+   86 expression: expression compare_op . simple_expression
+
+    IDENTIFIER  shift, and go to state 22
+    STRING      shift, and go to state 53
+    NUMBER      shift, and go to state 54
+    PLUS        shift, and go to state 55
+    MINUS       shift, and go to state 56
+    NOT         shift, and go to state 57
+    LPAREN      shift, and go to state 58
+    NIL         shift, and go to state 59
+
+    unsigned_constant  go to state 60
+    sign               go to state 61
+    funcall            go to state 62
+    variable           go to state 63
+    simple_expression  go to state 148
+    term               go to state 66
+    factor             go to state 67
+
+
+State 110
+
+   78 times_op: TIMES .
+
+    $default  reduce using rule 78 (times_op)
+
+
+State 111
+
+   79 times_op: DIVIDE .
+
+    $default  reduce using rule 79 (times_op)
+
+
+State 112
+
+   82 times_op: AND .
+
+    $default  reduce using rule 82 (times_op)
+
+
+State 113
+
+   80 times_op: DIV .
+
+    $default  reduce using rule 80 (times_op)
+
+
+State 114
+
+   81 times_op: MOD .
+
+    $default  reduce using rule 81 (times_op)
+
+
+State 115
+
+   90 term: term times_op . factor
+
+    IDENTIFIER  shift, and go to state 22
+    STRING      shift, and go to state 53
+    NUMBER      shift, and go to state 54
+    NOT         shift, and go to state 57
+    LPAREN      shift, and go to state 58
+    NIL         shift, and go to state 59
+
+    unsigned_constant  go to state 60
+    funcall            go to state 62
+    variable           go to state 63
+    factor             go to state 149
+
+
+State 116
+
+   55 statement: REPEAT statement_list UNTIL . expression
+
+    IDENTIFIER  shift, and go to state 22
+    STRING      shift, and go to state 53
+    NUMBER      shift, and go to state 54
+    PLUS        shift, and go to state 55
+    MINUS       shift, and go to state 56
+    NOT         shift, and go to state 57
+    LPAREN      shift, and go to state 58
+    NIL         shift, and go to state 59
+
+    unsigned_constant  go to state 60
+    sign               go to state 61
+    funcall            go to state 62
+    variable           go to state 63
+    simple_expression  go to state 64
+    expression         go to state 150
+    term               go to state 66
+    factor             go to state 67
+
+
+State 117
+
+   22 statement_list: statement SEMICOLON . statement_list
+
+    IDENTIFIER  shift, and go to state 22
+    NUMBER      shift, and go to state 23
+    BEGINBEGIN  shift, and go to state 24
+    FOR         shift, and go to state 25
+    GOTO        shift, and go to state 26
+    IF          shift, and go to state 27
+    REPEAT      shift, and go to state 28
+    WHILE       shift, and go to state 29
+
+    statement_list  go to state 151
+    label           go to state 30
+    statement       go to state 69
+    funcall         go to state 32
+    assignment      go to state 33
+    variable        go to state 34
+
+
+State 118
+
+   53 statement: WHILE expression DO . statement
+
+    IDENTIFIER  shift, and go to state 22
+    NUMBER      shift, and go to state 23
+    BEGINBEGIN  shift, and go to state 24
+    FOR         shift, and go to state 25
+    GOTO        shift, and go to state 26
+    IF          shift, and go to state 27
+    REPEAT      shift, and go to state 28
+    WHILE       shift, and go to state 29
+
+    label       go to state 30
+    statement   go to state 152
+    funcall     go to state 32
+    assignment  go to state 33
+    variable    go to state 34
+
+
+State 119
+
+   59 endpart: SEMICOLON statement . endpart
+
+    SEMICOLON  shift, and go to state 71
+    END        shift, and go to state 72
+
+    endpart  go to state 153
+
+
+State 120
+
+   63 assignment: variable ASSIGN expression .
+   86 expression: expression . compare_op simple_expression
+
+    EQ  shift, and go to state 101
+    NE  shift, and go to state 102
+    LT  shift, and go to state 103
+    LE  shift, and go to state 104
+    GE  shift, and go to state 105
+    GT  shift, and go to state 106
+    IN  shift, and go to state 107
+
+    $default  reduce using rule 63 (assignment)
+
+    compare_op  go to state 109
+
+
+State 121
+
+   66 variable: variable DOT IDENTIFIER .
+
+    $default  reduce using rule 66 (variable)
+
+
+State 122
+
+   65 variable: variable LBRACKET expr_list . RBRACKET
+
+    RBRACKET  shift, and go to state 154
+
+
+State 123
+
+    8 constant: IDENTIFIER .
+
+    $default  reduce using rule 8 (constant)
+
+
+State 124
+
+   11 constant: STRING .
+
+    $default  reduce using rule 11 (constant)
+
+
+State 125
+
+   10 constant: NUMBER .
+
+    $default  reduce using rule 10 (constant)
+
+
+State 126
+
+    7 constant: sign . IDENTIFIER
+    9         | sign . NUMBER
+
+    IDENTIFIER  shift, and go to state 155
+    NUMBER      shift, and go to state 156
+
+
+State 127
+
+   16 cdef: IDENTIFIER EQ constant .
+
+    $default  reduce using rule 16 (cdef)
+
+
+State 128
+
+   17 cdef_list: cdef SEMICOLON cdef_list .
+
+    $default  reduce using rule 17 (cdef_list)
+
+
+State 129
+
+   14 numlist: NUMBER COMMA numlist .
+
+    $default  reduce using rule 14 (numlist)
+
+
+State 130
+
+   28 lblock: LABEL numlist SEMICOLON cblock .
+
+    $default  reduce using rule 28 (lblock)
+
+
+State 131
+
+    8 constant: IDENTIFIER .
+   45 simple_type: IDENTIFIER .
+
+    DOTDOT    reduce using rule 8 (constant)
+    $default  reduce using rule 45 (simple_type)
+
+
+State 132
+
+   42 type: POINT . IDENTIFIER
+
+    IDENTIFIER  shift, and go to state 157
+
+
+State 133
+
+   46 simple_type: LPAREN . id_list RPAREN
+
+    IDENTIFIER  shift, and go to state 6
+
+    id_list  go to state 158
+
+
+State 134
+
+   40 type: ARRAY . LBRACKET simple_type_list RBRACKET OF type
+
+    LBRACKET  shift, and go to state 159
+
+
+State 135
+
+   41 type: RECORD . field_list END
+
+    IDENTIFIER  shift, and go to state 6
+
+    id_list     go to state 160
+    fields      go to state 161
+    field_list  go to state 162
+
+
+State 136
+
+   47 simple_type: constant . DOTDOT constant
+
+    DOTDOT  shift, and go to state 163
+
+
+State 137
+
+   19 tdef: IDENTIFIER EQ type .
+
+    $default  reduce using rule 19 (tdef)
+
+
+State 138
+
+   39 type: simple_type .
+
+    $default  reduce using rule 39 (type)
+
+
+State 139
+
+   20 tdef_list: tdef SEMICOLON tdef_list .
+
+    $default  reduce using rule 20 (tdef_list)
+
+
+State 140
+
+   38 vdef: id_list COLON type .
+
+    $default  reduce using rule 38 (vdef)
+
+
+State 141
+
+   36 vdef_list: vdef SEMICOLON vdef_list .
+
+    $default  reduce using rule 36 (vdef_list)
+
+
+State 142
+
+   88 expr_list: expression COMMA . expr_list
+
+    IDENTIFIER  shift, and go to state 22
+    STRING      shift, and go to state 53
+    NUMBER      shift, and go to state 54
+    PLUS        shift, and go to state 55
+    MINUS       shift, and go to state 56
+    NOT         shift, and go to state 57
+    LPAREN      shift, and go to state 58
+    NIL         shift, and go to state 59
+
+    unsigned_constant  go to state 60
+    sign               go to state 61
+    funcall            go to state 62
+    variable           go to state 63
+    simple_expression  go to state 64
+    expression         go to state 89
+    expr_list          go to state 164
+    term               go to state 66
+    factor             go to state 67
+
+
+State 143
+
+   58 funcall: IDENTIFIER LPAREN expr_list RPAREN .
+
+    $default  reduce using rule 58 (funcall)
+
+
+State 144
+
+   54 statement: FOR assignment TO expression . DO statement
+   86 expression: expression . compare_op simple_expression
+
+    EQ  shift, and go to state 101
+    NE  shift, and go to state 102
+    LT  shift, and go to state 103
+    LE  shift, and go to state 104
+    GE  shift, and go to state 105
+    GT  shift, and go to state 106
+    IN  shift, and go to state 107
+    DO  shift, and go to state 165
+
+    compare_op  go to state 109
+
+
+State 145
+
+   94 factor: LPAREN expression RPAREN .
+
+    $default  reduce using rule 94 (factor)
+
+
+State 146
+
+   85 simple_expression: simple_expression plus_op term .
+   90 term: term . times_op factor
+
+    TIMES   shift, and go to state 110
+    DIVIDE  shift, and go to state 111
+    AND     shift, and go to state 112
+    DIV     shift, and go to state 113
+    MOD     shift, and go to state 114
+
+    $default  reduce using rule 85 (simple_expression)
+
+    times_op  go to state 115
+
+
+State 147
+
+   50 statement: IF expression THEN statement . endif
+
+    ELSE  shift, and go to state 166
+
+    ELSE      [reduce using rule 62 (endif)]
+    $default  reduce using rule 62 (endif)
+
+    endif  go to state 167
+
+
+State 148
+
+   85 simple_expression: simple_expression . plus_op term
+   86 expression: expression compare_op simple_expression .
+
+    PLUS   shift, and go to state 97
+    MINUS  shift, and go to state 98
+    OR     shift, and go to state 99
+
+    $default  reduce using rule 86 (expression)
+
+    plus_op  go to state 100
+
+
+State 149
+
+   90 term: term times_op factor .
+
+    $default  reduce using rule 90 (term)
+
+
+State 150
+
+   55 statement: REPEAT statement_list UNTIL expression .
+   86 expression: expression . compare_op simple_expression
+
+    EQ  shift, and go to state 101
+    NE  shift, and go to state 102
+    LT  shift, and go to state 103
+    LE  shift, and go to state 104
+    GE  shift, and go to state 105
+    GT  shift, and go to state 106
+    IN  shift, and go to state 107
+
+    $default  reduce using rule 55 (statement)
+
+    compare_op  go to state 109
+
+
+State 151
+
+   22 statement_list: statement SEMICOLON statement_list .
+
+    $default  reduce using rule 22 (statement_list)
+
+
+State 152
+
+   53 statement: WHILE expression DO statement .
+
+    $default  reduce using rule 53 (statement)
+
+
+State 153
+
+   59 endpart: SEMICOLON statement endpart .
+
+    $default  reduce using rule 59 (endpart)
+
+
+State 154
+
+   65 variable: variable LBRACKET expr_list RBRACKET .
+
+    $default  reduce using rule 65 (variable)
+
+
+State 155
+
+    7 constant: sign IDENTIFIER .
+
+    $default  reduce using rule 7 (constant)
+
+
+State 156
+
+    9 constant: sign NUMBER .
+
+    $default  reduce using rule 9 (constant)
+
+
+State 157
+
+   42 type: POINT IDENTIFIER .
+
+    $default  reduce using rule 42 (type)
+
+
+State 158
+
+   46 simple_type: LPAREN id_list . RPAREN
+
+    RPAREN  shift, and go to state 168
+
+
+State 159
+
+   40 type: ARRAY LBRACKET . simple_type_list RBRACKET OF type
+
+    IDENTIFIER  shift, and go to state 131
+    STRING      shift, and go to state 124
+    NUMBER      shift, and go to state 125
+    PLUS        shift, and go to state 55
+    MINUS       shift, and go to state 56
+    LPAREN      shift, and go to state 133
+
+    sign              go to state 126
+    constant          go to state 136
+    simple_type_list  go to state 169
+    simple_type       go to state 170
+
+
+State 160
+
+   24 fields: id_list . COLON type
+
+    COLON  shift, and go to state 171
+
+
+State 161
+
+   25 field_list: fields . SEMICOLON field_list
+   26           | fields .
+
+    SEMICOLON  shift, and go to state 172
+
+    $default  reduce using rule 26 (field_list)
+
+
+State 162
+
+   41 type: RECORD field_list . END
+
+    END  shift, and go to state 173
+
+
+State 163
+
+   47 simple_type: constant DOTDOT . constant
+
+    IDENTIFIER  shift, and go to state 123
+    STRING      shift, and go to state 124
+    NUMBER      shift, and go to state 125
+    PLUS        shift, and go to state 55
+    MINUS       shift, and go to state 56
+
+    sign      go to state 126
+    constant  go to state 174
+
+
+State 164
+
+   88 expr_list: expression COMMA expr_list .
+
+    $default  reduce using rule 88 (expr_list)
+
+
+State 165
+
+   54 statement: FOR assignment TO expression DO . statement
+
+    IDENTIFIER  shift, and go to state 22
+    NUMBER      shift, and go to state 23
+    BEGINBEGIN  shift, and go to state 24
+    FOR         shift, and go to state 25
+    GOTO        shift, and go to state 26
+    IF          shift, and go to state 27
+    REPEAT      shift, and go to state 28
+    WHILE       shift, and go to state 29
+
+    label       go to state 30
+    statement   go to state 175
+    funcall     go to state 32
+    assignment  go to state 33
+    variable    go to state 34
+
+
+State 166
+
+   61 endif: ELSE . statement
+
+    IDENTIFIER  shift, and go to state 22
+    NUMBER      shift, and go to state 23
+    BEGINBEGIN  shift, and go to state 24
+    FOR         shift, and go to state 25
+    GOTO        shift, and go to state 26
+    IF          shift, and go to state 27
+    REPEAT      shift, and go to state 28
+    WHILE       shift, and go to state 29
+
+    label       go to state 30
+    statement   go to state 176
+    funcall     go to state 32
+    assignment  go to state 33
+    variable    go to state 34
+
+
+State 167
+
+   50 statement: IF expression THEN statement endif .
+
+    $default  reduce using rule 50 (statement)
+
+
+State 168
+
+   46 simple_type: LPAREN id_list RPAREN .
+
+    $default  reduce using rule 46 (simple_type)
+
+
+State 169
+
+   40 type: ARRAY LBRACKET simple_type_list . RBRACKET OF type
+
+    RBRACKET  shift, and go to state 177
+
+
+State 170
+
+   43 simple_type_list: simple_type . COMMA simple_type_list
+   44                 | simple_type .
+
+    COMMA  shift, and go to state 178
+
+    $default  reduce using rule 44 (simple_type_list)
+
+
+State 171
+
+   24 fields: id_list COLON . type
+
+    IDENTIFIER  shift, and go to state 131
+    STRING      shift, and go to state 124
+    NUMBER      shift, and go to state 125
+    PLUS        shift, and go to state 55
+    MINUS       shift, and go to state 56
+    POINT       shift, and go to state 132
+    LPAREN      shift, and go to state 133
+    ARRAY       shift, and go to state 134
+    RECORD      shift, and go to state 135
+
+    sign         go to state 126
+    constant     go to state 136
+    type         go to state 179
+    simple_type  go to state 138
+
+
+State 172
+
+   25 field_list: fields SEMICOLON . field_list
+
+    IDENTIFIER  shift, and go to state 6
+
+    id_list     go to state 160
+    fields      go to state 161
+    field_list  go to state 180
+
+
+State 173
+
+   41 type: RECORD field_list END .
+
+    $default  reduce using rule 41 (type)
+
+
+State 174
+
+   47 simple_type: constant DOTDOT constant .
+
+    $default  reduce using rule 47 (simple_type)
+
+
+State 175
+
+   54 statement: FOR assignment TO expression DO statement .
+
+    $default  reduce using rule 54 (statement)
+
+
+State 176
+
+   61 endif: ELSE statement .
+
+    $default  reduce using rule 61 (endif)
+
+
+State 177
+
+   40 type: ARRAY LBRACKET simple_type_list RBRACKET . OF type
+
+    OF  shift, and go to state 181
+
+
+State 178
+
+   43 simple_type_list: simple_type COMMA . simple_type_list
+
+    IDENTIFIER  shift, and go to state 131
+    STRING      shift, and go to state 124
+    NUMBER      shift, and go to state 125
+    PLUS        shift, and go to state 55
+    MINUS       shift, and go to state 56
+    LPAREN      shift, and go to state 133
+
+    sign              go to state 126
+    constant          go to state 136
+    simple_type_list  go to state 182
+    simple_type       go to state 170
+
+
+State 179
+
+   24 fields: id_list COLON type .
+
+    $default  reduce using rule 24 (fields)
+
+
+State 180
+
+   25 field_list: fields SEMICOLON field_list .
+
+    $default  reduce using rule 25 (field_list)
+
+
+State 181
+
+   40 type: ARRAY LBRACKET simple_type_list RBRACKET OF . type
+
+    IDENTIFIER  shift, and go to state 131
+    STRING      shift, and go to state 124
+    NUMBER      shift, and go to state 125
+    PLUS        shift, and go to state 55
+    MINUS       shift, and go to state 56
+    POINT       shift, and go to state 132
+    LPAREN      shift, and go to state 133
+    ARRAY       shift, and go to state 134
+    RECORD      shift, and go to state 135
+
+    sign         go to state 126
+    constant     go to state 136
+    type         go to state 183
+    simple_type  go to state 138
+
+
+State 182
+
+   43 simple_type_list: simple_type COMMA simple_type_list .
+
+    $default  reduce using rule 43 (simple_type_list)
+
+
+State 183
+
+   40 type: ARRAY LBRACKET simple_type_list RBRACKET OF type .
+
+    $default  reduce using rule 40 (type)

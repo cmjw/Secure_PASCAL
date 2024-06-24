@@ -40,9 +40,15 @@
 /* define the type of the Yacc stack element to be TOKEN */
 #define YYSTYPE TOKEN
 
+/* For debugging parser */
+#define YYDEBUG 1
+extern int yydebug;
+
 TOKEN parseresult;
 
 %}
+
+%define parse.error verbose
 
 /* Order of tokens corresponds to tokendefs.c; do not change */
 
@@ -1310,8 +1316,13 @@ void yyerror (char const *s)
 }
 
 int main(void)          /*  */
-  { int res;
+  { 
+    int res;
     initsyms();
+
+    /* For debugging parser */
+    yydebug = 1;
+    
     res = yyparse();
     //printst();       /* to shorten, change to:  printstlevel(1);  */
     printstlevel(1);
