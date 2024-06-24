@@ -11,7 +11,7 @@ echo -e "${GREEN}Run ./lexer${WHITE}"
 make clean
 
 echo -e "${GREEN}Build parser (yacc/bison)${WHITE}"
-bison -t -v -d parse.y
+bison -d parse.y
 
 echo -e "${GREEN}Build lexer (flex)${WHITE}"
 flex lexer.l
