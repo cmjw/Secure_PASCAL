@@ -25,3 +25,13 @@
 Provide an input .pas file (optional)
 
 >$ ./parse < <file.pas>
+
+### Common Issues
+
+#### WSL2 Line-Ending Issue
+
+"$'\r': command not found"
+
+>$ dos2unix ./build.sh
+
+>$ dos2unix ./run.sh
