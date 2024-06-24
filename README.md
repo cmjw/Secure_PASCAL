@@ -1,9 +1,15 @@
 # Secure Pascal
 
-The "secure_pascal" directories contains the main project files and detailed build instructions.
+The src directory contains the main project code and build instructions.
 
-secure_pascal1 contains a version of the project that builds directly on my previous Pascal 
-compiler projects.
+## Example Usage
+
+$ bash build.sh
+$ bash run.sh ../example/simple.pas
+
+# Examples
+
+The examples directory contains sample .pas files to test the lexer and parser.
 
 # Original Pascal Compiler 
 The files are for reference only right now. 
