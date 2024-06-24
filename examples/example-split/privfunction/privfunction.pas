@@ -1,9 +1,19 @@
-program Example1(ouput); 
+program Privfunction(ouput); 
 { must have output for now }
 
-var i : integer;
+var i, r : integer;
 
-priv::begin
+function privfunct(n : integer): priv::function;
+var result: unpriv::integer
+
+begin
+    result := n mod 2;
+end;
+
+begin
     i := 1; 
-    i := 1; { last statement has no end semicolon }
-priv::end.
+
+    r := privfunct(i); { priv function call }
+
+    writeln(r);
+end.
