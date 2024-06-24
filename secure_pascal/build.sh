@@ -1,18 +1,17 @@
-#!/bin.bash
+#!/bin/bash
 
-GREEN="\e[33m"
-WHITE="\e[0m"
+echo "Building Pascal Parser"
 
-echo -e "${GREEN}Building lexer (./lexer)${WHITE}"
+echo "..."
+
+make clean
+
+bison -d parse.y
 
 flex lexer.l
 
 make lexer
 
-echo -e "${GREEN}Building parser (./parser)${WHITE}"
+make parser
 
-echo "TBD"
-
-echo -e "${GREEN}Building codegen${WHITE}"
-
-echo "TBD"
+echo "Run ./parser"
