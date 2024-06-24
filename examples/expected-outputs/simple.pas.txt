@@ -1,0 +1,28 @@
+Input: ../examples/simple.pas
+Begin lexer
+Begin lexer input (CTRL+C / CTRL+D to end)
+yylex() =  307    tokentype:  2  which:   19      program
+yylex() =  258    tokentype:  3  value:            simple
+yylex() =  284    tokentype:  1  which:    4            (
+yylex() =  258    tokentype:  3  value:             ouput
+yylex() =  285    tokentype:  1  which:    5            )
+yylex() =  282    tokentype:  1  which:    2            ;
+yylex() =  315    tokentype:  2  which:   27          var
+yylex() =  258    tokentype:  3  value:                 i
+yylex() =  283    tokentype:  1  which:    3            :
+yylex() =  258    tokentype:  3  value:           integer
+yylex() =  282    tokentype:  1  which:    2            ;
+yylex() =  290    tokentype:  2  which:    2        begin
+yylex() =  258    tokentype:  3  value:                 i
+yylex() =  265    tokentype:  0  which:    5           :=
+yylex() =  260    tokentype:  5  type:     0            1
+yylex() =  296    tokentype:  2  which:    8          end
+yylex() =  273    tokentype:  0  which:   13            .
+End lexer
+Begin parser
+Symbol table level 1
+ 94269997257216           i  VAR    0 typ integer  lvl  1  siz     4  off     0
+yyparse result =        0
+(float simple (label ouput)
+              (label (:= i 1)))
+End parser
