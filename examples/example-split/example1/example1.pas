@@ -3,7 +3,7 @@ program Example1(ouput);
 
 var i : integer;
 
-begin
+priv::begin
     i := 1; 
-    i := 1 { last statement has no end semicolon }
-end.
+    i := 1; { last statement has no end semicolon }
+priv::end.
