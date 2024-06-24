@@ -49,7 +49,10 @@ typedef struct tokn {
 } *TOKEN;
 
 
+/* Function declarations */
 TOKEN talloc();
+
+void printtoken(TOKEN tok);
 
 
 /* The following alternative kinds of values share storage in the token
