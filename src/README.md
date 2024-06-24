@@ -12,7 +12,7 @@
 
 >$ bash run.sh ../examples/simple.pas
 
-## Lexer
+## Lexer Only
 
 >$ flex ./lexer.l
 
@@ -26,7 +26,7 @@ Provide an input .pas file (optional)
 
 >$ ./parse < <file.pas>
 
-### Common Issues
+## Common Issues
 
 #### WSL2 Line-Ending Issue
 
