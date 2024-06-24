@@ -184,5 +184,7 @@ void printtoken(TOKEN tok);
 #define VAR         315
 #define WHILE       316
 #define WITH        317
+#define PRIV        318
+#define UNPRIV      319
 
 #define YYTOKENTYPE 0
