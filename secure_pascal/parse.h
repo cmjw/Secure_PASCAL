@@ -2,8 +2,7 @@
 /* 16 Apr 04; 23 Feb 05; 17 Nov 05; 18 Apr 06; 26 Jul 12; 07 Aug 13; 11 Oct 17;
  07 Dec 18 */
 
-/* You may use the function headers below if you wish, or you may
-   replace them if you wish.  */
+
 
 /* cons links a new item onto the front of a list.  Equivalent to a push.
    (cons 'a '(b c))  =  (a b c)    */
