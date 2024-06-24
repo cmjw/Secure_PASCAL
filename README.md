@@ -14,6 +14,15 @@ The src directory contains the main project code and build instructions.
 
 The examples directory contains sample .pas files to test the lexer and parser.
 
+# Notes about Pascal
+
+For now, Pascal input files must follow some rules in regards to format to be considered 
+syntactically "correct".
+
+1. The program name must be formatted as: program Example(ouput); - the output parameter list is required even if it is empty.
+2. The header must follow this order: lblock (labels), cblock (constant declarations), tblock (type declarations), vblock (variable declarations)
+3. The last statement in a block may optionally end with a semicolon
+
 # Documentation
 
 A work in progress.
