@@ -171,6 +171,7 @@ TOKEN parseresult;
              |  REPEAT statement_list UNTIL expression        { $$ = makerepeat($1, $2, $3, $4); } 
              |  GOTO NUMBER                                   { $$ = dogoto($1, $2); }
              |  label
+             |  privblock
              ;
              
   funcall    :  IDENTIFIER LPAREN expr_list RPAREN    { $$ = makefuncall($2, $1, $3); }
