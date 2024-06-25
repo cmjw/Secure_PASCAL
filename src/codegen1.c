@@ -58,15 +58,6 @@ void gencode(TOKEN pcode, int varsize, int maxlabel)
      asmexit(name->stringval);
   }
 
-/* Trivial version: always returns RBASE + 0 */
-/* Get a register.   */
-/* Need a type parameter or two versions for INTEGER or REAL */
-int getreg(int kind)
-  {
-    /*     ***** fix this *****   */
-     return RBASE;
-  }
-
 /* Trivial version */
 /* Generate code for arithmetic expression, return a register number */
 int genarith(TOKEN code)
