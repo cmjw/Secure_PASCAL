@@ -3,8 +3,8 @@ program Privfunction(ouput);
 
 var i, r : integer;
 
-function privfunct(n : integer): priv::function;
-var result: unpriv::integer
+priv::function privfunct(n : integer): unpriv::integer
+var result: unpriv::integer { integer }
 
 begin
     result := n mod 2;
@@ -14,6 +14,8 @@ begin
     i := 1; 
 
     r := privfunct(i); { priv function call }
+
+    { syntax error if assigning to unpriv variable a priv variable }
 
     writeln(r);
 end.
