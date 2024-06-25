@@ -32,6 +32,6 @@ Located at https://cmjw.github.io/Secure_PASCAL/.
 # Original Pascal Compiler 
 
 I moved these files to another repo to keep this one organized:
-https://github.com/cmjw/PASCAL_Compiler_Projects
+https://github.com/cmjw/PASCAL_Compiler_Project
 
 All lexer and parser files/proejcts are built, and there are detailed build instructions in this repo. 
