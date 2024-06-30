@@ -16,15 +16,23 @@ void genc(TOKEN code);
 int nextlabel;    /* Next available label number */
 int stkframesize;   /* total stack frame size */
 
+FILE *userProg;
+FILE *privProg;
+
 void gencode(TOKEN pcode, int varsize, int maxlabel) {  
     printf("print gencode\n");
-    // TOKEN name, code;
-    //  name = pcode->operands;
-    //  code = name->link->link;
-    //  nextlabel = maxlabel + 1;
-    //  stkframesize = asmentry(name->stringval,varsize);
-    //  genc(code);
-    //  asmexit(name->stringval);
+
+    userProg = fopen("user.pas", "w");
+    if (!userProg) {
+        perror("Failed to open user.pas");
+        return;
+    }
+
+    privProg = fopen("priv.pas", "w");
+    if (!privProg) {
+        perror("Failed to open priv.pas");
+        return;
+    }
 
     TOKEN name, code;
     name = pcode->operands;
@@ -34,14 +42,7 @@ void gencode(TOKEN pcode, int varsize, int maxlabel) {
 }
 
 
-/* Generate code from a statement */
-void genc(TOKEN code) {
-    TOKEN tok, lhs, rhs;
-    SYMBOL sym;
+/* Traverse the AST */
+void genc(TOKEN node) {
 
-    if (DEBUGGEN) {
-      printf("genc\n");
-      printtok(code);
-      printf("\n");
-    }
 }
