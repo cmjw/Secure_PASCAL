@@ -44,5 +44,43 @@ void gencode(TOKEN pcode, int varsize, int maxlabel) {
 
 /* Traverse the AST */
 void genc(TOKEN node) {
+  if (node->tokentype != OPERATOR) {
+    printf("Bad code token\n");
+  }
+
+  if (DEBUGGEN) {
+    printf("genc\n");
+    printf("node: ");
+    printtok(node);
+    if (node->link) {
+      printf("node -> link: ");
+      printtok(node->link);
+      
+      if (node->link->link) {
+        printf("node->link->link: ");
+        printtok(node->link->link);
+      }
+    }
+    if (node->operands) {
+      printf("node args: ");
+      printtok(node->operands);
+
+      if (node->operands->operands) {
+        printf("node args args: ");
+        printtok(node->operands->operands);
+
+        printtok(node->operands->operands->link);
+      }
+    }
+  }
+
+  switch (node->tokentype) {
+    
+
+  }
+}
+
+/* Split operator */
+void gen_operator(TOKEN node) {
 
 }
