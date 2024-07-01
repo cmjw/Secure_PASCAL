@@ -26,7 +26,7 @@ echo -e "${GREEN}Make parser${WHITE}"
 make parser
 
 echo -e "${GREEN}Building codegen${WHITE}"
-
 make split
 
-echo "run ./split"
+echo -e "${GREEN}USAGE: ${WHITE}"
+echo -e "${GREEN}bash ./run.sh <input .pas>${WHITE}"
