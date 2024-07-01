@@ -11,4 +11,5 @@ TOKEN talloc() {
     tok = (TOKEN) calloc(1,sizeof(struct tokn));
     if ( tok != NULL ) return (tok);
        else printf("talloc failed.");
+    tok->scope = 0; // default scope to unpriv
 }

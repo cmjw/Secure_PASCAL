@@ -1,24 +1,3 @@
-/* codgen.c       Generate Assembly Code for x86         07 May 18   */
-
-/* Copyright (c) 2018 Gordon S. Novak Jr. and The University of Texas at Austin
-    */
-
-/* Written by Gordon S. Novak Jr.                  */
-
-/* This program is free software; you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2 of the License, or
-   (at your option) any later version.
-
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License (file gpl.text) for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA. */
-
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
@@ -29,122 +8,203 @@
 #include "codegen.h"
 #include "pprint.h"
 
-void genc(TOKEN code);
+void genc(TOKEN code, int scope);
+
+char* ops[]  = {" ", "+", "-", "*", "/", ":=", "=", "<>", "<", "<=",
+                      ">=", ">",  "^", ".", "and", "or", "not", "div", "mod",
+                      "in", "if", "goto", "progn", "label", "funcall",
+                      "aref", "program", "float", "fix"};
 
 /* Set DEBUGGEN to 1 for debug printouts of code generation */
-#define DEBUGGEN 0
+#define DEBUGGEN 1
 
 int nextlabel;    /* Next available label number */
 int stkframesize;   /* total stack frame size */
 
-/* Top-level entry for code generator.
-   pcode    = pointer to code:  (program foo (output) (progn ...))
-   varsize  = size of local storage in bytes
-   maxlabel = maximum label number used so far
+FILE *userProg;
+FILE *privProg;
 
-Add this line to the end of your main program:
-    gencode(parseresult, blockoffs[blocknumber], labelnumber);
-The generated code is printed out; use a text editor to extract it for
-your .s file.
-         */
+void gencode(TOKEN pcode, int varsize, int maxlabel) {  
+    printf("print gencode\n");
 
-void gencode(TOKEN pcode, int varsize, int maxlabel)
-  {  TOKEN name, code;
-     name = pcode->operands;
-     code = name->link->link;
-     nextlabel = maxlabel + 1;
-     stkframesize = asmentry(name->stringval,varsize);
-     genc(code);
-     asmexit(name->stringval);
-  }
+    initOutputFiles();
 
-/* Trivial version: always returns RBASE + 0 */
-/* Get a register.   */
-/* Need a type parameter or two versions for INTEGER or REAL */
-int getreg(int kind)
-  {
-    /*     ***** fix this *****   */
-     return RBASE;
-  }
+    TOKEN name, code;
+    name = pcode->operands;
+    code = name->link->link;
 
-/* Trivial version */
-/* Generate code for arithmetic expression, return a register number */
-int genarith(TOKEN code)
-  {   int num, reg;
-     if (DEBUGGEN)
-       { printf("genarith\n");
-	 dbugprinttok(code);
-       };
-      switch ( code->tokentype )
-       { case NUMBERTOK:
-           switch (code->basicdt)
-             { case INTEGER:
-		 num = code->intval;
-		 reg = getreg(WORD);
-		 if ( num >= MINIMMEDIATE && num <= MAXIMMEDIATE )
-		   asmimmed(MOVL, num, reg);
-		 break;
-	       case REAL:
-    /*     ***** fix this *****   */
-		 break;
-	       }
-	   break;
-       case IDENTIFIERTOK:
-    /*     ***** fix this *****   */
-	   break;
-       case OPERATOR:
-    /*     ***** fix this *****   */
-	   break;
-       };
-     return reg;
+    printf("Debug: ");
+    printtok(code);
+    
+    genc(code, UNPRIV_SCOPE);
+
+    fprintf(userProg, "end.");
+    fprintf(privProg, "end.");
+
+    fclose(userProg);
+    fclose(privProg);
+}
+
+/* Initialize the resulting split programs */
+void initOutputFiles() {
+  userProg = fopen("user.pas", "w");
+    if (!userProg) {
+        perror("Failed to open user.pas");
+        return;
     }
+    fprintf(userProg, "%s", "{ Generated user program }\n");
+    fprintf(userProg, "%s", "program UserProg(ouput);\n\n");
+
+    /* Vars */
 
 
-/* Generate code for a Statement from an intermediate-code form */
-void genc(TOKEN code)
-  {  TOKEN tok, lhs, rhs;
-     int reg, offs;
-     SYMBOL sym;
-     if (DEBUGGEN)
-       { printf("genc\n");
-	 dbugprinttok(code);
-       };
-     if ( code->tokentype != OPERATOR )
-        { printf("Bad code token");
+    fprintf(userProg, "begin\n");
+
+    privProg = fopen("priv.pas", "w");
+    if (!privProg) {
+        perror("Failed to open priv.pas");
+        return;
+    }
+    fprintf(privProg, "%s", "{ Generated privileged program }\n");
+    fprintf(privProg, "%s", "program privProg(ouput);\n\n");
+    fprintf(privProg, "begin\n");
+}
+
+
+/* Traverse the AST */
+void genc(TOKEN code, int scope) {  
+  //fprintf(userProg, "%s", "{ in genc }\n");
+
+  TOKEN tok, lhs, rhs;
+  int reg, offs;
+  SYMBOL sym;
+
+  int next_scope = (code->scope ? PRIV_SCOPE : UNPRIV_SCOPE) || scope;
+
+  FILE *outFile = next_scope ? privProg : userProg;
+
+  if (DEBUGGEN) { 
+    printf("genc\n");
 	  dbugprinttok(code);
-	};
-     switch ( code->whichval )
-       { case PROGNOP:
-	   tok = code->operands;
-	   while ( tok != NULL )
-	     {  genc(tok);
-		tok = tok->link;
-	      };
-	   break;
-	 case ASSIGNOP:                   /* Trivial version: handles I := e */
-	   lhs = code->operands;
-	   rhs = lhs->link;
-	   reg = genarith(rhs);              /* generate rhs into a register */
-	   sym = lhs->symentry;              /* assumes lhs is a simple var  */
-	   offs = sym->offset - stkframesize; /* net offset of the var   */
-           switch (code->basicdt)            /* store value into lhs  */
-             { case INTEGER:
-                 asmst(MOVL, reg, offs, lhs->stringval);
-                 break;
-                 /* ...  */
-             };
-           break;
-	 case FUNCALLOP:
-    /*     ***** fix this *****   */
-	   break;
-	 case GOTOOP:
-    /*     ***** fix this *****   */
-	   break;
-	 case LABELOP:
-    /*     ***** fix this *****   */
-	   break;
-	 case IFOP:
-    /*     ***** fix this *****   */
-	   break;
-	 };
   }
+  
+  if (code->tokentype != OPERATOR) { 
+    printf("Bad code token");
+	  dbugprinttok(code);
+	}
+
+  if (DEBUGGEN) {
+    printf("genc file scope: %d %d\n", scope, next_scope);
+  }
+  
+  switch (code->whichval) { 
+    case PROGNOP:
+	  tok = code->operands;
+	  
+    while (tok != NULL) {  
+      genc(tok, next_scope);
+		  tok = tok->link;
+	  }
+	  break;
+
+	  case ASSIGNOP:            
+      if (DEBUGGEN) {
+        printf("ASSIGNOP: \n");
+      }      
+
+      lhs = code->operands;
+      rhs = lhs->link;
+
+      fprintf(outFile, "%s := ", lhs->stringval);
+
+      // generate code for rhs
+      gen_rhs(rhs, next_scope);            
+
+      fprintf(outFile, ";\n");
+
+      break;
+
+    case FUNCALLOP:
+      if (DEBUGGEN) {
+        printf("FUNCALLOP: ");
+      } 
+      /*     ***** fix this *****   */
+      break;
+
+    case GOTOOP:
+      if (DEBUGGEN) {
+        printf("GOTOOP: ");
+      } 
+      int label = code->operands->intval;
+
+      fprintf(outFile, "goto  %d;\n", label);
+      break;
+
+    case LABELOP:
+      if (DEBUGGEN) {
+        printf("LABELOP: ");
+      } 
+
+      fprintf(outFile, "label %d:\n", code->operands->intval);
+      break;
+
+    case IFOP:
+      if (DEBUGGEN) {
+        printf("IFOP: ");
+      } 
+      /*     ***** fix this *****   */
+      break;
+
+    case PLUSOP:
+      if (DEBUGGEN) {
+        printf("PLUSOP: ");
+      }
+      
+      break;
+  }  
+}
+
+/* Generate Pascal code for the RHS of a statement from the parse tree */
+/* TOKEN rhs is the rhs */
+void gen_rhs(TOKEN rhs, int scope) {   
+  int num, reg;
+
+  int next_scope = (rhs->scope ? PRIV_SCOPE : UNPRIV_SCOPE) || scope;
+
+  FILE *outFile = next_scope ? privProg : userProg;
+
+  if (DEBUGGEN) {
+    printf("gen_rhs file scope: %d %d\n", scope, next_scope);
+  }
+  
+  if (DEBUGGEN) { 
+    printf("gen rhs\n");
+	  dbugprinttok(rhs);
+  }
+  
+  switch (rhs->tokentype) { 
+    case NUMBERTOK:
+
+      switch (rhs->basicdt) {
+        case INTEGER:
+		      num = rhs->intval;
+          fprintf(outFile, "%d", num);
+          break;
+	      
+        case REAL:
+          fprintf(outFile, "%f", rhs->realval);
+          break;
+	    }
+	   break;
+    
+    case IDENTIFIERTOK:
+      fprintf(outFile, "%s", rhs->stringval);
+      break;
+
+    case OPERATOR:
+      genc(rhs, next_scope);
+      break;
+  }
+  return reg;
+}
+

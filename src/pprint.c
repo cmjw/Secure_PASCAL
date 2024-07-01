@@ -135,6 +135,9 @@ void printexpr(TOKEN tok, int col)     /* print an expression in prefix form */
       { printf ("(%s", opprint[tok->whichval]);
         nextcol = col + 2 + opsize[tok->whichval];
         opnds = tok->operands;
+        if (tok->scope) {
+          printf(" [PRIV]");
+        }
 	start = 0;
 	while (opnds != NULL)
 	  { if (start == 0) 

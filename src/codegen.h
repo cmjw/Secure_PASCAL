@@ -1,6 +1,13 @@
 /* codegen.h     Gordon S. Novak Jr.    */
 /* 15 Aug 13 */
 
+
+
+
+void gen_rhs(TOKEN code, int scope);
+
+
+
 /* Top-level entry for code generator.
    pcode    = pointer to code = parseresult: (program foo (output) (progn ...))
    varsize  = size of local storage in bytes = blockoffs[blocknumber]
@@ -8,10 +15,10 @@
 void gencode(TOKEN pcode, int varsize, int maxlabel);
 
 /* Generate arithmetic expression, return a register number */
-int genarith(TOKEN code);
+char* genarith(TOKEN code);
 
 /* Generate code for a statement */
-void genc(TOKEN code);
+void genc(TOKEN code, int scope);
 
 
 

@@ -22,3 +22,6 @@ src/parse.tab.c
 src/parse.tab.h
 src/parser
 src/y.tab.c
+src/split
+src/priv.pas
+src/user.pas
