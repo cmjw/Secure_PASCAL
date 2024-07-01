@@ -10,6 +10,11 @@
 
 void genc(TOKEN code);
 
+char* ops[]  = {" ", "+", "-", "*", "/", ":=", "=", "<>", "<", "<=",
+                      ">=", ">",  "^", ".", "and", "or", "not", "div", "mod",
+                      "in", "if", "goto", "progn", "label", "funcall",
+                      "aref", "program", "float", "fix"};
+
 /* Set DEBUGGEN to 1 for debug printouts of code generation */
 #define DEBUGGEN 1
 
@@ -91,17 +96,13 @@ void genc(TOKEN code) {
       lhs = code->operands;
       rhs = lhs->link;
 
-      // generate rhs logic recursively
-      reg = genarith(rhs);              /* generate rhs into a register */
+      fprintf(userProg, "%s := ", lhs->stringval);
 
-      sym = lhs->symentry;              /* assumes lhs is a simple var  */
-      offs = sym->offset - stkframesize; /* net offset of the var   */
-        switch (code->basicdt) {          /* store value into lhs  */  
-          case INTEGER:
-            //asmst(MOVL, reg, offs, lhs->stringval);
-            break;
-          /* ...  */
-        }
+      // generate code for rhs
+      genarith(rhs);            
+
+      fprintf(userProg, ";\n");
+
       break;
 
     case FUNCALLOP:
@@ -134,8 +135,10 @@ void genc(TOKEN code) {
     }
 }
 
-int genarith(TOKEN code) {   
+char* genarith(TOKEN code) {   
   int num, reg;
+  
+
   if (DEBUGGEN) { 
     printf("genarith\n");
 	  dbugprinttok(code);
@@ -147,9 +150,8 @@ int genarith(TOKEN code) {
       switch (code->basicdt) {
         case INTEGER:
 		      num = code->intval;
-          //reg = getreg(WORD);
-          if (num >= MINIMMEDIATE && num <= MAXIMMEDIATE)
-            //asmimmed(MOVL, num, reg);
+          fprintf(userProg, "%d", num);
+          
           break;
 	      
         case REAL:

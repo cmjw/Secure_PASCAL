@@ -8,7 +8,7 @@
 void gencode(TOKEN pcode, int varsize, int maxlabel);
 
 /* Generate arithmetic expression, return a register number */
-int genarith(TOKEN code);
+char* genarith(TOKEN code);
 
 /* Generate code for a statement */
 void genc(TOKEN code);
