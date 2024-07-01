@@ -22,28 +22,43 @@ FILE *privProg;
 void gencode(TOKEN pcode, int varsize, int maxlabel) {  
     printf("print gencode\n");
 
-    userProg = fopen("user.pas", "w");
+    initOutputFiles();
+
+    TOKEN name, code;
+    name = pcode->operands;
+    code = name->link->link;
+
+    printf("Debug: ");
+    printtok(code);
+    
+    genc(code);
+}
+
+/* Initialize the resulting split programs */
+void initOutputFiles() {
+  userProg = fopen("user.pas", "w");
     if (!userProg) {
         perror("Failed to open user.pas");
         return;
     }
+    fprintf(userProg, "%s", "{ Generated user program }\n");
+    fprintf(userProg, "%s", "program UserProg(ouput);\n");
 
     privProg = fopen("priv.pas", "w");
     if (!privProg) {
         perror("Failed to open priv.pas");
         return;
     }
-
-    TOKEN name, code;
-    name = pcode->operands;
-    code = name->link->link;
-    
-    genc(code);
+    fprintf(privProg, "%s", "{ Generated privileged program }\n");
+    fprintf(privProg, "%s", "program privProg(ouput);\n");
 }
 
 
 /* Traverse the AST */
 void genc(TOKEN code) {  
+  fprintf(userProg, "%s", "{ in genc }\n");
+
+
   TOKEN tok, lhs, rhs;
   int reg, offs;
   SYMBOL sym;
