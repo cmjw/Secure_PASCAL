@@ -25,7 +25,8 @@ echo -e "${GREEN}Run ./parser${WHITE}"
 echo -e "${GREEN}Make parser${WHITE}"
 make parser
 
-
 echo -e "${GREEN}Building codegen${WHITE}"
+
+gcc split.c -o split
 
 echo "TBD"

@@ -22,3 +22,4 @@ src/parse.tab.c
 src/parse.tab.h
 src/parser
 src/y.tab.c
+src/split
