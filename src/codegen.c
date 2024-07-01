@@ -27,6 +27,9 @@ FILE *privProg;
 void gencode(TOKEN pcode, int varsize, int maxlabel) {  
     printf("print gencode\n");
 
+    SYMBOL sym;
+    sym =  symtab[1];
+
     initOutputFiles();
 
     TOKEN name, code;

@@ -54,8 +54,7 @@ int    DEBUG = 0;
 int    blocknumber = 0;       /* Number of current block being compiled */
 int    contblock[MAXBLOCKS];  /* Containing block for each block        */
 int    blockoffs[MAXBLOCKS];  /* Storage offsets for each block         */
-SYMBOL symtab[MAXBLOCKS];     /* Symbol chain for each block            */
-SYMBOL symend[MAXBLOCKS];     /* End of symbol chain for each block     */
+
 
 /* Sizes of basic types  INTEGER  REAL  STRINGTYPE  BOOLETYPE  POINTER   */
 int basicsizes[5] =      { 4,       8,       1,         4,        8 };

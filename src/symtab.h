@@ -126,3 +126,7 @@ extern int DEBUG;
 extern int blocknumber;           /* Number of current block being compiled */
 extern int blockoffs[MAXBLOCKS];  /* Storage offsets for each block         */
 extern int basicsizes[5];
+
+
+SYMBOL symtab[MAXBLOCKS];     /* Symbol chain for each block            */
+SYMBOL symend[MAXBLOCKS];     /* End of symbol chain for each block     */
