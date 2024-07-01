@@ -2,6 +2,7 @@
     "files.associations": {
         "token.h": "c",
         "pprint.h": "c",
-        "lexer.h": "c"
+        "lexer.h": "c",
+        "system_error": "c"
     }
 }

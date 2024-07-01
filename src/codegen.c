@@ -161,10 +161,12 @@ void genc(TOKEN code, int scope) {
   }  
 }
 
-void gen_rhs(TOKEN code, int scope) {   
+/* Generate Pascal code for the RHS of a statement from the parse tree */
+/* TOKEN rhs is the rhs */
+void gen_rhs(TOKEN rhs, int scope) {   
   int num, reg;
 
-  int next_scope = (code->scope ? PRIV_SCOPE : UNPRIV_SCOPE) || scope;
+  int next_scope = (rhs->scope ? PRIV_SCOPE : UNPRIV_SCOPE) || scope;
 
   FILE *outFile = next_scope ? privProg : userProg;
 
@@ -174,30 +176,30 @@ void gen_rhs(TOKEN code, int scope) {
   
   if (DEBUGGEN) { 
     printf("gen rhs\n");
-	  dbugprinttok(code);
+	  dbugprinttok(rhs);
   }
   
-  switch (code->tokentype) { 
+  switch (rhs->tokentype) { 
     case NUMBERTOK:
 
-      switch (code->basicdt) {
+      switch (rhs->basicdt) {
         case INTEGER:
-		      num = code->intval;
+		      num = rhs->intval;
           fprintf(outFile, "%d", num);
           break;
 	      
         case REAL:
-          fprintf(outFile, "%f", code->realval);
+          fprintf(outFile, "%f", rhs->realval);
           break;
 	    }
 	   break;
     
     case IDENTIFIERTOK:
-      fprintf(outFile, "%s", code->stringval);
+      fprintf(outFile, "%s", rhs->stringval);
       break;
 
     case OPERATOR:
-      genc(code, next_scope);
+      genc(rhs, next_scope);
       break;
   }
   return reg;
