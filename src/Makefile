@@ -11,6 +11,10 @@ parser: y.tab.o lex.yy.o printtoken.o pprint.o symtab.o codegen.o genasm.o
 	cc -o parser y.tab.o lex.yy.o printtoken.o pprint.o symtab.o -ll \
              codegen.o genasm.o
 
+# Split
+split: 
+	cc split.c -o split
+
 # codegen.c
 codegen.o: codegen.c token.h symtab.h genasm.h
 	cc -c codegen.c
@@ -39,4 +43,4 @@ y.tab.o: y.tab.c
 	cc -c y.tab.c
 
 clean: 
-	rm *.o lexer parser y.tab.c lex.yy.c parse.tab.c parse.tab.h
+	rm *.o lexer parser y.tab.c lex.yy.c parse.tab.c parse.tab.h split

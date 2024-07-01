@@ -27,6 +27,6 @@ make parser
 
 echo -e "${GREEN}Building codegen${WHITE}"
 
-gcc split.c -o split
+make split
 
-echo "TBD"
+echo "run ./split"
