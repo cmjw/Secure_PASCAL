@@ -37,6 +37,9 @@ void gencode(TOKEN pcode, int varsize, int maxlabel) {
     printtok(code);
     
     genc(code);
+
+    fprintf(userProg, "end.");
+    fprintf(privProg, "end.");
 }
 
 /* Initialize the resulting split programs */
@@ -48,6 +51,7 @@ void initOutputFiles() {
     }
     fprintf(userProg, "%s", "{ Generated user program }\n");
     fprintf(userProg, "%s", "program UserProg(ouput);\n");
+    fprintf(userProg, "begin\n");
 
     privProg = fopen("priv.pas", "w");
     if (!privProg) {
@@ -56,13 +60,13 @@ void initOutputFiles() {
     }
     fprintf(privProg, "%s", "{ Generated privileged program }\n");
     fprintf(privProg, "%s", "program privProg(ouput);\n");
+    fprintf(privProg, "begin\n");
 }
 
 
 /* Traverse the AST */
 void genc(TOKEN code) {  
   fprintf(userProg, "%s", "{ in genc }\n");
-
 
   TOKEN tok, lhs, rhs;
   int reg, offs;
@@ -99,7 +103,7 @@ void genc(TOKEN code) {
       fprintf(userProg, "%s := ", lhs->stringval);
 
       // generate code for rhs
-      genarith(rhs);            
+      gen_rhs(rhs);            
 
       fprintf(userProg, ";\n");
 
@@ -135,12 +139,11 @@ void genc(TOKEN code) {
     }
 }
 
-char* genarith(TOKEN code) {   
+void gen_rhs(TOKEN code) {   
   int num, reg;
   
-
   if (DEBUGGEN) { 
-    printf("genarith\n");
+    printf("gen rhs\n");
 	  dbugprinttok(code);
   }
   
@@ -151,29 +154,22 @@ char* genarith(TOKEN code) {
         case INTEGER:
 		      num = code->intval;
           fprintf(userProg, "%d", num);
-          
           break;
 	      
         case REAL:
-          /*     ***** fix this *****   */
+          fprintf(userProg, "%f", code->realval);
           break;
 	    }
 	   break;
     
     case IDENTIFIERTOK:
-      /*     ***** fix this *****   */
+      fprintf(userProg, "%s", code->stringval);
       break;
 
     case OPERATOR:
-      /*     ***** fix this *****   */
+      genc(code);
       break;
   }
   return reg;
-}
-
-
-/* Split operator */
-void gen_operator(TOKEN node) {
-
 }
 
