@@ -130,9 +130,16 @@ TOKEN parseresult;
          |  vblock
          ;
 
-  vblock : VAR vdef_list block    { $$ = $3; }
+  vblock : VAR vdef_list fblock    { $$ = $3; }
+         | fblock
+         ;
+
+  fblock : fdef_list block { $$ = $2; }
          | block
          ;
+
+  fdef_list : FUNCTION SEMICOLON fdef_list;
+            | FUNCTION SEMICOLON;
 
   vdef_list : vdef SEMICOLON vdef_list   
             | vdef SEMICOLON            
