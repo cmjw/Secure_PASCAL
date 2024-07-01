@@ -70,6 +70,7 @@ typedef struct symtbr {
            double realnum; } constval;
   int    lowbound;
   int    highbound;
+  int scope; 
   } SYMBOLREC, *SYMBOL;
 
 /* symalloc makes a new symbol table record and returns a pointer to it.

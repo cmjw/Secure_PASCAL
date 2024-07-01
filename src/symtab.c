@@ -74,6 +74,7 @@ SYMBOL symalloc()           /* allocate a new symbol record */
 SYMBOL makesym(char name[])
   { SYMBOL sym; int i;
     sym = symalloc();
+    sym->scope = UNPRIV_SCOPE;
     for ( i = 0; i < 16; i++) sym->namestring[i] = name[i];
     sym->link = NULL;
     return sym;

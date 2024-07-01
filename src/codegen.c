@@ -51,6 +51,10 @@ void initOutputFiles() {
     }
     fprintf(userProg, "%s", "{ Generated user program }\n");
     fprintf(userProg, "%s", "program UserProg(ouput);\n");
+
+    /* Vars */
+
+
     fprintf(userProg, "begin\n");
 
     privProg = fopen("priv.pas", "w");
@@ -120,7 +124,10 @@ void genc(TOKEN code) {
       if (DEBUGGEN) {
         printf("GOTOOP: ");
       } 
-      /*     ***** fix this *****   */
+      int label = code->operands->intval;
+
+      fprintf(userProg, "goto  %d;\n", label);
+      
       break;
 
     case LABELOP:
