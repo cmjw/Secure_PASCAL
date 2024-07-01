@@ -76,7 +76,7 @@ void genc(TOKEN code, int scope) {
   int reg, offs;
   SYMBOL sym;
 
-  int next_scope = code->scope ? PRIV_SCOPE : UNPRIV_SCOPE;
+  int next_scope = (code->scope ? PRIV_SCOPE : UNPRIV_SCOPE) || scope;
 
   if (DEBUGGEN) { 
     printf("genc\n");
@@ -111,7 +111,7 @@ void genc(TOKEN code, int scope) {
       fprintf(userProg, "%s := ", lhs->stringval);
 
       // generate code for rhs
-      gen_rhs(rhs);            
+      gen_rhs(rhs, next_scope);            
 
       fprintf(userProg, ";\n");
 
@@ -157,10 +157,10 @@ void genc(TOKEN code, int scope) {
   }  
 }
 
-void gen_rhs(TOKEN code) {   
+void gen_rhs(TOKEN code, int scope) {   
   int num, reg;
 
-  int next_scope = code->scope ? PRIV_SCOPE : UNPRIV_SCOPE;
+  int next_scope = (code->scope ? PRIV_SCOPE : UNPRIV_SCOPE) || scope;
   
   if (DEBUGGEN) { 
     printf("gen rhs\n");

@@ -4,7 +4,7 @@
 
 
 
-void gen_rhs(TOKEN code);
+void gen_rhs(TOKEN code, int scope);
 
 
 
