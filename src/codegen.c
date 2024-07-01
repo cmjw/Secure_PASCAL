@@ -78,6 +78,8 @@ void genc(TOKEN code, int scope) {
 
   int next_scope = (code->scope ? PRIV_SCOPE : UNPRIV_SCOPE) || scope;
 
+  FILE *outFile = next_scope ? privProg : userProg;
+
   if (DEBUGGEN) { 
     printf("genc\n");
 	  dbugprinttok(code);
@@ -88,7 +90,9 @@ void genc(TOKEN code, int scope) {
 	  dbugprinttok(code);
 	}
 
-  FILE *out = !(code->scope) ? userProg : privProg;
+  if (DEBUGGEN) {
+    printf("genc file scope: %d %d\n", scope, next_scope);
+  }
   
   switch (code->whichval) { 
     case PROGNOP:
@@ -108,12 +112,12 @@ void genc(TOKEN code, int scope) {
       lhs = code->operands;
       rhs = lhs->link;
 
-      fprintf(userProg, "%s := ", lhs->stringval);
+      fprintf(outFile, "%s := ", lhs->stringval);
 
       // generate code for rhs
       gen_rhs(rhs, next_scope);            
 
-      fprintf(userProg, ";\n");
+      fprintf(outFile, ";\n");
 
       break;
 
@@ -130,7 +134,7 @@ void genc(TOKEN code, int scope) {
       } 
       int label = code->operands->intval;
 
-      fprintf(userProg, "goto  %d;\n", label);
+      fprintf(outFile, "goto  %d;\n", label);
       break;
 
     case LABELOP:
@@ -138,7 +142,7 @@ void genc(TOKEN code, int scope) {
         printf("LABELOP: ");
       } 
 
-      fprintf(userProg, "label %d:\n", code->operands->intval);
+      fprintf(outFile, "label %d:\n", code->operands->intval);
       break;
 
     case IFOP:
@@ -161,6 +165,12 @@ void gen_rhs(TOKEN code, int scope) {
   int num, reg;
 
   int next_scope = (code->scope ? PRIV_SCOPE : UNPRIV_SCOPE) || scope;
+
+  FILE *outFile = next_scope ? privProg : userProg;
+
+  if (DEBUGGEN) {
+    printf("gen_rhs file scope: %d %d\n", scope, next_scope);
+  }
   
   if (DEBUGGEN) { 
     printf("gen rhs\n");
@@ -173,17 +183,17 @@ void gen_rhs(TOKEN code, int scope) {
       switch (code->basicdt) {
         case INTEGER:
 		      num = code->intval;
-          fprintf(userProg, "%d", num);
+          fprintf(outFile, "%d", num);
           break;
 	      
         case REAL:
-          fprintf(userProg, "%f", code->realval);
+          fprintf(outFile, "%f", code->realval);
           break;
 	    }
 	   break;
     
     case IDENTIFIERTOK:
-      fprintf(userProg, "%s", code->stringval);
+      fprintf(outFile, "%s", code->stringval);
       break;
 
     case OPERATOR:
