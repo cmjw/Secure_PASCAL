@@ -40,6 +40,9 @@ void gencode(TOKEN pcode, int varsize, int maxlabel) {
 
     fprintf(userProg, "end.");
     fprintf(privProg, "end.");
+
+    fclose(userProg);
+    fclose(privProg);
 }
 
 /* Initialize the resulting split programs */
