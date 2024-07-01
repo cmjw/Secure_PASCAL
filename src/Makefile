@@ -7,8 +7,8 @@ driver.o: driver.c token.h lexer.h
 	cc -c driver.c
 
 # Make parser from parse.y
-parser: y.tab.o lex.yy.o printtoken.o pprint.o symtab.o codegen.o genasm.o
-	cc -o parser y.tab.o lex.yy.o printtoken.o pprint.o symtab.o -ll \
+parser: y.tab.o lex.yy.o printtoken.o pprint.o symtab.o codegen.o genasm.o split.o
+	cc -o parser y.tab.o lex.yy.o printtoken.o pprint.o split.o symtab.o -ll \
              codegen.o genasm.o
 
 # codegen.c
@@ -26,6 +26,10 @@ pars1.tab.o: pars1.tab.c
 # pprint.c
 pprint.o: pprint.c token.h
 	cc -c pprint.c
+
+# split.c
+split.o: split.c split.h pprint.c
+	cc -c split.c
 
 # symtab.c
 symtab.o: symtab.c token.h symtab.h
