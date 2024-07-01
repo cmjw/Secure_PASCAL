@@ -43,44 +43,120 @@ void gencode(TOKEN pcode, int varsize, int maxlabel) {
 
 
 /* Traverse the AST */
-void genc(TOKEN node) {
-  if (node->tokentype != OPERATOR) {
-    printf("Bad code token\n");
-  }
+void genc(TOKEN code) {  
+  TOKEN tok, lhs, rhs;
+  int reg, offs;
+  SYMBOL sym;
 
-  if (DEBUGGEN) {
+  if (DEBUGGEN) { 
     printf("genc\n");
-    printf("node: ");
-    printtok(node);
-    if (node->link) {
-      printf("node -> link: ");
-      printtok(node->link);
-      
-      if (node->link->link) {
-        printf("node->link->link: ");
-        printtok(node->link->link);
-      }
-    }
-    if (node->operands) {
-      printf("node args: ");
-      printtok(node->operands);
-
-      if (node->operands->operands) {
-        printf("node args args: ");
-        printtok(node->operands->operands);
-
-        printtok(node->operands->operands->link);
-      }
-    }
+	  dbugprinttok(code);
   }
+  
+  if (code->tokentype != OPERATOR) { 
+    printf("Bad code token");
+	  dbugprinttok(code);
+	}
+  
+  switch (code->whichval) { 
+    case PROGNOP:
+	  tok = code->operands;
+	  
+    while (tok != NULL) {  
+      genc(tok);
+		  tok = tok->link;
+	  }
+	  break;
 
-  switch (node->tokentype) {
-    
+	  case ASSIGNOP:            
+      if (DEBUGGEN) {
+        printf("ASSIGNOP: \n");
+      }      
 
-  }
+      lhs = code->operands;
+      rhs = lhs->link;
+
+      // generate rhs logic recursively
+      reg = genarith(rhs);              /* generate rhs into a register */
+
+      sym = lhs->symentry;              /* assumes lhs is a simple var  */
+      offs = sym->offset - stkframesize; /* net offset of the var   */
+        switch (code->basicdt) {          /* store value into lhs  */  
+          case INTEGER:
+            //asmst(MOVL, reg, offs, lhs->stringval);
+            break;
+          /* ...  */
+        }
+      break;
+
+    case FUNCALLOP:
+      if (DEBUGGEN) {
+        printf("FUNCALLOP: ");
+      } 
+      /*     ***** fix this *****   */
+      break;
+
+    case GOTOOP:
+      if (DEBUGGEN) {
+        printf("GOTOOP: ");
+      } 
+      /*     ***** fix this *****   */
+      break;
+
+    case LABELOP:
+      if (DEBUGGEN) {
+        printf("LABELOP: ");
+      } 
+      /*     ***** fix this *****   */
+      break;
+
+    case IFOP:
+      if (DEBUGGEN) {
+        printf("IFOP: ");
+      } 
+      /*     ***** fix this *****   */
+      break;
+    }
 }
+
+int genarith(TOKEN code) {   
+  int num, reg;
+  if (DEBUGGEN) { 
+    printf("genarith\n");
+	  dbugprinttok(code);
+  }
+  
+  switch (code->tokentype) { 
+    case NUMBERTOK:
+
+      switch (code->basicdt) {
+        case INTEGER:
+		      num = code->intval;
+          //reg = getreg(WORD);
+          if (num >= MINIMMEDIATE && num <= MAXIMMEDIATE)
+            //asmimmed(MOVL, num, reg);
+          break;
+	      
+        case REAL:
+          /*     ***** fix this *****   */
+          break;
+	    }
+	   break;
+    
+    case IDENTIFIERTOK:
+      /*     ***** fix this *****   */
+      break;
+
+    case OPERATOR:
+      /*     ***** fix this *****   */
+      break;
+  }
+  return reg;
+}
+
 
 /* Split operator */
 void gen_operator(TOKEN node) {
 
 }
+
