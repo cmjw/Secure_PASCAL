@@ -160,7 +160,7 @@ TOKEN parseresult;
         | privblock
         ;
 
-  privblock : PRIV DOUBLECOLON BEGINBEGIN statement endpart { $$ = makeprogn($3,cons($4, $5)); }
+  privblock : PRIV DOUBLECOLON BEGINBEGIN statement endpart { $$ = makeprivprogn($3,cons($4, $5)); }
 
   statement  :  BEGINBEGIN statement endpart         { $$ = makeprogn($1,cons($2, $3)); }
              |  IF expression THEN statement endif   { $$ = makeif($1, $2, $4, $5); }
@@ -1095,6 +1095,24 @@ TOKEN makeprogn(TOKEN tok, TOKEN statements) {
   tok->operands = statements;
   if (DEBUG & DB_MAKEPROGN) { 
     printf("makeprogn\n");
+    dbugprinttok(tok);
+    dbugprinttok(statements);
+  };
+  
+  return tok;
+}
+
+
+TOKEN makeprivprogn(TOKEN tok, TOKEN statements) {  
+  tok->tokentype = OPERATOR;
+  tok->whichval = PROGNOP;
+  tok->operands = statements;
+  tok->scope = PRIV_SCOPE;
+
+  printf("####################################3PRIv PRogn\n");
+
+  if (DEBUG & DB_MAKEPROGN) { 
+    printf("makeprivprogn\n");
     dbugprinttok(tok);
     dbugprinttok(statements);
   };
