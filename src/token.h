@@ -46,6 +46,9 @@ typedef struct tokn {
       int   intnum;
       double realnum; 
    } tokenval;
+
+   int scope;
+   /* 1 = priv, 0 = unpriv */
 } *TOKEN;
 
 
@@ -54,6 +57,9 @@ TOKEN talloc();
 
 void printtoken(TOKEN tok);
 
+/* Scope */
+#define PRIV_SCOPE 1
+#define UNPRIV_SCOPE 0 /* default */
 
 /* The following alternative kinds of values share storage in the token
    record.  Only one of the following can be present in a given token.  */
