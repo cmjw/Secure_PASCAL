@@ -4,6 +4,6 @@ program simple(ouput);
 var i : integer;
 
 begin
-    i := 1 { last statement has no end semicolon }
+    i := 1 + 1; { last statement has no end semicolon }
     i := 0;
 end.

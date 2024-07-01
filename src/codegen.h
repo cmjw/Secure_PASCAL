@@ -18,7 +18,7 @@ void gencode(TOKEN pcode, int varsize, int maxlabel);
 char* genarith(TOKEN code);
 
 /* Generate code for a statement */
-void genc(TOKEN code);
+void genc(TOKEN code, int scope);
 
 
 

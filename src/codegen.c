@@ -8,7 +8,7 @@
 #include "codegen.h"
 #include "pprint.h"
 
-void genc(TOKEN code);
+void genc(TOKEN code, int scope);
 
 char* ops[]  = {" ", "+", "-", "*", "/", ":=", "=", "<>", "<", "<=",
                       ">=", ">",  "^", ".", "and", "or", "not", "div", "mod",
@@ -36,7 +36,7 @@ void gencode(TOKEN pcode, int varsize, int maxlabel) {
     printf("Debug: ");
     printtok(code);
     
-    genc(code);
+    genc(code, UNPRIV_SCOPE);
 
     fprintf(userProg, "end.");
     fprintf(privProg, "end.");
@@ -50,7 +50,7 @@ void initOutputFiles() {
         return;
     }
     fprintf(userProg, "%s", "{ Generated user program }\n");
-    fprintf(userProg, "%s", "program UserProg(ouput);\n");
+    fprintf(userProg, "%s", "program UserProg(ouput);\n\n");
 
     /* Vars */
 
@@ -63,18 +63,20 @@ void initOutputFiles() {
         return;
     }
     fprintf(privProg, "%s", "{ Generated privileged program }\n");
-    fprintf(privProg, "%s", "program privProg(ouput);\n");
+    fprintf(privProg, "%s", "program privProg(ouput);\n\n");
     fprintf(privProg, "begin\n");
 }
 
 
 /* Traverse the AST */
-void genc(TOKEN code) {  
-  fprintf(userProg, "%s", "{ in genc }\n");
+void genc(TOKEN code, int scope) {  
+  //fprintf(userProg, "%s", "{ in genc }\n");
 
   TOKEN tok, lhs, rhs;
   int reg, offs;
   SYMBOL sym;
+
+  int next_scope = code->scope ? PRIV_SCOPE : UNPRIV_SCOPE;
 
   if (DEBUGGEN) { 
     printf("genc\n");
@@ -85,13 +87,15 @@ void genc(TOKEN code) {
     printf("Bad code token");
 	  dbugprinttok(code);
 	}
+
+  FILE *out = !(code->scope) ? userProg : privProg;
   
   switch (code->whichval) { 
     case PROGNOP:
 	  tok = code->operands;
 	  
     while (tok != NULL) {  
-      genc(tok);
+      genc(tok, next_scope);
 		  tok = tok->link;
 	  }
 	  break;
@@ -127,14 +131,14 @@ void genc(TOKEN code) {
       int label = code->operands->intval;
 
       fprintf(userProg, "goto  %d;\n", label);
-      
       break;
 
     case LABELOP:
       if (DEBUGGEN) {
         printf("LABELOP: ");
       } 
-      /*     ***** fix this *****   */
+
+      fprintf(userProg, "label %d:\n", code->operands->intval);
       break;
 
     case IFOP:
@@ -143,11 +147,20 @@ void genc(TOKEN code) {
       } 
       /*     ***** fix this *****   */
       break;
-    }
+
+    case PLUSOP:
+      if (DEBUGGEN) {
+        printf("PLUSOP: ");
+      }
+      
+      break;
+  }  
 }
 
 void gen_rhs(TOKEN code) {   
   int num, reg;
+
+  int next_scope = code->scope ? PRIV_SCOPE : UNPRIV_SCOPE;
   
   if (DEBUGGEN) { 
     printf("gen rhs\n");
@@ -174,7 +187,7 @@ void gen_rhs(TOKEN code) {
       break;
 
     case OPERATOR:
-      genc(code);
+      genc(code, next_scope);
       break;
   }
   return reg;
