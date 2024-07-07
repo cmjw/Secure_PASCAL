@@ -138,8 +138,14 @@ TOKEN parseresult;
          | block
          ;
 
-  fdef_list : FUNCTION SEMICOLON fdef_list;
-            | FUNCTION SEMICOLON;
+  fdef_list : fdef SEMICOLON fdef_list; // ?? why semicolon
+            | fdef 
+            ;
+
+  fdef : FUNCTION IDENTIFIER LPAREN IDENTIFIER RPAREN COLON type SEMICOLON vdef_list block endpart
+       ;
+
+  arg_list : VAR /* TODO */
 
   vdef_list : vdef SEMICOLON vdef_list   
             | vdef SEMICOLON            
@@ -163,8 +169,8 @@ TOKEN parseresult;
               | constant DOTDOT constant    { $$ = instdotdot($1, $2, $3);}
               ;
 
-  block : BEGINBEGIN statement endpart    { $$ = makeprogn($1,cons($2, $3)); } 
-        | privblock
+  block : BEGINBEGIN statement endpart    { $$ = makeprogn($1,cons($2, $3)); } /* normal, unprivileged block */
+        | privblock /* privileged block */
         ;
 
   privblock : PRIV DOUBLECOLON BEGINBEGIN statement endpart { $$ = makeprivprogn($3,cons($4, $5)); }
