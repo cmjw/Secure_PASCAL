@@ -580,9 +580,7 @@ TOKEN findtype(TOKEN tok) {
   }
 
   tok->symtype = s;
-  if (DEBUG) {
 
-  }
   return tok;
 }
 
@@ -622,8 +620,12 @@ TOKEN instdotdot(TOKEN lowtok, TOKEN dottok, TOKEN hightok) {
   int high = hightok->intval;
 
   TOKEN tok = makesubrange(dottok, low, high);
-  printf("*********** subrange **********\n");
-  dbugprinttok(tok);
+
+  if (DEBUG) {
+    printf("*********** subrange **********\n");
+    dbugprinttok(tok);
+  }
+  
   return tok;
 
 }
