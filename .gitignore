@@ -25,3 +25,4 @@ src/y.tab.c
 src/split
 src/priv.pas
 src/user.pas
+.vscode/GTEMP.pas

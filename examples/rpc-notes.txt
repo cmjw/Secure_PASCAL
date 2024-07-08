@@ -1,0 +1,24 @@
+add to var declarations
+
+outputPipe, inputPipe: Text;
+outputName, inputName: string;
+
+in main 
+or vice versa
+
+inputName := 'pipe_to_privileged';
+outputName := 'pipe_to_user';
+
+read
+
+assign(inputPipe, inputName);
+reset(inputPipe);
+readln(inputPipe, inputPassword);
+close(inputPipe);
+
+write
+
+assign(outputPipe, outputName);
+rewrite(outputPipe);
+writeln(outputPipe, 'msg');
+close(outputPipe);

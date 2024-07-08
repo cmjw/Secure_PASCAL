@@ -130,9 +130,24 @@ TOKEN parseresult;
          |  vblock
          ;
 
-  vblock : VAR vdef_list block    { $$ = $3; }
+  vblock : VAR vdef_list fblock    { $$ = $3; }
+         | fblock
+         ;
+
+  fblock : fdef_list block { $$ = $2; }
          | block
          ;
+
+  fdef_list : fdef SEMICOLON fdef_list;
+            | fdef SEMICOLON
+            ;
+
+  fdef : fname LPAREN vdef_list RPAREN COLON type SEMICOLON VAR vdef_list BEGINBEGIN statement endpart 
+          { $$ = makefunction(); }
+       ;
+
+  fname : FUNCTION IDENTIFIER { instfunction($2); }
+        ;
 
   vdef_list : vdef SEMICOLON vdef_list   
             | vdef SEMICOLON            
@@ -156,8 +171,8 @@ TOKEN parseresult;
               | constant DOTDOT constant    { $$ = instdotdot($1, $2, $3);}
               ;
 
-  block : BEGINBEGIN statement endpart    { $$ = makeprogn($1,cons($2, $3)); } 
-        | privblock
+  block : BEGINBEGIN statement endpart    { $$ = makeprogn($1,cons($2, $3)); } /* normal, unprivileged block */
+        | privblock /* privileged block */
         ;
 
   privblock : PRIV DOUBLECOLON BEGINBEGIN statement endpart { $$ = makeprivprogn($3,cons($4, $5)); }
@@ -194,8 +209,6 @@ TOKEN parseresult;
              |  variable LBRACKET expr_list RBRACKET   { $$ = arrayref($1, $2, $3, $4); }
              |  variable DOT IDENTIFIER                { $$ = reducedot($1, $2, $3); }
              |  variable POINT                         { $$ = dopoint($1, $2); } 
-
-             /*| IDENTIFIER DOUBLECOLON IDENTIFIER       { $$ = scoperef($1, $2, $3); } /* scope operator */
              ;
 
   plus_op : PLUS | MINUS | OR ;
@@ -247,10 +260,6 @@ int labelnumber = 0;  /* sequential counter for internal label numbers */
 int labels[50];
 
 
-
-void *scoperef(void *scope, void *operator, void *identifier) {
-    // TODO
-}
 
 
 /* arrayref processes an array reference a[i]
@@ -569,9 +578,7 @@ TOKEN findtype(TOKEN tok) {
   }
 
   tok->symtype = s;
-  if (DEBUG) {
 
-  }
   return tok;
 }
 
@@ -611,8 +618,12 @@ TOKEN instdotdot(TOKEN lowtok, TOKEN dottok, TOKEN hightok) {
   int high = hightok->intval;
 
   TOKEN tok = makesubrange(dottok, low, high);
-  printf("*********** subrange **********\n");
-  dbugprinttok(tok);
+
+  if (DEBUG) {
+    printf("*********** subrange **********\n");
+    dbugprinttok(tok);
+  }
+  
   return tok;
 
 }
@@ -668,6 +679,13 @@ TOKEN instfields(TOKEN idlist, TOKEN typetok) {
   }
 
   return idlist;
+}
+
+void instfunction(TOKEN idtok) {
+  SYMBOL sym = insertsym(idtok->stringval);
+  sym->kind = FUNCTIONSYM;
+  sym->basicdt = STRINGTOK;
+
 }
 
 
@@ -1023,6 +1041,12 @@ TOKEN makefuncall(TOKEN tok, TOKEN fn, TOKEN args) {
 }
 
 
+TOKEN makefunction() {
+  TOKEN tok = talloc();
+  return tok;
+}
+
+
 /* makegoto makes a GOTO operator to go to the specified label.
    The label number is put into a number token. */
 TOKEN makegoto(int label) {
@@ -1108,8 +1132,6 @@ TOKEN makeprivprogn(TOKEN tok, TOKEN statements) {
   tok->whichval = PROGNOP;
   tok->operands = statements;
   tok->scope = PRIV_SCOPE;
-
-  printf("####################################3PRIv PRogn\n");
 
   if (DEBUG & DB_MAKEPROGN) { 
     printf("makeprivprogn\n");
