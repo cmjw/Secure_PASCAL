@@ -142,10 +142,8 @@ TOKEN parseresult;
             | fdef 
             ;
 
-  fdef : FUNCTION IDENTIFIER LPAREN IDENTIFIER RPAREN COLON type SEMICOLON vdef_list block endpart
+  fdef : FUNCTION IDENTIFIER LPAREN vdef_list RPAREN COLON type SEMICOLON VAR vdef_list BEGINBEGIN statement SEMICOLON END SEMICOLON
        ;
-
-  arg_list : VAR /* TODO */
 
   vdef_list : vdef SEMICOLON vdef_list   
             | vdef SEMICOLON            

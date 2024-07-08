@@ -3,7 +3,7 @@ program simple(ouput);
 
 var i : integer;
 
-function max(j ): integer;
+function max(j : integer;): integer;
 var result : integer;
 begin
     j := 0;
