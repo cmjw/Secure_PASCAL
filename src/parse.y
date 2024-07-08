@@ -138,12 +138,16 @@ TOKEN parseresult;
          | block
          ;
 
-  fdef_list : fdef SEMICOLON fdef_list; // ?? why semicolon
-            | fdef 
+  fdef_list : fdef SEMICOLON fdef_list;
+            | fdef SEMICOLON
             ;
 
-  fdef : FUNCTION IDENTIFIER LPAREN vdef_list RPAREN COLON type SEMICOLON VAR vdef_list BEGINBEGIN statement SEMICOLON END SEMICOLON
+  fdef : fname LPAREN vdef_list RPAREN COLON type SEMICOLON VAR vdef_list BEGINBEGIN statement endpart 
+          { $$ = makefunction(); }
        ;
+
+  fname : FUNCTION IDENTIFIER { instfunction($2); }
+        ;
 
   vdef_list : vdef SEMICOLON vdef_list   
             | vdef SEMICOLON            
@@ -205,8 +209,6 @@ TOKEN parseresult;
              |  variable LBRACKET expr_list RBRACKET   { $$ = arrayref($1, $2, $3, $4); }
              |  variable DOT IDENTIFIER                { $$ = reducedot($1, $2, $3); }
              |  variable POINT                         { $$ = dopoint($1, $2); } 
-
-             /*| IDENTIFIER DOUBLECOLON IDENTIFIER       { $$ = scoperef($1, $2, $3); } /* scope operator */
              ;
 
   plus_op : PLUS | MINUS | OR ;
@@ -258,10 +260,6 @@ int labelnumber = 0;  /* sequential counter for internal label numbers */
 int labels[50];
 
 
-
-void *scoperef(void *scope, void *operator, void *identifier) {
-    // TODO
-}
 
 
 /* arrayref processes an array reference a[i]
@@ -683,6 +681,13 @@ TOKEN instfields(TOKEN idlist, TOKEN typetok) {
   return idlist;
 }
 
+void instfunction(TOKEN idtok) {
+  SYMBOL sym = insertsym(idtok->stringval);
+  sym->kind = FUNCTIONSYM;
+  sym->basicdt = STRINGTOK;
+
+}
+
 
 /* instlabel installs a user label into the label table */
 void  instlabel (TOKEN num) {
@@ -1036,6 +1041,12 @@ TOKEN makefuncall(TOKEN tok, TOKEN fn, TOKEN args) {
 }
 
 
+TOKEN makefunction() {
+  TOKEN tok = talloc();
+  return tok;
+}
+
+
 /* makegoto makes a GOTO operator to go to the specified label.
    The label number is put into a number token. */
 TOKEN makegoto(int label) {
@@ -1121,8 +1132,6 @@ TOKEN makeprivprogn(TOKEN tok, TOKEN statements) {
   tok->whichval = PROGNOP;
   tok->operands = statements;
   tok->scope = PRIV_SCOPE;
-
-  printf("####################################3PRIv PRogn\n");
 
   if (DEBUG & DB_MAKEPROGN) { 
     printf("makeprivprogn\n");
