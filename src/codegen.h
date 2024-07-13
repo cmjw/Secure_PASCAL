@@ -2,16 +2,14 @@
 /* 15 Aug 13 */
 
 
+/* */
+void initOutputFiles();
 
 
+/* Generate code for the RHS of an expression */
 void gen_rhs(TOKEN code, int scope);
 
-
-
-/* Top-level entry for code generator.
-   pcode    = pointer to code = parseresult: (program foo (output) (progn ...))
-   varsize  = size of local storage in bytes = blockoffs[blocknumber]
-   maxlabel = maximum label number used so far = labelnumber    */
+/* Generate code */
 void gencode(TOKEN pcode, int varsize, int maxlabel);
 
 /* Generate arithmetic expression, return a register number */
@@ -22,31 +20,6 @@ void genc(TOKEN code, int scope);
 
 
 
-
-/* You may use the function headers below if you wish,
-   or you may replace them if you wish.  */
-
-/* Clear register used tables to mark all registers free.  */
-void clearreg();
-
-/* Mark a register unused */
-void unused(int reg);
-
-/* Mark a register used */
-void used(int reg);
-
-/* Get a register */
-int getreg(int kind);
-
-/* Make a register non-volatile by moving it if necessary.
-   Result is the (possibly new) register number.   */
-/* not used for x86         int nonvolatile(int reg);   */
-
-/* Save caller-saves floating point registers on stack if in use */
-void savereg();
-
-/* Restore caller-saves floating point registers from stack if in use */
-void restorereg();
 
 /* test if there is a function call within code: 1 if true, else 0 */
 int funcallin(TOKEN code);
@@ -65,4 +38,3 @@ int moveop(TOKEN code);
 /* If storereg < 0, generates a load and returns register number;
    else, generates a store from storereg. */
 int genaref(TOKEN code, int storereg);
-
