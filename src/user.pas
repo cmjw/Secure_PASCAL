@@ -1,5 +1,4 @@
-{ Generated user program }
-program UserProg(ouput);
+program User_Progam(ouput);
 
 begin
 i := 1;
