@@ -4,4 +4,5 @@ program privProg(ouput);
 var 
 
 begin
+	i := 0;
 end.
