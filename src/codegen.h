@@ -1,9 +1,18 @@
 /* codegen.h     Gordon S. Novak Jr.    */
 /* 15 Aug 13 */
+#include <stdio.h>
+#include <ctype.h>
+#include <string.h>
+
+
+FILE *userProg;
+FILE *privProg;
 
 
 /* */
 void initOutputFiles();
+
+void writeToUser(char* str);
 
 
 /* Generate code for the RHS of an expression */

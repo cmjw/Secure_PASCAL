@@ -3,6 +3,7 @@
         "token.h": "c",
         "pprint.h": "c",
         "lexer.h": "c",
-        "system_error": "c"
+        "system_error": "c",
+        "stdio.h": "c"
     }
 }

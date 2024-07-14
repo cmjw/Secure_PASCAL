@@ -1,13 +1,9 @@
-#include <stdio.h>
-#include <ctype.h>
-#include <string.h>
 #include "token.h"
 #include "symtab.h"
 #include "lexer.h"
 #include "genasm.h"
-#include "codegen.h"
 #include "pprint.h"
-
+#include "codegen.h"
 
 void genc(TOKEN code, int scope);
 
@@ -22,8 +18,6 @@ char* ops[]  = {" ", "+", "-", "*", "/", ":=", "=", "<>", "<", "<=",
 int nextlabel;    /* Next available label number */
 int stkframesize;   /* total stack frame size */
 
-FILE *userProg;
-FILE *privProg;
 
 /* Generate code */
 void gencode(TOKEN pcode, int varsize, int maxlabel) {  
@@ -33,6 +27,8 @@ void gencode(TOKEN pcode, int varsize, int maxlabel) {
   sym = symtab[1];
 
   initOutputFiles();
+
+  initSymbolTable();
 
   TOKEN name, code;
   name = pcode->operands;
@@ -78,12 +74,7 @@ void initOutputFiles() {
   }
 
   writeToUser("{ Secure Pascal : Generated User Program }\n");
-  writeToUser("program User_Progam(ouput);\n\n");
-
-  /* Vars */
-
-
-
+  writeToUser("program UserProgam(ouput);\n\n");
 
   // Priviledged program
   privProg = fopen("priv.pas", "w");
@@ -93,9 +84,41 @@ void initOutputFiles() {
   }
 
   writeToPriv("{ Secure Pascal : Generated Privileged Program }\n");
-  writeToPriv("program privProg(ouput);\n\n");
+  writeToPriv("program PrivProg(ouput);\n\n");
 }
 
+/* Initialize VAR blocks in output programs */
+void initSymbolTable() {
+  SYMBOL sym = symtab[1];
+  
+  writeToUser("var ");
+  writeToPriv("var ");
+
+  /* Todo put into array, then sort by type */
+
+  while (sym) {
+    switch (sym->kind) {
+      case VARSYM: /* Var */
+        if (sym->datatype->kind == BASICTYPE) {
+          printf("FOUND a basic sym\n");
+          writeVarEntry(userProg, sym);
+        }
+        break;
+    }
+    sym = sym->link;
+  }
+
+  writeToUser("\n\n");
+  writeToPriv("\n\n");
+}
+
+/* Write var entry to a file */
+void writeVarEntry(FILE* file, SYMBOL sym) {
+  writeToUser(sym->namestring);
+  writeToUser(" : ");
+  writeToUser(sym->datatype->namestring);
+  writeToUser("; ");
+}
 
 /* Traverse the AST */
 void genc(TOKEN code, int scope) {  

@@ -1,14 +1,8 @@
-program simple(ouput); 
-{ must have output for now }
+{ Secure Pascal : Generated User Program }
+program UserProgam(ouput);
 
-var i : integer;
-
-function max(j : integer;): integer;
-var result : integer;
-begin
-    j := 0;
-end;
+var i : integer; j : integer; result : integer; 
 
 begin
-    i := 1; { last statement has no end semicolon }
+i := 1;
 end.
