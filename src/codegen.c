@@ -8,6 +8,7 @@
 #include "codegen.h"
 #include "pprint.h"
 
+
 void genc(TOKEN code, int scope);
 
 char* ops[]  = {" ", "+", "-", "*", "/", ":=", "=", "<>", "<", "<=",
@@ -24,53 +25,75 @@ int stkframesize;   /* total stack frame size */
 FILE *userProg;
 FILE *privProg;
 
+/* Generate code */
 void gencode(TOKEN pcode, int varsize, int maxlabel) {  
-    printf("print gencode\n");
+  printf("print gencode\n");
 
-    SYMBOL sym;
-    sym =  symtab[1];
+  SYMBOL sym;
+  sym = symtab[1];
 
-    initOutputFiles();
+  initOutputFiles();
 
-    TOKEN name, code;
-    name = pcode->operands;
-    code = name->link->link;
+  TOKEN name, code;
+  name = pcode->operands;
+  code = name->link->link;
 
-    printf("Debug: ");
-    printtok(code);
+  printf("Debug: ");
+  printtok(code);
+
+  fprintf(userProg, "begin\n");
+  fprintf(privProg, "begin\n");
     
-    genc(code, UNPRIV_SCOPE);
+  genc(code, UNPRIV_SCOPE);
 
-    fprintf(userProg, "end.");
-    fprintf(privProg, "end.");
+  fprintf(userProg, "end.");
+  fprintf(privProg, "end.");
 
-    fclose(userProg);
-    fclose(privProg);
+  fclose(userProg);
+  fclose(privProg);
+}
+
+/* Write line to user program */
+void writeToUser(char* str) {
+  fprintf(userProg, "%s", str);
+}
+
+/* Write line to priv program */
+void writeToPriv(char* str) {
+  fprintf(privProg, "%s", str);
+}
+
+/* Write to a file */
+void writeToFile(FILE* file, char* str) {
+  fprintf(file, "%s", str);
 }
 
 /* Initialize the resulting split programs */
 void initOutputFiles() {
+  // User program
   userProg = fopen("user.pas", "w");
-    if (!userProg) {
-        perror("Failed to open user.pas");
-        return;
-    }
-    fprintf(userProg, "%s", "{ Generated user program }\n");
-    fprintf(userProg, "%s", "program UserProg(ouput);\n\n");
+  if (!userProg) {
+    perror("Failed to open user.pas");
+    return;
+  }
 
-    /* Vars */
+  writeToUser("{ Secure Pascal : Generated User Program }\n");
+  writeToUser("program User_Progam(ouput);\n\n");
+
+  /* Vars */
 
 
-    fprintf(userProg, "begin\n");
 
-    privProg = fopen("priv.pas", "w");
-    if (!privProg) {
-        perror("Failed to open priv.pas");
-        return;
-    }
-    fprintf(privProg, "%s", "{ Generated privileged program }\n");
-    fprintf(privProg, "%s", "program privProg(ouput);\n\n");
-    fprintf(privProg, "begin\n");
+
+  // Priviledged program
+  privProg = fopen("priv.pas", "w");
+  if (!privProg) {
+    perror("Failed to open priv.pas");
+    return;
+  }
+
+  writeToPriv("{ Secure Pascal : Generated Privileged Program }\n");
+  writeToPriv("program privProg(ouput);\n\n");
 }
 
 
@@ -102,13 +125,13 @@ void genc(TOKEN code, int scope) {
   
   switch (code->whichval) { 
     case PROGNOP:
-	  tok = code->operands;
+	    tok = code->operands;
 	  
-    while (tok != NULL) {  
-      genc(tok, next_scope);
-		  tok = tok->link;
-	  }
-	  break;
+      while (tok != NULL) {  
+        genc(tok, next_scope);
+        tok = tok->link;
+      }
+      break;
 
 	  case ASSIGNOP:            
       if (DEBUGGEN) {
@@ -118,6 +141,7 @@ void genc(TOKEN code, int scope) {
       lhs = code->operands;
       rhs = lhs->link;
 
+      /* identifier and assignment */
       fprintf(outFile, "%s := ", lhs->stringval);
 
       // generate code for rhs
@@ -129,7 +153,14 @@ void genc(TOKEN code, int scope) {
 
     case FUNCALLOP:
       if (DEBUGGEN) {
-        printf("FUNCALLOP: ");
+        printf("FUNCALLOP: \n");
+        dbugbprinttok(code);
+        if(code->operands) {
+          dbugbprinttok(code->operands);
+        }
+        if(code->link) {
+          dbugbprinttok(code->link);
+        }
       } 
       /*     ***** fix this *****   */
       break;
