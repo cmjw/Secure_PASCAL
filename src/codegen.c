@@ -8,6 +8,7 @@
 #include "codegen.h"
 #include "pprint.h"
 
+
 void genc(TOKEN code, int scope);
 
 char* ops[]  = {" ", "+", "-", "*", "/", ":=", "=", "<>", "<", "<=",
@@ -62,6 +63,11 @@ void writeToPriv(char* str) {
   fprintf(privProg, "%s", str);
 }
 
+/* Write to a file */
+void writeToFile(FILE* file, char* str) {
+  fprintf(file, "%s", str);
+}
+
 /* Initialize the resulting split programs */
 void initOutputFiles() {
   // User program
@@ -88,7 +94,6 @@ void initOutputFiles() {
 
   writeToPriv("{ Secure Pascal : Generated Privileged Program }\n");
   writeToPriv("program privProg(ouput);\n\n");
-  
 }
 
 
@@ -120,13 +125,13 @@ void genc(TOKEN code, int scope) {
   
   switch (code->whichval) { 
     case PROGNOP:
-	  tok = code->operands;
+	    tok = code->operands;
 	  
-    while (tok != NULL) {  
-      genc(tok, next_scope);
-		  tok = tok->link;
-	  }
-	  break;
+      while (tok != NULL) {  
+        genc(tok, next_scope);
+        tok = tok->link;
+      }
+      break;
 
 	  case ASSIGNOP:            
       if (DEBUGGEN) {
@@ -136,6 +141,7 @@ void genc(TOKEN code, int scope) {
       lhs = code->operands;
       rhs = lhs->link;
 
+      /* identifier and assignment */
       fprintf(outFile, "%s := ", lhs->stringval);
 
       // generate code for rhs
@@ -147,7 +153,14 @@ void genc(TOKEN code, int scope) {
 
     case FUNCALLOP:
       if (DEBUGGEN) {
-        printf("FUNCALLOP: ");
+        printf("FUNCALLOP: \n");
+        dbugbprinttok(code);
+        if(code->operands) {
+          dbugbprinttok(code->operands);
+        }
+        if(code->link) {
+          dbugbprinttok(code->link);
+        }
       } 
       /*     ***** fix this *****   */
       break;
