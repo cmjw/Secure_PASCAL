@@ -4,5 +4,5 @@ program UserProgam(ouput);
 var i : integer; j : integer; result : integer; 
 
 begin
-i := 1;
+	i := 1;
 end.

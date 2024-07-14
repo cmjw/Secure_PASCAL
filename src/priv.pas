@@ -1,5 +1,5 @@
 { Secure Pascal : Generated Privileged Program }
-program PrivProg(ouput);
+program privProg(ouput);
 
 var 
 

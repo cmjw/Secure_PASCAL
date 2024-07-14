@@ -146,7 +146,9 @@ void genc(TOKEN code, int scope) {
     printf("genc file scope: %d %d\n", scope, next_scope);
   }
   
+
   switch (code->whichval) { 
+    /* Block */
     case PROGNOP:
 	    tok = code->operands;
 	  
@@ -156,7 +158,8 @@ void genc(TOKEN code, int scope) {
       }
       break;
 
-	  case ASSIGNOP:            
+    /* Assignment operator */
+	  case ASSIGNOP:           
       if (DEBUGGEN) {
         printf("ASSIGNOP: \n");
       }      
@@ -165,18 +168,19 @@ void genc(TOKEN code, int scope) {
       rhs = lhs->link;
 
       /* identifier and assignment */
-      fprintf(outFile, "%s := ", lhs->stringval);
+      fprintf(outFile, "\t%s := ", lhs->stringval);
 
       // generate code for rhs
       gen_rhs(rhs, next_scope);            
 
-      fprintf(outFile, ";\n");
+      writeToFile(outFile, ";\n");
 
       break;
 
     case FUNCALLOP:
       if (DEBUGGEN) {
         printf("FUNCALLOP: \n");
+
         dbugbprinttok(code);
         if(code->operands) {
           dbugbprinttok(code->operands);
@@ -185,6 +189,7 @@ void genc(TOKEN code, int scope) {
           dbugbprinttok(code->link);
         }
       } 
+      
       /*     ***** fix this *****   */
       break;
 
@@ -225,7 +230,6 @@ void genc(TOKEN code, int scope) {
 /* TOKEN rhs is the rhs */
 void gen_rhs(TOKEN rhs, int scope) {   
   int num, reg;
-
   int next_scope = (rhs->scope ? PRIV_SCOPE : UNPRIV_SCOPE) || scope;
 
   FILE *outFile = next_scope ? privProg : userProg;
@@ -262,6 +266,4 @@ void gen_rhs(TOKEN rhs, int scope) {
       genc(rhs, next_scope);
       break;
   }
-  return reg;
 }
-
