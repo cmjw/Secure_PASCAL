@@ -16,8 +16,12 @@ split:
 	cc split.c -o split
 
 # codegen.c
-codegen.o: codegen.c token.h symtab.h genasm.h
+codegen.o: codegen.c token.h symtab.h genasm.h codegen-utils.h
 	cc -c codegen.c
+
+# codegen-utils.c
+codegen-utils.o: codegen-utils.c token.h symtab.h genasm.h
+	cc -c codegen-utils.c
 
 # genasm.c
 genasm.o: genasm.c token.h symtab.h genasm.h
