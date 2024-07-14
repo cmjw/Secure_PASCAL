@@ -84,7 +84,7 @@ void initOutputFiles() {
   }
 
   writeToPriv("{ Secure Pascal : Generated Privileged Program }\n");
-  writeToPriv("program PrivProg(ouput);\n\n");
+  writeToPriv("program privProg(ouput);\n\n");
 }
 
 /* Initialize VAR blocks in output programs */
