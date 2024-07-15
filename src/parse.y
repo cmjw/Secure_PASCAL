@@ -1017,7 +1017,6 @@ TOKEN makefuncall(TOKEN tok, TOKEN fn, TOKEN args) {
     } 
   } 
 
-
   else if (strcmp(fn->stringval, "new") == 0) {
     SYMBOL typeSym = searchst(args->stringval);
     if (!typeSym) {
@@ -1038,19 +1037,24 @@ TOKEN makefuncall(TOKEN tok, TOKEN fn, TOKEN args) {
     return tok;
 	}
   
-  
   else {
     //tok->basicdt = args->basicdt;
     SYMBOL funct = searchst(fn->stringval);
 
     if (!funct) {
-      return NULL;
+      //return NULL;
+      /* infer name */
+
+    } else {
+      tok->basicdt = funct->datatype->basicdt;
     }
+    
     if (DEBUG) {
       printf("(DEBUG) symbol +++++++++++++++\n");
       dbugprinttok(funct);
     }
-    tok->basicdt = funct->datatype->basicdt;
+
+    
     //tok->symtype = funct;
   }
 
