@@ -70,7 +70,7 @@ void initOutputFiles() {
   userProg = fopen("user.pas", "w");
   if (!userProg) {
     perror("Failed to open user.pas");
-    return;
+    exit(1);
   }
 
   writeToUser("{ Secure Pascal : Generated User Program }\n");
@@ -80,7 +80,7 @@ void initOutputFiles() {
   privProg = fopen("priv.pas", "w");
   if (!privProg) {
     perror("Failed to open priv.pas");
-    return;
+    exit(1);
   }
 
   writeToPriv("{ Secure Pascal : Generated Privileged Program }\n");
@@ -161,8 +161,9 @@ void genc(TOKEN code, int scope) {
   }
   
   if (code->tokentype != OPERATOR) { 
-    printf("Bad code token");
+    ferror("Bad code token");
 	  dbugprinttok(code);
+    exit(1);
 	}
 
   if (DEBUGGEN) {
