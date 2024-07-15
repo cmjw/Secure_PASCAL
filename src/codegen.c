@@ -260,6 +260,28 @@ void gen_funcall(TOKEN code, int scope) {
     argId = args->stringval;
   }  
 
+  /* Check scope of arg */
+  if (args) {
+    sym = searchst(argId);
+    if (!sym) {
+      ferror("Arg not found in symbol table\n");
+      exit(1);
+    }
+
+    /* RPC logic to send arg value */
+    if (scope == PRIV_SCOPE && sym->scope == UNPRIV_SCOPE) {
+      /* priv: wait for value of id */
+      fprintf(privProg, "{ Wait for value of %s from UserProg }\n", argId);
+      insertReadRPC(privProg, argId);
+
+      /* user: send value of id */
+      fprintf(userProg, "{ Send value of %s to PrivProg }\n", argId);
+      insertWriteRPC(userProg, argId);
+
+      writeToFile(privProg, "\n");
+    }
+  }
+
   fprintf(outFile, "%s(%s);\n", id, argId);
 }
 
@@ -308,7 +330,7 @@ void gen_assign(TOKEN code, int scope) {
   // generate code for rhs
   gen_rhs(rhs, next_scope);            
 
-  writeToFile(outFile, ";\n");
+  writeToFile(outFile, ";\n\n");
 }
 
 /* Generate Pascal code for the RHS of a statement from the parse tree */
