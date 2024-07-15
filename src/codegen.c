@@ -126,6 +126,23 @@ void writeVarEntry(FILE* file, SYMBOL sym) {
   writeToFile(file, "; ");
 }
 
+/* Insert read logic */
+void insertReadRPC(FILE* file, char* id) {
+  writeToFile(file, "assign(inputPipe, inputName);\n");
+  writeToFile(file, "reset(inputPipe);\n");
+  fprintf(file, "readln(inputPipe, %s);\n", id);
+  writeToFile(file, "close(inputPipe);\n");
+}
+
+/* Insert write logic */
+void insertWriteRPC(FILE* file, char* str) {
+  writeToFile(file, "assign(outputPipe, outputName);\n");
+  writeToFile(file, "rewrite(outputPipe);\n");
+  fprintf(file, "write(outputPipe, %s);\n", str);
+  writeToFile(file, "close(outputPipe);\n");
+}
+
+
 /* Traverse the AST */
 void genc(TOKEN code, int scope) {  
   //fprintf(userProg, "%s", "{ in genc }\n");
@@ -166,37 +183,12 @@ void genc(TOKEN code, int scope) {
 
     /* Assignment operator */
 	  case ASSIGNOP:           
-      if (DEBUGGEN) {
-        printf("ASSIGNOP: \n");
-      }      
-
-      lhs = code->operands;
-      rhs = lhs->link;
-
-      /* identifier and assignment */
-      fprintf(outFile, "\t%s := ", lhs->stringval);
-
-      // generate code for rhs
-      gen_rhs(rhs, next_scope);            
-
-      writeToFile(outFile, ";\n");
-
+      gen_assign(code, scope);
       break;
 
+    /* Function call */
     case FUNCALLOP:
-      if (DEBUGGEN) {
-        printf("FUNCALLOP: \n");
-
-        dbugbprinttok(code);
-        if(code->operands) {
-          dbugbprinttok(code->operands);
-        }
-        if(code->link) {
-          dbugbprinttok(code->link);
-        }
-      } 
-
-      /*     ***** fix this *****   */
+      gen_funcall(code, scope);
       break;
 
     case GOTOOP:
@@ -230,6 +222,115 @@ void genc(TOKEN code, int scope) {
       
       break;
   }  
+}
+
+/* Generate funcall */
+void gen_funcall(TOKEN code, int scope) {
+  TOKEN tok, lhs, rhs;
+  int reg, offs;
+  SYMBOL sym;
+
+  int next_scope = (code->scope ? PRIV_SCOPE : UNPRIV_SCOPE) || scope;
+
+  FILE *outFile = next_scope ? privProg : userProg;
+
+  if (DEBUGGEN) {
+    printf("FUNCALLOP: \n");
+
+    dbugbprinttok(code);
+        
+    printf("%s\n", code->operands->stringval);
+    if(code->operands) {
+      dbugbprinttok(code->operands);
+    }
+    if(code->operands->link) {
+      dbugbprinttok(code->operands->link);
+      printf(code->operands->link->stringval);
+    }
+  } 
+
+  TOKEN func = code->operands;
+  TOKEN args = func->link;
+
+  char* id = code->operands->stringval;
+      
+  /* Only one arg for now */
+  char* argId = "";
+  if (args) {
+    argId = args->stringval;
+  }  
+
+  /* Check scope of arg */
+  if (args) {
+    sym = searchst(argId);
+    if (!sym) {
+      ferror("Arg not found in symbol table\n");
+      exit(1);
+    }
+
+    /* RPC logic to send arg value */
+    if (scope == PRIV_SCOPE && sym->scope == UNPRIV_SCOPE) {
+      /* priv: wait for value of id */
+      fprintf(privProg, "{ Wait for value of %s from UserProg }\n", argId);
+      insertReadRPC(privProg, argId);
+
+      /* user: send value of id */
+      fprintf(userProg, "{ Send value of %s to PrivProg }\n", argId);
+      insertWriteRPC(userProg, argId);
+
+      writeToFile(privProg, "\n");
+    }
+  }
+
+  fprintf(outFile, "%s(%s);\n", id, argId);
+}
+
+/* Generate assign */
+void gen_assign(TOKEN code, int scope) {
+  TOKEN tok, lhs, rhs;
+  int reg, offs;
+  SYMBOL sym;
+
+  int next_scope = (code->scope ? PRIV_SCOPE : UNPRIV_SCOPE) || scope;
+
+  FILE *outFile = next_scope ? privProg : userProg;
+
+  if (DEBUGGEN) {
+    printf("ASSIGNOP: \n");
+  }      
+
+  lhs = code->operands;
+  rhs = lhs->link;
+  char* id = lhs->stringval;
+
+  SYMBOL idsym = searchst(id);
+  if (idsym) {
+      printsymbol(idsym);
+  } else {
+    ferror("Unrecognized symbol\n");
+    exit(1);
+  }
+
+  /* first insert RPC logic to access id, if unpriv id */
+  // if (scope == PRIV_SCOPE && idsym->scope == UNPRIV_SCOPE) { 
+  //   /* priv: wait for value of id */
+  //   fprintf(privProg, "{ Wait for value of %s from UserProg }\n", id);
+  //   insertReadRPC(privProg, id);
+
+  //   /* user: send value of id */
+  //   fprintf(userProg, "{ Send value of %s to PrivProg }\n", id);
+  //   insertWriteRPC(userProg, id);
+
+  //   writeToFile(privProg, "\n");
+  // }
+
+  /* identifier and assignment */
+  fprintf(outFile, "%s := ", id);
+
+  // generate code for rhs
+  gen_rhs(rhs, next_scope);            
+
+  writeToFile(outFile, ";\n\n");
 }
 
 /* Generate Pascal code for the RHS of a statement from the parse tree */
