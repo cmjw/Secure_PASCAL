@@ -63,6 +63,8 @@ char* symprint[10]  = {" ", "BASIC", "CONST", "VAR", "SUBRANGE",
                        "FUNCTION", "ARRAY", "RECORD", "TYPE", "POINTER"};
 int symsize[10] = { 1, 5, 5, 3, 8, 8, 5, 6, 4, 7 };
 
+char* scopeprint[2] = {"UNPRIV", "PRIV"};
+
 
 SYMBOL symalloc()           /* allocate a new symbol record */
   { 
@@ -231,30 +233,30 @@ void printsymbol(SYMBOL sym)
        { case FUNCTIONSYM: case ARRAYSYM:
          case RECORDSYM: case POINTERSYM:
            printf(
-             " %ld  %10s  knd %1d %1d  typ %ld  lvl %2d  siz %5d  off %5d\n",
+             " %ld  %10s  knd %1d %1d  typ %ld  lvl %2d  siz %5d  off %5d SCOPE %d\n",
                   (long)sym, sym->namestring, sym->kind, sym->basicdt,
                   (long)sym->datatype,
-                  sym->blocklevel, sym->size, sym->offset);
+                  sym->blocklevel, sym->size, sym->offset, sym->scope);
            ppsym(sym);
          break;
          case VARSYM:
            if (sym->datatype->kind == BASICTYPE)
               printf(
-               " %ld  %10s  VAR    %1d typ %7s  lvl %2d  siz %5d  off %5d\n",
+               " %ld  %10s  VAR    %1d typ %7s  lvl %2d  siz %5d  off %5d %s\n",
                   (long)sym, sym->namestring, sym->basicdt,
                      sym->datatype->namestring,
-                  sym->blocklevel, sym->size, sym->offset);
+                  sym->blocklevel, sym->size, sym->offset, scopeprint[sym->scope]);
               else printf(
-                 " %ld  %10s  VAR    %1d typ %ld  lvl %2d  siz %5d  off %5d\n",
+                 " %ld  %10s  VAR    %1d typ %ld  lvl %2d  siz %5d  off %5d %s\n",
                   (long)sym, sym->namestring, sym->basicdt,
                  (long)sym->datatype,
-                  sym->blocklevel, sym->size, sym->offset);
+                  sym->blocklevel, sym->size, sym->offset, scopeprint[sym->scope]);
            if (sym->datatype->kind != BASICTYPE ) ppsym(sym->datatype);
          break;
          case TYPESYM:
-           printf(" %ld  %10s  TYPE   typ %ld  lvl %2d  siz %5d  off %5d\n",
+           printf(" %ld  %10s  TYPE   typ %ld  lvl %2d  siz %5d  off %5d %s\n",
                   (long)sym, sym->namestring, (long)sym->datatype,
-                  sym->blocklevel, sym->size, sym->offset);
+                  sym->blocklevel, sym->size, sym->offset, scopeprint[sym->scope]);
            if (sym->datatype->kind != BASICTYPE ) ppsym(sym->datatype);
          break;
          case BASICTYPE:
