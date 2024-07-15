@@ -19,7 +19,7 @@ int nextlabel;    /* Next available label number */
 int stkframesize;   /* total stack frame size */
 
 
-/* Generate code */
+/* Generate code for main function */
 void gencode(TOKEN pcode, int varsize, int maxlabel) {  
   printf("print gencode\n");
 
@@ -37,8 +37,19 @@ void gencode(TOKEN pcode, int varsize, int maxlabel) {
   printf("Debug: ");
   printtok(code);
 
-  fprintf(userProg, "begin\n");
-  fprintf(privProg, "begin\n");
+  /* Begin main and RPC logic for user */
+  writeToUser("begin\n");
+
+  writeToUser("{ initialize vars for interprocess communication }\n");
+  writeToUser("inputName := 'pipe_to_privileged';\n");
+  writeToUser("outputName := 'pipe_to_user';\n\n");
+
+  /* Begin main and RPC logic for priv */
+  writeToPriv("begin\n");
+
+  writeToPriv("{ initialize vars for interprocess communication }\n");
+  writeToPriv("inputName := 'pipe_to_user';\n");
+  writeToPriv("outputName := 'pipe_to_privileged';\n\n");
     
   genc(code, UNPRIV_SCOPE);
 
@@ -113,6 +124,13 @@ void initSymbolTable() {
     }
     sym = sym->link;
   }
+
+  // VAR block pipe declarations
+  writeToUser("outputPipe, inputPipe: Text; ");
+  writeToUser("outputName, inputName: string; ");
+
+  writeToPriv("outputPipe, inputPipe: Text; ");
+  writeToPriv("outputName, inputName: string; ");
 
   writeToUser("\n\n");
   writeToPriv("\n\n");
