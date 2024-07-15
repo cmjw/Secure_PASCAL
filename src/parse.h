@@ -112,7 +112,7 @@ TOKEN makefor(int sign, TOKEN tok, TOKEN asg, TOKEN tokb, TOKEN endexpr,
 TOKEN findid(TOKEN tok);
 
 /* instconst installs a constant in the symbol table */
-void  instconst(TOKEN idtok, TOKEN consttok);
+void  instconst(TOKEN idtok, TOKEN consttok, int scope);
 
 /* makesubrange makes a SUBRANGE symbol table entry, puts the pointer to it
    into tok, and returns tok. */
