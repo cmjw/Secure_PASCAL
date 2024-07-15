@@ -89,7 +89,7 @@ void  settoktype(TOKEN tok, SYMBOL typ, SYMBOL ent);
 TOKEN makefuncall(TOKEN tok, TOKEN fn, TOKEN args);
 
 /* makeprogram makes the tree structures for the top-level program */
-TOKEN makeprogram(TOKEN name, TOKEN args, TOKEN statements);
+TOKEN makeprogram(TOKEN name, TOKEN args, TOKEN statements, TOKEN fblock_defs);
 
 /* makewhile makes structures for a while statement.
    tok and tokb are (now) unused tokens that are recycled. */
