@@ -69,7 +69,7 @@ TOKEN parseresult;
 
 %%
   program : PROGRAM IDENTIFIER LPAREN id_list RPAREN SEMICOLON lblock DOT 
-            { parseresult = makeprogram($2, $4, $7); } ;
+            { parseresult = makeprogram($2, $4, $7, NULL); } ;
 
   unsigned_constant : NUMBER | NIL | STRING ;
 
@@ -1183,7 +1183,7 @@ TOKEN makeprivprogn(TOKEN tok, TOKEN statements) {
 
 
 /* makeprogram makes the tree structures for the top-level program */
-TOKEN makeprogram(TOKEN name, TOKEN args, TOKEN statements) {
+TOKEN makeprogram(TOKEN name, TOKEN args, TOKEN statements, TOKEN fblock_defs) {
   TOKEN tok = talloc();
 
   tok->tokentype = OPERATOR;
@@ -1196,6 +1196,9 @@ TOKEN makeprogram(TOKEN name, TOKEN args, TOKEN statements) {
 
   name->link = progargs;
   progargs->link = statements;
+
+  /* link is to fblock definitions, if applicable */
+  tok->link = fblock_defs;
 
   if (DEBUG) {
     printf("(DEBUG) makeprogram()\n");
