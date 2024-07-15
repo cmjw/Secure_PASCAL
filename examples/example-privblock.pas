@@ -1,7 +1,7 @@
 program simple(ouput); 
 { must have output for now }
 
-var i : integer;
+var i : priv::integer;
 
 begin
     i := 1; { last statement has no end semicolon }
