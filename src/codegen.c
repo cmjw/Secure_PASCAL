@@ -84,7 +84,7 @@ void initOutputFiles() {
   }
 
   writeToPriv("{ Secure Pascal : Generated Privileged Program }\n");
-  writeToPriv("program privProg(ouput);\n\n");
+  writeToPriv("program PrivProg(ouput);\n\n");
 }
 
 /* Initialize VAR blocks in output programs */
@@ -101,7 +101,13 @@ void initSymbolTable() {
       case VARSYM: /* Var */
         if (sym->datatype->kind == BASICTYPE) {
           printf("FOUND a basic sym\n");
-          writeVarEntry(userProg, sym);
+          if (sym->scope == UNPRIV_SCOPE) {
+            writeVarEntry(userProg, sym);
+            writeVarEntry(privProg, sym);
+          } else {
+            writeVarEntry(privProg, sym);
+          }
+          
         }
         break;
     }
@@ -114,10 +120,10 @@ void initSymbolTable() {
 
 /* Write var entry to a file */
 void writeVarEntry(FILE* file, SYMBOL sym) {
-  writeToUser(sym->namestring);
-  writeToUser(" : ");
-  writeToUser(sym->datatype->namestring);
-  writeToUser("; ");
+  writeToFile(file, sym->namestring);
+  writeToFile(file, " : ");
+  writeToFile(file, sym->datatype->namestring);
+  writeToFile(file, "; ");
 }
 
 /* Traverse the AST */
@@ -189,7 +195,7 @@ void genc(TOKEN code, int scope) {
           dbugbprinttok(code->link);
         }
       } 
-      
+
       /*     ***** fix this *****   */
       break;
 
