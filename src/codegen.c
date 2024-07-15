@@ -184,23 +184,11 @@ void genc(TOKEN code, int scope) {
     /* Assignment operator */
 	  case ASSIGNOP:           
       gen_assign(code, scope);
-
       break;
 
+    /* Function call */
     case FUNCALLOP:
-      if (DEBUGGEN) {
-        printf("FUNCALLOP: \n");
-
-        dbugbprinttok(code);
-        if(code->operands) {
-          dbugbprinttok(code->operands);
-        }
-        if(code->link) {
-          dbugbprinttok(code->link);
-        }
-      } 
-
-      /*     ***** fix this *****   */
+      gen_funcall(code, scope);
       break;
 
     case GOTOOP:
@@ -234,6 +222,45 @@ void genc(TOKEN code, int scope) {
       
       break;
   }  
+}
+
+/* Generate funcall */
+void gen_funcall(TOKEN code, int scope) {
+  TOKEN tok, lhs, rhs;
+  int reg, offs;
+  SYMBOL sym;
+
+  int next_scope = (code->scope ? PRIV_SCOPE : UNPRIV_SCOPE) || scope;
+
+  FILE *outFile = next_scope ? privProg : userProg;
+
+  if (DEBUGGEN) {
+    printf("FUNCALLOP: \n");
+
+    dbugbprinttok(code);
+        
+    printf("%s\n", code->operands->stringval);
+    if(code->operands) {
+      dbugbprinttok(code->operands);
+    }
+    if(code->operands->link) {
+      dbugbprinttok(code->operands->link);
+      printf(code->operands->link->stringval);
+    }
+  } 
+
+  TOKEN func = code->operands;
+  TOKEN args = func->link;
+
+  char* id = code->operands->stringval;
+      
+  /* Only one arg for now */
+  char* argId = "";
+  if (args) {
+    argId = args->stringval;
+  }  
+
+  fprintf(outFile, "%s(%s);\n", id, argId);
 }
 
 /* Generate assign */
