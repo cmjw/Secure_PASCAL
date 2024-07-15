@@ -262,10 +262,18 @@ void gen_assign(TOKEN code, int scope) {
     exit(1);
   }
 
-  if (scope == PRIV_SCOPE && idsym->scope == UNPRIV_SCOPE) { /* first insert RPC logic to access id */
-    
-    insertReadRPC(privProg, id);
-  }
+  /* first insert RPC logic to access id, if unpriv id */
+  // if (scope == PRIV_SCOPE && idsym->scope == UNPRIV_SCOPE) { 
+  //   /* priv: wait for value of id */
+  //   fprintf(privProg, "{ Wait for value of %s from UserProg }\n", id);
+  //   insertReadRPC(privProg, id);
+
+  //   /* user: send value of id */
+  //   fprintf(userProg, "{ Send value of %s to PrivProg }\n", id);
+  //   insertWriteRPC(userProg, id);
+
+  //   writeToFile(privProg, "\n");
+  // }
 
   /* identifier and assignment */
   fprintf(outFile, "%s := ", id);
