@@ -98,6 +98,7 @@ TOKEN parseresult;
              ;  
 
   tdef       :  IDENTIFIER EQ type    { insttype($1, $3); }
+             |  IDENTIFIER EQ PRIV DOUBLECOLON type { instprivtype($1, $3); }
              ;
 
   tdef_list  :  tdef SEMICOLON tdef_list
@@ -154,6 +155,7 @@ TOKEN parseresult;
             ;
 
   vdef : id_list COLON type    { instvars($1, $3); }
+       | id_list COLON PRIV DOUBLECOLON type    { instprivvars($1, $5); }
        ;
 
   type : simple_type
@@ -794,6 +796,11 @@ void insttype(TOKEN typename, TOKEN typetok) {
 	}
 }
 
+/* Install privileged type name in symbol table */
+void instprivtype(TOKEN typename, TOKEN typetok) {
+
+}
+
 
 /* install variables in symbol table */
 void instvars(TOKEN idlist, TOKEN typetok) {  
@@ -803,6 +810,27 @@ void instvars(TOKEN idlist, TOKEN typetok) {
   while ( idlist != NULL )   /* for each id */ {  
     sym = insertsym(idlist->stringval);
     sym->kind = VARSYM;
+    sym->offset =     /* "next" */
+              wordaddress(blockoffs[blocknumber],
+                          align);
+    sym->size = typesym->size;
+    blockoffs[blocknumber] =   /* "next" */
+                         sym->offset + sym->size;
+    sym->datatype = typesym;
+    sym->basicdt = typesym->basicdt;
+    idlist = idlist->link;
+  };
+}
+
+/* Install privileged variables in symbol table */
+void instprivvars(TOKEN idlist, TOKEN typetok) {
+  SYMBOL sym, typesym; int align;
+  typesym = typetok->symtype;
+  align = alignsize(typesym);
+  while ( idlist != NULL )   /* for each id */ {  
+    sym = insertsym(idlist->stringval);
+    sym->kind = VARSYM;
+    sym->scope = PRIV_SCOPE;
     sym->offset =     /* "next" */
               wordaddress(blockoffs[blocknumber],
                           align);
@@ -1360,6 +1388,7 @@ int wordaddress(int n, int wordsize)
 void yyerror (char const *s)
 {
   fprintf (stderr, "%s\n", s);
+  exit(1);
 }
 
 int main(void)          /*  */
