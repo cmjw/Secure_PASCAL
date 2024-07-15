@@ -271,16 +271,16 @@ void printsymbol(SYMBOL sym)
          case CONSTSYM:
            switch (sym->basicdt)
 	     {  case INTEGER:
-                  printf(" %ld  %10s  CONST  typ INTEGER  val  %d\n",
-                         (long)sym, sym->namestring, sym->constval.intnum);
+                  printf(" %ld  %10s  CONST  typ INTEGER  val  %d %s\n",
+                         (long)sym, sym->namestring, sym->constval.intnum, scopeprint[sym->scope]);
 		  break;
 	        case REAL:
-                  printf(" %ld  %10s  CONST  typ    REAL  val  %12e\n",
-                         (long)sym, sym->namestring, sym->constval.realnum);
+                  printf(" %ld  %10s  CONST  typ    REAL  val  %12e %s\n",
+                         (long)sym, sym->namestring, sym->constval.realnum, scopeprint[sym->scope]);
 		  break;
 	        case STRINGTYPE:
-                  printf(" %ld  %10s  CONST  typ  STRING  val  %12s\n",
-                         (long)sym, sym->namestring, sym->constval.stringconst);
+                  printf(" %ld  %10s  CONST  typ  STRING  val  %12s %s\n",
+                         (long)sym, sym->namestring, sym->constval.stringconst, scopeprint[sym->scope]);
 		  break;
 		}
          break;
