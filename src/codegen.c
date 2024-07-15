@@ -278,7 +278,7 @@ void genc(TOKEN code, int scope) {
       if (DEBUGGEN) {
         printf("IFOP: ");
       } 
-      /*     ***** fix this *****   */
+
       break;
 
     case PLUSOP:
