@@ -28,7 +28,9 @@ void gencode(TOKEN pcode, int varsize, int maxlabel) {
 
   initOutputFiles();
 
-  initSymbolTable();
+  insertVarBlock();
+
+  insertConstBlock();
 
   TOKEN name, code;
   name = pcode->operands;
@@ -99,7 +101,7 @@ void initOutputFiles() {
 }
 
 /* Initialize VAR blocks in output programs */
-void initSymbolTable() {
+void insertVarBlock() {
   SYMBOL sym = symtab[1];
   
   writeToUser("var ");
@@ -136,11 +138,58 @@ void initSymbolTable() {
   writeToPriv("\n\n");
 }
 
+/* Insert cblock into user and priv programs, if applicable */
+void insertConstBlock() {
+  SYMBOL sym = symtab[1];
+  
+  writeToUser("const\n");
+  writeToPriv("const\n");
+
+  /* Todo put into array, then sort by type */
+
+  while (sym) {
+    if (sym->kind == CONSTSYM) {
+      if (sym->scope == PRIV_SCOPE) {
+        writeConstEntry(privProg, sym);
+        writeToPriv("{ privileged const }\n");
+      } else {
+        /* write const to both */
+        writeConstEntry(privProg, sym);
+        writeToPriv("\n");
+        writeConstEntry(userProg, sym);
+        writeToUser("\n");
+      }
+    }
+    sym = sym->link;
+  }
+
+  writeToUser("\n\n");
+  writeToPriv("\n\n");
+}
+
 /* Write var entry to a file */
 void writeVarEntry(FILE* file, SYMBOL sym) {
   writeToFile(file, sym->namestring);
   writeToFile(file, " : ");
   writeToFile(file, sym->datatype->namestring);
+  writeToFile(file, "; ");
+}
+
+/* Write const entry to a file */
+void writeConstEntry(FILE* file, SYMBOL sym) {
+  writeToFile(file, sym->namestring);
+  writeToFile(file, " = ");
+  switch (sym->basicdt) {
+    case INTEGER:
+      fprintf(file, "%d", sym->constval.intnum);
+      break;
+    case REAL:
+      fprintf(file, "%f", sym->constval.realnum);
+      break;
+    case STRINGTYPE:
+      writeToFile(file, sym->constval.stringconst);
+      break;
+  }
   writeToFile(file, "; ");
 }
 

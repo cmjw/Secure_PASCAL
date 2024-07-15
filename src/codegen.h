@@ -12,6 +12,7 @@ FILE *privProg;
 /* */
 void initOutputFiles();
 
+void insertVarBlock();
 
 
 /* Generate code for the RHS of an expression */
