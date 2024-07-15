@@ -113,7 +113,7 @@ void insertVarBlock() {
     switch (sym->kind) {
       case VARSYM: /* Var */
         if (sym->datatype->kind == BASICTYPE) {
-          printf("FOUND a basic sym\n");
+          //printf("FOUND a basic sym\n");
           if (sym->scope == UNPRIV_SCOPE) {
             writeVarEntry(userProg, sym);
             writeVarEntry(privProg, sym);
@@ -144,8 +144,6 @@ void insertConstBlock() {
   
   writeToUser("const\n");
   writeToPriv("const\n");
-
-  /* Todo put into array, then sort by type */
 
   while (sym) {
     if (sym->kind == CONSTSYM) {
