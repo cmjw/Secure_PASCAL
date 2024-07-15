@@ -90,10 +90,13 @@ TOKEN parseresult;
              |  NUMBER                  { instlabel($1); }
              ;
 
-  cdef       :  IDENTIFIER EQ constant    { instconst($1, $3); } 
+  cdef       :  IDENTIFIER EQ constant    { instconst($1, $3, UNPRIV_SCOPE); } 
+             |  pcdef
              ; 
 
-  cdef_list  :  cdef SEMICOLON cdef_list    
+  pcdef      : PRIV DOUBLECOLON IDENTIFIER EQ constant { instconst($3, $5, PRIV_SCOPE); /* temp */ }
+
+  cdef_list  :  cdef SEMICOLON cdef_list   
              |  cdef SEMICOLON          
              ;  
 
@@ -587,7 +590,7 @@ TOKEN findtype(TOKEN tok) {
 
 
 /* instconst installs a constant in the symbol table */
-void  instconst(TOKEN idtok, TOKEN consttok) {
+void  instconst(TOKEN idtok, TOKEN consttok, int scope) {
   if (DEBUG && DB_INSTCONST) {
     printf("(DEBUG) begin instconst()\n");
   }
@@ -595,6 +598,9 @@ void  instconst(TOKEN idtok, TOKEN consttok) {
   SYMBOL sym = insertsym(idtok->stringval);
   sym->kind = CONSTSYM;
   sym->basicdt = consttok->basicdt;
+  if (scope) {
+    sym->scope = PRIV_SCOPE;
+  }
 
   if (sym->basicdt == INTEGER) {
     sym->constval.intnum = consttok->intval;
@@ -644,7 +650,7 @@ TOKEN instenum(TOKEN idlist) {
   TOKEN temp = idlist;
 
   while (temp) {
-    instconst(temp, makeintc(count));
+    instconst(temp, makeintc(count), UNPRIV_SCOPE);
     temp = temp->link;
 
     count++;
