@@ -126,6 +126,23 @@ void writeVarEntry(FILE* file, SYMBOL sym) {
   writeToFile(file, "; ");
 }
 
+/* Insert read logic */
+void insertReadRPC(FILE* file, char* id) {
+  writeToFile(file, "assign(inputPipe, inputName);\n");
+  writeToFile(file, "reset(inputPipe);\n");
+  fprintf(file, "readln(inputPipe, %s);\n", id);
+  writeToFile(file, "close(inputPipe);\n");
+}
+
+/* Insert write logic */
+void insertWriteRPC(FILE* file, char* str) {
+  writeToFile(file, "assign(outputPipe, outputName);\n");
+  writeToFile(file, "rewrite(outputPipe);\n");
+  fprintf(file, "write(outputPipe, %s);\n", str);
+  writeToFile(file, "close(outputPipe);\n");
+}
+
+
 /* Traverse the AST */
 void genc(TOKEN code, int scope) {  
   //fprintf(userProg, "%s", "{ in genc }\n");
@@ -166,20 +183,7 @@ void genc(TOKEN code, int scope) {
 
     /* Assignment operator */
 	  case ASSIGNOP:           
-      if (DEBUGGEN) {
-        printf("ASSIGNOP: \n");
-      }      
-
-      lhs = code->operands;
-      rhs = lhs->link;
-
-      /* identifier and assignment */
-      fprintf(outFile, "\t%s := ", lhs->stringval);
-
-      // generate code for rhs
-      gen_rhs(rhs, next_scope);            
-
-      writeToFile(outFile, ";\n");
+      gen_assign(code, scope);
 
       break;
 
@@ -230,6 +234,46 @@ void genc(TOKEN code, int scope) {
       
       break;
   }  
+}
+
+/* Generate assign */
+void gen_assign(TOKEN code, int scope) {
+  TOKEN tok, lhs, rhs;
+  int reg, offs;
+  SYMBOL sym;
+
+  int next_scope = (code->scope ? PRIV_SCOPE : UNPRIV_SCOPE) || scope;
+
+  FILE *outFile = next_scope ? privProg : userProg;
+
+  if (DEBUGGEN) {
+    printf("ASSIGNOP: \n");
+  }      
+
+  lhs = code->operands;
+  rhs = lhs->link;
+  char* id = lhs->stringval;
+
+  SYMBOL idsym = searchst(id);
+  if (idsym) {
+      printsymbol(idsym);
+  } else {
+    ferror("Unrecognized symbol\n");
+    exit(1);
+  }
+
+  if (scope == PRIV_SCOPE && idsym->scope == UNPRIV_SCOPE) { /* first insert RPC logic to access id */
+    
+    insertReadRPC(privProg, id);
+  }
+
+  /* identifier and assignment */
+  fprintf(outFile, "%s := ", id);
+
+  // generate code for rhs
+  gen_rhs(rhs, next_scope);            
+
+  writeToFile(outFile, ";\n");
 }
 
 /* Generate Pascal code for the RHS of a statement from the parse tree */

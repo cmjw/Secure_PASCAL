@@ -7,6 +7,6 @@ begin
     i := 1; { last statement has no end semicolon }
 
     priv::begin
-        i:=0;
+        writelni(i);
     end;
 end.
