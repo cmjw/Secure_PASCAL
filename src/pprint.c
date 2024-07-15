@@ -163,6 +163,14 @@ void ppexpr(TOKEN tok)       /* pretty-print an expression in prefix form */
 	return; };
     printexpr(tok, 0);
     printf("\n");
+
+    tok = tok->link;
+
+    while (tok) {
+      printexpr(tok, 0);
+      printf("\n");
+      tok = tok->link;
+    } 
   }
 
 TOKEN debugtoken = NULL;    /* dummy op for printing a list */
