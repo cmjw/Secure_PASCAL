@@ -68,8 +68,9 @@ TOKEN parseresult;
 %right thenthen ELSE // Same precedence, but "shift" wins.
 
 %%
-  program : PROGRAM IDENTIFIER LPAREN id_list RPAREN SEMICOLON lblock DOT
-            { parseresult = makeprogram($2, $4, $7, NULL); } ;
+  program : PROGRAM IDENTIFIER LPAREN id_list RPAREN SEMICOLON lblock DOT fdef SEMICOLON 
+            { parseresult = makeprogram($2, $4, $7, NULL); } 
+          ;
 
   unsigned_constant : NUMBER | NIL | STRING ;
 
@@ -138,20 +139,20 @@ TOKEN parseresult;
          | block
          ;
 
-  /* fblock : fdef_list block { $$ = $2; }
+  fblock : fdef_list block { $$ = $2; }
          | block
-         ; */
+         ;
 
-  /* fdef_list : fdef SEMICOLON fdef_list;
+  fdef_list : fdef SEMICOLON fdef_list;
             | fdef SEMICOLON
-            ; */
+            ; 
 
-  /* fdef : fname LPAREN vdef_list RPAREN COLON type SEMICOLON VAR vdef_list BEGINBEGIN statement endpart 
-          { $$ = makeprogn($10,cons($11, $12)); }
-       ; */
+  fdef : fname LPAREN vdef_list RPAREN COLON type SEMICOLON VAR vdef_list block 
+          /* { $$ = makeprogn($10,cons($11, $12)); } */ {$$ = NULL;}
+       ; 
 
-  /* fname : FUNCTION IDENTIFIER { instfunction($2); }
-        ; */
+  fname : FUNCTION IDENTIFIER { instfunction($2); }
+        ;
 
   vdef_list : vdef SEMICOLON vdef_list   
             | vdef SEMICOLON            
