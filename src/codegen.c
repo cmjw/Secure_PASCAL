@@ -18,6 +18,8 @@ char* ops[]  = {" ", "+", "-", "*", "/", ":=", "=", "<>", "<", "<=",
 int nextlabel;    /* Next available label number */
 int stkframesize;   /* total stack frame size */
 
+FILE *runProg;
+
 
 /* Generate code for main function */
 void gencode(TOKEN pcode, int varsize, int maxlabel) {  
@@ -62,6 +64,8 @@ void gencode(TOKEN pcode, int varsize, int maxlabel) {
 
   fclose(userProg);
   fclose(privProg);
+
+  createRunScript();
 }
 
 /* Write line to user program */
@@ -100,6 +104,15 @@ void initOutputFiles() {
 
   writeToPriv("{ Secure Pascal : Generated Privileged Program }\n");
   writeToPriv("program PrivProg(ouput);\n\n");
+}
+
+/* Create the script to run the final pas files */
+void createRunScript() {
+  runProg = fopen("run_me.sh", "w");
+  if (!runProg) {
+    perror("Failed to open run_me.sh\n");
+    exit(1);
+  }
 }
 
 /* Initialize VAR blocks in output programs */
