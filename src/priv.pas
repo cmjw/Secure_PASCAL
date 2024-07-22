@@ -1,8 +1,19 @@
 { Secure Pascal : Generated Privileged Program }
-program privProg(ouput);
+program PrivProg(ouput);
 
-var 
+var i : integer; outputPipe, inputPipe: Text; outputName, inputName: string; 
 
 begin
-	i := 0;
+{ initialize vars for interprocess communication }
+inputName := 'pipe_to_user';
+outputName := 'pipe_to_priv';
+
+{ Wait for value of i from UserProg }
+assign(inputPipe, inputName);
+reset(inputPipe);
+readln(inputPipe, i);
+close(inputPipe);
+
+writeln(i);
+writeln('priv: done');
 end.
