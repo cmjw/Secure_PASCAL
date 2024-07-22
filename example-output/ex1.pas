@@ -7,6 +7,6 @@ begin
     i := 1;
 
     priv::begin
-        writelni(i);
+        writeln(i);
     end;
 end.

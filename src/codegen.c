@@ -118,14 +118,20 @@ void createRunScript() {
   }
   writeToFile(runProg, "#!/bin/bash\n\n");
 
+  writeToFile(runProg, "rm pipe_to_priv\n");
+  writeToFile(runProg, "rm pipe_to_user\n");
+
+  writeToFile(runProg, "rm priv\n");
+  writeToFile(runProg, "rm user\n");
+
   writeToFile(runProg, "echo \"Creating Named Pipes ...\"\n");
   writeToFile(runProg, "mkfifo \"pipe_to_priv\"\n");
   writeToFile(runProg, "mkfifo \"pipe_to_user\"\n\n");
 
   writeToFile(runProg, "echo \"Compiling Final Priv/User Progs ...\"\n");
 
-  writeToFile(runProg, "fpc priv.pas < dev/null\n");
-  writeToFile(runProg, "fpc user.pas < dev/null\n");
+  writeToFile(runProg, "fpc priv.pas\n");
+  writeToFile(runProg, "fpc user.pas\n");
 
   writeToFile(runProg, "echo \"Running Priv Program ...\"\n");
 
