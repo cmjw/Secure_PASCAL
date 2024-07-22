@@ -68,7 +68,7 @@ TOKEN parseresult;
 %right thenthen ELSE // Same precedence, but "shift" wins.
 
 %%
-  program : PROGRAM IDENTIFIER LPAREN id_list RPAREN SEMICOLON lblock DOT fdef SEMICOLON 
+  program : PROGRAM IDENTIFIER LPAREN id_list RPAREN SEMICOLON lblock fdef_list  
             { parseresult = makeprogram($2, $4, $7, NULL); } 
           ;
 
@@ -145,6 +145,7 @@ TOKEN parseresult;
 
   fdef_list : fdef SEMICOLON fdef_list;
             | fdef SEMICOLON
+            | DOT
             ; 
 
   fdef : fname LPAREN vdef_list RPAREN COLON type SEMICOLON VAR vdef_list block 
