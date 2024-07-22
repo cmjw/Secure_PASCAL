@@ -113,6 +113,27 @@ void createRunScript() {
     perror("Failed to open run_me.sh\n");
     exit(1);
   }
+  writeToFile(runProg, "#!/bin/bash\n\n");
+
+  writeToFile(runProg, "echo \"Creating Named Pipes ...\"\n");
+  writeToFile(runProg, "mkfifo \"pipe_to_priv\"\n");
+  writeToFile(runProg, "mkfifo \"pipe_to_user\"\n\n");
+
+  writeToFile(runProg, "echo \"Compiling Final Priv/User Progs ...\"");
+
+  writeToFile(runProg, "fpc privProg.pas\n");
+  writeToFile(runProg, "fpc userProg.pas\n");
+
+  writeToFile(runProg, "echo \"Running Priv Program ...\"\n");
+
+  writeToFile(runProg, "./privProg &\n");
+  writeToFile(runProg, "./userProg &\n");
+
+  writeToFile(runProg, "echo \"Running User Program ...\"\n");
+
+  writeToFile(runProg, "echo \"Removing Named Pipes ...\"\n");
+  writeToFile(runProg, "rm pipe_to_priv\n");
+  writeToFile(runProg, "rm pipe_to_user\n");
 }
 
 /* Initialize VAR blocks in output programs */
