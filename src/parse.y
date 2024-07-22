@@ -162,7 +162,8 @@ TOKEN parseresult;
        ; 
 
   /* Function name. Install in symbol table and return identifier TOK. */
-  fname : FUNCTION IDENTIFIER { instfunction($2); $$ = $2; }
+  fname : FUNCTION IDENTIFIER { instfunction($2, UNPRIV_SCOPE); $$ = $2; }
+        | PRIV DOUBLECOLON FUNCTION IDENTIFIER { instfunction($2, PRIV_SCOPE); $$ = $4; }
         ;
 
   vdef_list : vdef SEMICOLON vdef_list  {$$ = cons($1, $3);}
@@ -702,11 +703,11 @@ TOKEN instfields(TOKEN idlist, TOKEN typetok) {
   return idlist;
 }
 
-void instfunction(TOKEN idtok) {
+void instfunction(TOKEN idtok, int scope) {
   SYMBOL sym = insertsym(idtok->stringval);
   sym->kind = FUNCTIONSYM;
   sym->basicdt = STRINGTOK;
-
+  sym->scope = scope;
 }
 
 

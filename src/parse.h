@@ -4,7 +4,7 @@
 
 TOKEN makefunction();
 
-void instfunction(TOKEN idtok);
+void instfunction(TOKEN idtok, int scope);
 
 TOKEN makeprivprogn(TOKEN tok, TOKEN statements);
 
