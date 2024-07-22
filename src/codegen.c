@@ -119,15 +119,15 @@ void createRunScript() {
   writeToFile(runProg, "mkfifo \"pipe_to_priv\"\n");
   writeToFile(runProg, "mkfifo \"pipe_to_user\"\n\n");
 
-  writeToFile(runProg, "echo \"Compiling Final Priv/User Progs ...\"");
+  writeToFile(runProg, "echo \"Compiling Final Priv/User Progs ...\"\n");
 
-  writeToFile(runProg, "fpc privProg.pas\n");
-  writeToFile(runProg, "fpc userProg.pas\n");
+  writeToFile(runProg, "fpc priv.pas\n");
+  writeToFile(runProg, "fpc user.pas\n");
 
   writeToFile(runProg, "echo \"Running Priv Program ...\"\n");
 
-  writeToFile(runProg, "./privProg &\n");
-  writeToFile(runProg, "./userProg &\n");
+  writeToFile(runProg, "./priv &\n");
+  writeToFile(runProg, "./user &\n");
 
   writeToFile(runProg, "echo \"Running User Program ...\"\n");
 
@@ -178,11 +178,15 @@ void insertVarBlock() {
 void insertConstBlock() {
   SYMBOL sym = symtab[1];
   
-  writeToUser("const\n");
-  writeToPriv("const\n");
+  int count = 0;
 
   while (sym) {
     if (sym->kind == CONSTSYM) {
+      count++;
+      if (count == 1) {
+        writeToUser("const\n");
+        writeToPriv("const\n");
+      }
       if (sym->scope == PRIV_SCOPE) {
         writeConstEntry(privProg, sym);
         writeToPriv("{ privileged const }\n");
@@ -197,8 +201,10 @@ void insertConstBlock() {
     sym = sym->link;
   }
 
-  writeToUser("\n\n");
-  writeToPriv("\n\n");
+  if (count > 0) {
+    writeToUser("\n\n");
+    writeToPriv("\n\n");
+  }
 }
 
 /* Insert function definitions */
