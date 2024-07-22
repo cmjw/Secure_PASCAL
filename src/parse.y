@@ -69,7 +69,7 @@ TOKEN parseresult;
 
 %%
   program : PROGRAM IDENTIFIER LPAREN id_list RPAREN SEMICOLON lblock fdef_list  
-            { parseresult = makeprogram($2, $4, $7, NULL); } 
+            { parseresult = makeprogram($2, $4, $7, $8); } 
           ;
 
   unsigned_constant : NUMBER | NIL | STRING ;
@@ -139,9 +139,9 @@ TOKEN parseresult;
          | block
          ;
 
-  fblock : fdef_list block { $$ = $2; }
+  /* fblock : fdef_list block { $$ = $2; }
          | block
-         ;
+         ; */
 
   fdef_list : fdef SEMICOLON fdef_list;
             | fdef SEMICOLON
@@ -149,17 +149,17 @@ TOKEN parseresult;
             ; 
 
   fdef : fname LPAREN vdef_list RPAREN COLON type SEMICOLON VAR vdef_list block 
-          /* { $$ = makeprogn($10,cons($11, $12)); } */ {$$ = NULL;}
+        { $$ = makeprogn($1,cons($3, $10));   }
        ; 
 
-  fname : FUNCTION IDENTIFIER { instfunction($2); }
+  fname : FUNCTION IDENTIFIER { instfunction($2); $$ = $2; }
         ;
 
-  vdef_list : vdef SEMICOLON vdef_list   
-            | vdef SEMICOLON            
+  vdef_list : vdef SEMICOLON vdef_list  {$$ = cons($1, $3);}
+            | vdef SEMICOLON            {$$ = $1;}
             ;
 
-  vdef : id_list COLON type    { instvars($1, $3); }
+  vdef : id_list COLON type    { instvars($1, $3);  $$ = $1; }
        | id_list COLON PRIV DOUBLECOLON type    { instprivvars($1, $5); }
        ;
 
