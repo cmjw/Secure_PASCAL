@@ -147,8 +147,8 @@ TOKEN parseresult;
          ; */
 
   /* List of function defs. If none, DOT. */
-  fdef_list : fdef SEMICOLON fdef_list;
-            | fdef SEMICOLON
+  fdef_list : fdef SEMICOLON fdef_list {$$ = cons($1, $3); }
+            | fdef SEMICOLON { $$ = $1; }
             | DOT
             ; 
 
