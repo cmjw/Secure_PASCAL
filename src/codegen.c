@@ -45,7 +45,7 @@ void gencode(TOKEN pcode, int varsize, int maxlabel) {
   writeToUser("begin\n");
 
   writeToUser("{ initialize vars for interprocess communication }\n");
-  writeToUser("inputName := 'pipe_to_privileged';\n");
+  writeToUser("inputName := 'pipe_to_priv';\n");
   writeToUser("outputName := 'pipe_to_user';\n\n");
 
   /* Begin main and RPC logic for priv */
@@ -53,9 +53,12 @@ void gencode(TOKEN pcode, int varsize, int maxlabel) {
 
   writeToPriv("{ initialize vars for interprocess communication }\n");
   writeToPriv("inputName := 'pipe_to_user';\n");
-  writeToPriv("outputName := 'pipe_to_privileged';\n\n");
+  writeToPriv("outputName := 'pipe_to_priv';\n\n");
     
   genc(code, UNPRIV_SCOPE);
+
+  writeToPriv("writeln('priv: done');\n");
+  writeToUser("writeln('user: done');\n");
 
   fprintf(userProg, "end.");
   fprintf(privProg, "end.");
@@ -211,7 +214,7 @@ void insertConstBlock() {
 void writeFunctionDefinitions() {
   SYMBOL sym = symtab[1];
 
-  writeToUser("Func test\n");
+  writeToUser("{Func test}\n");
 
   while (sym) {
     if (sym->kind == FUNCTIONSYM) {
