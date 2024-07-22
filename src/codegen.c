@@ -124,8 +124,8 @@ void createRunScript() {
 
   writeToFile(runProg, "echo \"Compiling Final Priv/User Progs ...\"\n");
 
-  writeToFile(runProg, "fpc priv.pas\n");
-  writeToFile(runProg, "fpc user.pas\n");
+  writeToFile(runProg, "fpc priv.pas < dev/null\n");
+  writeToFile(runProg, "fpc user.pas < dev/null\n");
 
   writeToFile(runProg, "echo \"Running Priv Program ...\"\n");
 
