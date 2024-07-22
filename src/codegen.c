@@ -58,6 +58,8 @@ void gencode(TOKEN pcode, int varsize, int maxlabel) {
   fprintf(userProg, "end.");
   fprintf(privProg, "end.");
 
+  writeFunctionDefinitions();
+
   fclose(userProg);
   fclose(privProg);
 }
@@ -163,6 +165,29 @@ void insertConstBlock() {
 
   writeToUser("\n\n");
   writeToPriv("\n\n");
+}
+
+/* Insert function definitions */
+void writeFunctionDefinitions() {
+  SYMBOL sym = symtab[1];
+
+  writeToUser("Func test\n");
+
+  while (sym) {
+    if (sym->kind == FUNCTIONSYM) {
+      if (sym->scope == PRIV_SCOPE) {
+        writeConstEntry(privProg, sym);
+        writeToPriv("{ privileged const }\n");
+      } else {
+        /* write const to both */
+        writeConstEntry(privProg, sym);
+        writeToPriv("\n");
+        writeConstEntry(userProg, sym);
+        writeToUser("\n");
+      }
+    }
+    sym = sym->link;
+  }
 }
 
 /* Write var entry to a file */
