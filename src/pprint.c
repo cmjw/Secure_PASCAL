@@ -166,6 +166,7 @@ void ppexpr(TOKEN tok)       /* pretty-print an expression in prefix form */
 
     tok = tok->link;
 
+    /* print function defs as links of main block */
     while (tok) {
       printexpr(tok, 0);
       printf("\n");
