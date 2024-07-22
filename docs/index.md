@@ -7,3 +7,7 @@
 ## Lexer Documentation
 
 [See Lexer Section](lexer.md)
+
+## Parser Documentation
+
+[See Parser Section](parser.md)
