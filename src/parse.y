@@ -149,7 +149,7 @@ TOKEN parseresult;
             ; 
 
   fdef : fname LPAREN vdef_list RPAREN COLON type SEMICOLON VAR vdef_list block 
-        { $$ = makeprogn($1,cons($3, $10));   }
+        { $$ = makeprogram($1,$3,$10, NULL);   }
        ; 
 
   fname : FUNCTION IDENTIFIER { instfunction($2); $$ = $2; }
