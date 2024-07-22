@@ -68,6 +68,7 @@ TOKEN parseresult;
 %right thenthen ELSE // Same precedence, but "shift" wins.
 
 %%
+  /* Construct the entire program. Do not end with DOT unless no function defs. */
   program : PROGRAM IDENTIFIER LPAREN id_list RPAREN SEMICOLON lblock fdef_list  
             { parseresult = makeprogram($2, $4, $7, $8); } 
           ;
@@ -83,6 +84,7 @@ TOKEN parseresult;
            |  STRING
            ;
 
+  /* List of identifiers. Returns TOK of list. */
   id_list :  IDENTIFIER COMMA id_list    { $$ = cons($1, $3); }
           |  IDENTIFIER                  { $$ = $1; }
           ;
@@ -91,10 +93,11 @@ TOKEN parseresult;
              |  NUMBER                  { instlabel($1); }
              ;
 
+  /* Constant def. Install in symbal table. */
   cdef       :  IDENTIFIER EQ constant    { instconst($1, $3, UNPRIV_SCOPE); } 
              |  pcdef
              ; 
-
+  /* Privileged constant def. Can probably be combined back into cdef sometime. */
   pcdef      : PRIV DOUBLECOLON IDENTIFIER EQ constant { instconst($3, $5, PRIV_SCOPE); /* temp */ }
 
   cdef_list  :  cdef SEMICOLON cdef_list   
@@ -143,15 +146,22 @@ TOKEN parseresult;
          | block
          ; */
 
+  /* List of function defs. If none, DOT. */
   fdef_list : fdef SEMICOLON fdef_list;
             | fdef SEMICOLON
             | DOT
             ; 
 
+  /* Function def. Return TOK of entire function def block. 
+   * Block ex: (float foo (label j)
+                  (label (:= j 0)))
+     Where foo is the function name, and j is the arg.
+  */
   fdef : fname LPAREN vdef_list RPAREN COLON type SEMICOLON VAR vdef_list block 
         { $$ = makeprogram($1,$3,$10, NULL);   }
        ; 
 
+  /* Function name. Install in symbol table and return identifier TOK. */
   fname : FUNCTION IDENTIFIER { instfunction($2); $$ = $2; }
         ;
 
