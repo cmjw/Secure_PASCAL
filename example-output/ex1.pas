@@ -8,5 +8,7 @@ begin
 
     priv::begin
         writeln(i);
+        writeln(i);
+        writeln('*');
     end;
 end.
