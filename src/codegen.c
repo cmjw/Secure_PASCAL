@@ -4,6 +4,7 @@
 #include "genasm.h"
 #include "pprint.h"
 #include "codegen.h"
+#include "stdbool.h"
 
 void genc(TOKEN code, int scope);
 
@@ -266,10 +267,15 @@ void writeConstEntry(FILE* file, SYMBOL sym) {
 }
 
 /* Insert read logic */
-void insertReadRPC(FILE* file, char* id) {
+void insertReadRPC(FILE* file, char* id, bool str) {
   writeToFile(file, "assign(inputPipe, inputName);\n");
   writeToFile(file, "reset(inputPipe);\n");
-  fprintf(file, "readln(inputPipe, %s);\n", id);
+  /* Print as string */
+  if (str) {
+    fprintf(file, "readln(inputPipe, '%s');\n", id);
+  } else {
+    fprintf(file, "readln(inputPipe, %s);\n", id);
+  }
   writeToFile(file, "close(inputPipe);\n");
 }
 
@@ -402,17 +408,23 @@ void gen_funcall(TOKEN code, int scope) {
 
   /* Check scope of arg */
   if (args) {
+    bool str = false; 
+
     sym = searchst(argId);
     if (!sym) {
       printf("Arg not found in symbol table\n");
-      exit(1);
+      printf("Assuming string: %s", argId);
+
+      // TODO:  I broke strings in named pipes at some point.
+
+      //exit(1);
     }
 
     /* RPC logic to send arg value */
-    if (scope == PRIV_SCOPE && sym->scope == UNPRIV_SCOPE) {
+    else if (scope == PRIV_SCOPE && sym->scope == UNPRIV_SCOPE) {
       /* priv: wait for value of id */
       fprintf(privProg, "{ Wait for value of %s from UserProg }\n", argId);
-      insertReadRPC(privProg, argId);
+      insertReadRPC(privProg, argId, str);
 
       /* user: send value of id */
       fprintf(userProg, "{ Send value of %s to PrivProg }\n", argId);
