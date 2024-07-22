@@ -68,8 +68,10 @@ TOKEN parseresult;
 %right thenthen ELSE // Same precedence, but "shift" wins.
 
 %%
-  program : PROGRAM IDENTIFIER LPAREN id_list RPAREN SEMICOLON lblock DOT 
-            { parseresult = makeprogram($2, $4, $7); } ;
+  /* Construct the entire program. Do not end with DOT unless no function defs. */
+  program : PROGRAM IDENTIFIER LPAREN id_list RPAREN SEMICOLON lblock fdef_list  
+            { parseresult = makeprogram($2, $4, $7, $8); } 
+          ;
 
   unsigned_constant : NUMBER | NIL | STRING ;
 
@@ -82,6 +84,7 @@ TOKEN parseresult;
            |  STRING
            ;
 
+  /* List of identifiers. Returns TOK of list. */
   id_list :  IDENTIFIER COMMA id_list    { $$ = cons($1, $3); }
           |  IDENTIFIER                  { $$ = $1; }
           ;
@@ -90,10 +93,11 @@ TOKEN parseresult;
              |  NUMBER                  { instlabel($1); }
              ;
 
+  /* Constant def. Install in symbal table. */
   cdef       :  IDENTIFIER EQ constant    { instconst($1, $3, UNPRIV_SCOPE); } 
              |  pcdef
              ; 
-
+  /* Privileged constant def. Can probably be combined back into cdef sometime. */
   pcdef      : PRIV DOUBLECOLON IDENTIFIER EQ constant { instconst($3, $5, PRIV_SCOPE); /* temp */ }
 
   cdef_list  :  cdef SEMICOLON cdef_list   
@@ -134,30 +138,39 @@ TOKEN parseresult;
          |  vblock
          ;
 
-  vblock : VAR vdef_list fblock    { $$ = $3; }
-         | fblock
-         ;
-
-  fblock : fdef_list block { $$ = $2; }
+  vblock : VAR vdef_list block    { $$ = $3; }
          | block
          ;
 
-  fdef_list : fdef SEMICOLON fdef_list;
-            | fdef SEMICOLON
-            ;
+  /* fblock : fdef_list block { $$ = $2; }
+         | block
+         ; */
 
-  fdef : fname LPAREN vdef_list RPAREN COLON type SEMICOLON VAR vdef_list BEGINBEGIN statement endpart 
-          { $$ = makefunction(); }
-       ;
+  /* List of function defs. If none, DOT. */
+  fdef_list : fdef SEMICOLON fdef_list {$$ = cons($1, $3); }
+            | fdef SEMICOLON { $$ = $1; }
+            | DOT
+            ; 
 
-  fname : FUNCTION IDENTIFIER { instfunction($2); }
+  /* Function def. Return TOK of entire function def block. 
+   * Block ex: (float foo (label j)
+                  (label (:= j 0)))
+     Where foo is the function name, and j is the arg.
+  */
+  fdef : fname LPAREN vdef_list RPAREN COLON type SEMICOLON VAR vdef_list block 
+        { $$ = makeprogram($1,$3,$10, NULL);   }
+       ; 
+
+  /* Function name. Install in symbol table and return identifier TOK. */
+  fname : FUNCTION IDENTIFIER { instfunction($2, UNPRIV_SCOPE); $$ = $2; }
+        | PRIV DOUBLECOLON FUNCTION IDENTIFIER { instfunction($2, PRIV_SCOPE); $$ = $4; }
         ;
 
-  vdef_list : vdef SEMICOLON vdef_list   
-            | vdef SEMICOLON            
+  vdef_list : vdef SEMICOLON vdef_list  {$$ = cons($1, $3);}
+            | vdef SEMICOLON            {$$ = $1;}
             ;
 
-  vdef : id_list COLON type    { instvars($1, $3); }
+  vdef : id_list COLON type    { instvars($1, $3);  $$ = $1; }
        | id_list COLON PRIV DOUBLECOLON type    { instprivvars($1, $5); }
        ;
 
@@ -690,11 +703,11 @@ TOKEN instfields(TOKEN idlist, TOKEN typetok) {
   return idlist;
 }
 
-void instfunction(TOKEN idtok) {
+void instfunction(TOKEN idtok, int scope) {
   SYMBOL sym = insertsym(idtok->stringval);
   sym->kind = FUNCTIONSYM;
   sym->basicdt = STRINGTOK;
-
+  sym->scope = scope;
 }
 
 
@@ -1183,7 +1196,7 @@ TOKEN makeprivprogn(TOKEN tok, TOKEN statements) {
 
 
 /* makeprogram makes the tree structures for the top-level program */
-TOKEN makeprogram(TOKEN name, TOKEN args, TOKEN statements) {
+TOKEN makeprogram(TOKEN name, TOKEN args, TOKEN statements, TOKEN fblock_defs) {
   TOKEN tok = talloc();
 
   tok->tokentype = OPERATOR;
@@ -1196,6 +1209,9 @@ TOKEN makeprogram(TOKEN name, TOKEN args, TOKEN statements) {
 
   name->link = progargs;
   progargs->link = statements;
+
+  /* link is to fblock definitions, if applicable */
+  tok->link = fblock_defs;
 
   if (DEBUG) {
     printf("(DEBUG) makeprogram()\n");
