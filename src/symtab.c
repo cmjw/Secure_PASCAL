@@ -233,10 +233,10 @@ void printsymbol(SYMBOL sym)
        { case FUNCTIONSYM: case ARRAYSYM:
          case RECORDSYM: case POINTERSYM:
            printf(
-             " %ld  %10s  knd %1d %1d  typ %ld  lvl %2d  siz %5d  off %5d SCOPE %d\n",
+             " %ld  %10s  knd %1d %1d  typ %ld  lvl %2d  siz %5d  off %5d %s\n",
                   (long)sym, sym->namestring, sym->kind, sym->basicdt,
                   (long)sym->datatype,
-                  sym->blocklevel, sym->size, sym->offset, sym->scope);
+                  sym->blocklevel, sym->size, sym->offset, scopeprint[sym->scope]);
            ppsym(sym);
          break;
          case VARSYM:
