@@ -404,7 +404,7 @@ void gen_funcall(TOKEN code, int scope) {
   if (args) {
     sym = searchst(argId);
     if (!sym) {
-      ferror("Arg not found in symbol table\n");
+      printf("Arg not found in symbol table\n");
       exit(1);
     }
 
