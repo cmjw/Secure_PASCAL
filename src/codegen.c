@@ -370,9 +370,61 @@ void genc(TOKEN code, int scope) {
   }  
 
   if (code->whichval >= PLUSOP && code->whichval <= DIVIDEOP) {
-    
+    gen_arith_op(code, scope);
   }
 }
+
+/* Generate code for arirthmetic operators */
+void gen_arith_op(TOKEN code, int scope) {
+  TOKEN tok, lhs, rhs;
+  SYMBOL sym;
+
+  int next_scope = (code->scope ? PRIV_SCOPE : UNPRIV_SCOPE) || scope;
+
+  FILE *outFile = next_scope ? privProg : userProg;
+
+  lhs = code->operands;
+  rhs = lhs->link;
+  //char* id = lhs->stringval;
+
+  
+  // get string value of rhs and lhs
+  // get array to print operator
+  printVal(outFile, lhs);
+  writeToFile(outFile, " ");
+  writeToFile(outFile, ops[code->whichval]);
+  writeToFile(outFile, " ");
+  printVal(outFile, rhs);
+  //writeToFile(outFile, ";\n");
+}
+
+/* Return string value of a token */
+void printVal(FILE* file, TOKEN tok) {
+  if (tok->tokentype == OPERATOR) {
+    printf("parsing error\n");
+    exit(1);
+  }
+  
+  // some issue seg faulting here
+  
+  switch (tok->tokentype) {
+    case STRINGTOK:
+      writeToFile(file, tok->stringval);
+      break;
+
+    case NUMBERTOK:
+      switch (tok->basicdt) {
+        case INTEGER: 
+          fprintf(file, "%d", tok->intval); break;
+        case REAL:
+          fprintf(file, "%f", tok->realval); break;
+          break;
+      }
+      
+      break;
+  }
+}
+
 
 /* Generate funcall */
 void gen_funcall(TOKEN code, int scope) {
