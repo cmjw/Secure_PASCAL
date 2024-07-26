@@ -368,6 +368,10 @@ void genc(TOKEN code, int scope) {
       
       break;
   }  
+
+  if (code->whichval >= PLUSOP && code->whichval <= DIVIDEOP) {
+    
+  }
 }
 
 /* Generate funcall */
