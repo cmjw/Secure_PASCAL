@@ -11,4 +11,7 @@ begin
         i := i + 1;
         writeln(i); {"2"}
     end;
+
+    i := 10;
+    writeln(i); {"10"}
 end.
