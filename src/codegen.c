@@ -314,17 +314,24 @@ void genc(TOKEN code, int scope) {
   if (DEBUGGEN) {
     printf("genc file scope: %d %d\n", scope, next_scope);
   }
-  
 
   switch (code->whichval) { 
     /* Block */
     case PROGNOP:
+      printf("------ PROGN OP - block start\n");
+
+      /* Symbol communication for privblocks */
+      if (next_scope == PRIV_SCOPE || code->operands->scope == PRIV_SCOPE) {
+        communicate_symbols_to_priv(code->operands);
+      }
+
 	    tok = code->operands;
 	  
       while (tok != NULL) {  
         genc(tok, next_scope);
         tok = tok->link;
       }
+      printf("------ PROGN OP - block end\n");
       break;
 
     /* Assignment operator */
@@ -383,72 +390,57 @@ void communicate_symbols_to_priv(TOKEN code) {
   int reg, offs;
   SYMBOL sym;
 
-  //int next_scope = (code->scope ? PRIV_SCOPE : UNPRIV_SCOPE) || scope;
-
-  //FILE *outFile = next_scope ? privProg : userProg;
-
   if (DEBUGGEN) { 
     printf("communicate priv block symbols\n");
 	  dbugprinttok(code);
   }
-  
-  if (code->tokentype != OPERATOR) { 
-    ferror("Bad code token");
-	  dbugprinttok(code);
-    exit(1);
-	}
-  
-  switch (code->whichval) { 
-    /* Block */
-    case PROGNOP:
-	    tok = code->operands;
-	  
-      while (tok != NULL) {  
-        //genc(tok, next_scope);
-        tok = tok->link;
+
+  while (code != NULL) {  
+    //genc(tok, next_scope);
+
+    if (code->whichval == FUNCALLOP) {
+      printf("FUNCALL IN COMM\n");
+
+      // get sym, comm like in make_funcall and 
+      TOKEN func = code->operands;
+      TOKEN args = func->link;
+
+      char* id = code->operands->stringval;
+          
+      /* Only one arg for now */
+      char* argId = "";
+      if (args) {
+        argId = args->stringval;
+      }  
+
+      /* Check scope of arg */
+      if (args) {
+        bool str = false; 
+
+        sym = searchst(argId);
+        if (!sym) {
+          printf("Arg not found in symbol table\n");
+          printf("Assuming string: %s", argId);
+        }
+
+        /* RPC logic to send arg value */
+        else if (sym->scope == UNPRIV_SCOPE) {
+          /* priv: wait for value of id */
+          fprintf(privProg, "{ *** Wait for value of %s from UserProg }\n", argId);
+          insertReadRPC(privProg, argId, str);
+          
+
+          /* user: send value of id */
+          fprintf(userProg, "{ *** Send value of %s to PrivProg }\n", argId);
+          insertWriteRPC(userProg, argId);
+
+          writeToFile(privProg, "\n");
+          writeToFile(userProg, "\n");
+        }
       }
-      break;
+    }
 
-    /* Assignment operator */
-	  case ASSIGNOP:    
-      if (DEBUGGEN) {
-        printf("ASSIGNOP: ");
-      }        
-      //gen_assign(code, scope);
-      break;
-
-    /* Function call */
-    case FUNCALLOP:
-      if (DEBUGGEN) {
-        printf("FUNCALL: ");
-      } 
-      //gen_funcall(code, scope);
-      break;
-
-    case GOTOOP:
-      //int label = code->operands->intval;
-
-      //fprintf(outFile, "goto  %d;\n", label);
-      break;
-
-    case LABELOP:
-      if (DEBUGGEN) {
-        printf("LABELOP: ");
-      } 
-
-      //fprintf(outFile, "label %d:\n", code->operands->intval);
-      break;
-
-    case IFOP:
-      if (DEBUGGEN) {
-        printf("IFOP: ");
-      } 
-      //gen_ifop(code, scope);
-      break;
-  }  
-
-  if (code->whichval >= PLUSOP && code->whichval <= DIVIDEOP) {
-    //gen_arith_op(code, scope);
+    code = code->link;
   }
 }
 
@@ -604,19 +596,21 @@ void gen_funcall(TOKEN code, int scope) {
     }
 
     /* RPC logic to send arg value */
-    else if (scope == PRIV_SCOPE && sym->scope == UNPRIV_SCOPE) {
-      /* priv: wait for value of id */
-      fprintf(privProg, "{ Wait for value of %s from UserProg }\n", argId);
-      insertReadRPC(privProg, argId, str);
+    // else if (scope == PRIV_SCOPE && sym->scope == UNPRIV_SCOPE) {
+    //   /* priv: wait for value of id */
+    //   fprintf(privProg, "{ Wait for value of %s from UserProg }\n", argId);
+    //   insertReadRPC(privProg, argId, str);
       
 
-      /* user: send value of id */
-      fprintf(userProg, "{ Send value of %s to PrivProg }\n", argId);
-      insertWriteRPC(userProg, argId);
+    //   /* user: send value of id */
+    //   fprintf(userProg, "{ Send value of %s to PrivProg }\n", argId);
+    //   insertWriteRPC(userProg, argId);
 
-      writeToFile(privProg, "\n");
-      writeToFile(userProg, "\n");
-    }
+    //   writeToFile(privProg, "\n");
+    //   writeToFile(userProg, "\n");
+    // }
+
+    /* Moved to communicate priv block*/
   }
 
   fprintf(outFile, "%s(%s);\n", id, argId);
