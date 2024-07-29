@@ -8,7 +8,7 @@ begin
 
     priv::begin
         writeln(i); {"1"}
-        i := 10;
-        writeln(i); {"10"}
+        i := i + 1;
+        writeln(i); {"2"}
     end;
 end.
