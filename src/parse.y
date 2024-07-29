@@ -1031,7 +1031,7 @@ TOKEN makefuncall(TOKEN tok, TOKEN fn, TOKEN args) {
       strcpy(fn->stringval, "writeln");
       tok->basicdt = STRING;
     } else {
-      strcpy(fn->stringval, "writelni");
+      strcpy(fn->stringval, "writeln");
       tok->basicdt = INTEGER;
     } 
   } 

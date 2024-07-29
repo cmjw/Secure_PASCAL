@@ -4,6 +4,7 @@
 #include "genasm.h"
 #include "pprint.h"
 #include "codegen.h"
+#include "stdbool.h"
 
 void genc(TOKEN code, int scope);
 
@@ -17,6 +18,8 @@ char* ops[]  = {" ", "+", "-", "*", "/", ":=", "=", "<>", "<", "<=",
 
 int nextlabel;    /* Next available label number */
 int stkframesize;   /* total stack frame size */
+
+FILE *runProg;
 
 
 /* Generate code for main function */
@@ -43,7 +46,7 @@ void gencode(TOKEN pcode, int varsize, int maxlabel) {
   writeToUser("begin\n");
 
   writeToUser("{ initialize vars for interprocess communication }\n");
-  writeToUser("inputName := 'pipe_to_privileged';\n");
+  writeToUser("inputName := 'pipe_to_priv';\n");
   writeToUser("outputName := 'pipe_to_user';\n\n");
 
   /* Begin main and RPC logic for priv */
@@ -51,9 +54,12 @@ void gencode(TOKEN pcode, int varsize, int maxlabel) {
 
   writeToPriv("{ initialize vars for interprocess communication }\n");
   writeToPriv("inputName := 'pipe_to_user';\n");
-  writeToPriv("outputName := 'pipe_to_privileged';\n\n");
+  writeToPriv("outputName := 'pipe_to_priv';\n\n");
     
   genc(code, UNPRIV_SCOPE);
+
+  writeToPriv("writeln('priv: done');\n");
+  writeToUser("writeln('user: done');\n");
 
   fprintf(userProg, "end.");
   fprintf(privProg, "end.");
@@ -62,6 +68,8 @@ void gencode(TOKEN pcode, int varsize, int maxlabel) {
 
   fclose(userProg);
   fclose(privProg);
+
+  createRunScript();
 }
 
 /* Write line to user program */
@@ -100,6 +108,42 @@ void initOutputFiles() {
 
   writeToPriv("{ Secure Pascal : Generated Privileged Program }\n");
   writeToPriv("program PrivProg(ouput);\n\n");
+}
+
+/* Create the script to run the final pas files */
+void createRunScript() {
+  runProg = fopen("run_me.sh", "w");
+  if (!runProg) {
+    perror("Failed to open run_me.sh\n");
+    exit(1);
+  }
+  writeToFile(runProg, "#!/bin/bash\n\n");
+
+  writeToFile(runProg, "rm pipe_to_priv\n");
+  writeToFile(runProg, "rm pipe_to_user\n");
+
+  writeToFile(runProg, "rm priv\n");
+  writeToFile(runProg, "rm user\n");
+
+  writeToFile(runProg, "echo \"Creating Named Pipes ...\"\n");
+  writeToFile(runProg, "mkfifo \"pipe_to_priv\"\n");
+  writeToFile(runProg, "mkfifo \"pipe_to_user\"\n\n");
+
+  writeToFile(runProg, "echo \"Compiling Final Priv/User Progs ...\"\n");
+
+  writeToFile(runProg, "fpc priv.pas\n");
+  writeToFile(runProg, "fpc user.pas\n");
+
+  writeToFile(runProg, "echo \"Running Priv Program ...\"\n");
+
+  writeToFile(runProg, "./priv &\n");
+  writeToFile(runProg, "./user &\n");
+
+  writeToFile(runProg, "echo \"Running User Program ...\"\n");
+
+  writeToFile(runProg, "echo \"Removing Named Pipes ...\"\n");
+  writeToFile(runProg, "rm pipe_to_priv\n");
+  writeToFile(runProg, "rm pipe_to_user\n");
 }
 
 /* Initialize VAR blocks in output programs */
@@ -144,11 +188,15 @@ void insertVarBlock() {
 void insertConstBlock() {
   SYMBOL sym = symtab[1];
   
-  writeToUser("const\n");
-  writeToPriv("const\n");
+  int count = 0;
 
   while (sym) {
     if (sym->kind == CONSTSYM) {
+      count++;
+      if (count == 1) {
+        writeToUser("const\n");
+        writeToPriv("const\n");
+      }
       if (sym->scope == PRIV_SCOPE) {
         writeConstEntry(privProg, sym);
         writeToPriv("{ privileged const }\n");
@@ -163,15 +211,17 @@ void insertConstBlock() {
     sym = sym->link;
   }
 
-  writeToUser("\n\n");
-  writeToPriv("\n\n");
+  if (count > 0) {
+    writeToUser("\n\n");
+    writeToPriv("\n\n");
+  }
 }
 
 /* Insert function definitions */
 void writeFunctionDefinitions() {
   SYMBOL sym = symtab[1];
 
-  writeToUser("Func test\n");
+  writeToUser("{Func test}\n");
 
   while (sym) {
     if (sym->kind == FUNCTIONSYM) {
@@ -217,10 +267,15 @@ void writeConstEntry(FILE* file, SYMBOL sym) {
 }
 
 /* Insert read logic */
-void insertReadRPC(FILE* file, char* id) {
+void insertReadRPC(FILE* file, char* id, bool str) {
   writeToFile(file, "assign(inputPipe, inputName);\n");
   writeToFile(file, "reset(inputPipe);\n");
-  fprintf(file, "readln(inputPipe, %s);\n", id);
+  /* Print as string */
+  if (str) {
+    fprintf(file, "readln(inputPipe, '%s');\n", id);
+  } else {
+    fprintf(file, "readln(inputPipe, %s);\n", id);
+  }
   writeToFile(file, "close(inputPipe);\n");
 }
 
@@ -313,7 +368,63 @@ void genc(TOKEN code, int scope) {
       
       break;
   }  
+
+  if (code->whichval >= PLUSOP && code->whichval <= DIVIDEOP) {
+    gen_arith_op(code, scope);
+  }
 }
+
+/* Generate code for arirthmetic operators */
+void gen_arith_op(TOKEN code, int scope) {
+  TOKEN tok, lhs, rhs;
+  SYMBOL sym;
+
+  int next_scope = (code->scope ? PRIV_SCOPE : UNPRIV_SCOPE) || scope;
+
+  FILE *outFile = next_scope ? privProg : userProg;
+
+  lhs = code->operands;
+  rhs = lhs->link;
+  //char* id = lhs->stringval;
+
+  
+  // get string value of rhs and lhs
+  // get array to print operator
+  printVal(outFile, lhs);
+  writeToFile(outFile, " ");
+  writeToFile(outFile, ops[code->whichval]);
+  writeToFile(outFile, " ");
+  printVal(outFile, rhs);
+  //writeToFile(outFile, ";\n");
+}
+
+/* Return string value of a token */
+void printVal(FILE* file, TOKEN tok) {
+  if (tok->tokentype == OPERATOR) {
+    printf("parsing error\n");
+    exit(1);
+  }
+  
+  // some issue seg faulting here
+  
+  switch (tok->tokentype) {
+    case STRINGTOK:
+      writeToFile(file, tok->stringval);
+      break;
+
+    case NUMBERTOK:
+      switch (tok->basicdt) {
+        case INTEGER: 
+          fprintf(file, "%d", tok->intval); break;
+        case REAL:
+          fprintf(file, "%f", tok->realval); break;
+          break;
+      }
+      
+      break;
+  }
+}
+
 
 /* Generate funcall */
 void gen_funcall(TOKEN code, int scope) {
@@ -353,17 +464,23 @@ void gen_funcall(TOKEN code, int scope) {
 
   /* Check scope of arg */
   if (args) {
+    bool str = false; 
+
     sym = searchst(argId);
     if (!sym) {
-      ferror("Arg not found in symbol table\n");
-      exit(1);
+      printf("Arg not found in symbol table\n");
+      printf("Assuming string: %s", argId);
+
+      // TODO:  I broke strings in named pipes at some point.
+
+      //exit(1);
     }
 
     /* RPC logic to send arg value */
-    if (scope == PRIV_SCOPE && sym->scope == UNPRIV_SCOPE) {
+    else if (scope == PRIV_SCOPE && sym->scope == UNPRIV_SCOPE) {
       /* priv: wait for value of id */
       fprintf(privProg, "{ Wait for value of %s from UserProg }\n", argId);
-      insertReadRPC(privProg, argId);
+      insertReadRPC(privProg, argId, str);
 
       /* user: send value of id */
       fprintf(userProg, "{ Send value of %s to PrivProg }\n", argId);
