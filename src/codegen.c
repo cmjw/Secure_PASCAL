@@ -359,6 +359,9 @@ void genc(TOKEN code, int scope) {
         printf("IFOP: ");
       } 
 
+      gen_ifop(code, scope);
+
+
       break;
 
     case PLUSOP:
@@ -371,6 +374,31 @@ void genc(TOKEN code, int scope) {
 
   if (code->whichval >= PLUSOP && code->whichval <= DIVIDEOP) {
     gen_arith_op(code, scope);
+  }
+}
+
+/* Generate code for if/then (else) */
+void gen_ifop(TOKEN code, int scope) {
+  int next_scope = (code->scope ? PRIV_SCOPE : UNPRIV_SCOPE) || scope;
+
+  FILE *outFile = next_scope ? privProg : userProg;
+
+  TOKEN expr = code->operands;
+
+  TOKEN thenpart = expr->link;
+
+  writeToFile(outFile, "if ");
+  /* condition */
+  gen_expression(expr, scope);
+  
+  writeToFile(outFile, "thenpart\n");
+}
+
+/* Write condition */
+void gen_expression(TOKEN tok, FILE *outFile) {
+  while (tok) {
+    //printVal(outFile, tok);
+    tok = tok->link;
   }
 }
 
@@ -402,14 +430,30 @@ void gen_arith_op(TOKEN code, int scope) {
 void printVal(FILE* file, TOKEN tok) {
   if (tok->tokentype == OPERATOR) {
     printf("parsing error\n");
-    exit(1);
+    //exit(1);
   }
+
+  char* id;
   
   // some issue seg faulting here
   
   switch (tok->tokentype) {
     case STRINGTOK:
       writeToFile(file, tok->stringval);
+      break;
+
+
+    case IDENTIFIERTOK:
+      id = tok->stringval;
+
+      SYMBOL idsym = searchst(id);
+      if (idsym) {
+        writeToFile(file, tok->stringval);
+      } else {
+        ferror("Unrecognized symbol\n");
+        exit(1);
+      }
+
       break;
 
     case NUMBERTOK:

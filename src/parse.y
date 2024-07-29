@@ -1115,9 +1115,32 @@ TOKEN makeif(TOKEN tok, TOKEN exp, TOKEN thenpart, TOKEN elsepart) {
   tok->tokentype = OPERATOR;  /* Make it look like an operator   */
   tok->whichval = IFOP;
   if (elsepart != NULL) elsepart->link = NULL;
+
   thenpart->link = elsepart;
   exp->link = thenpart;
   tok->operands = exp;
+  
+  if (DEBUG & DB_MAKEIF) { 
+    printf("makeif\n");
+    dbugprinttok(tok);
+    dbugprinttok(exp);
+    dbugprinttok(thenpart);
+    dbugprinttok(elsepart);
+  };
+  
+  return tok;
+}
+
+TOKEN makeif_2(TOKEN tok, TOKEN exp, TOKEN thenpart, TOKEN elsepart) {  
+  tok->tokentype = OPERATOR;  /* Make it look like an operator   */
+  tok->whichval = IFOP;
+
+  if (elsepart != NULL) elsepart->link = NULL;
+
+  thenpart->link = elsepart;
+  exp->link = thenpart;
+  tok->operands = exp;
+  
   if (DEBUG & DB_MAKEIF) { 
     printf("makeif\n");
     dbugprinttok(tok);
