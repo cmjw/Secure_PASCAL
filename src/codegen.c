@@ -358,18 +358,14 @@ void genc(TOKEN code, int scope) {
       if (DEBUGGEN) {
         printf("IFOP: ");
       } 
-
       gen_ifop(code, scope);
-
-
       break;
 
-    case PLUSOP:
-      if (DEBUGGEN) {
-        printf("PLUSOP: ");
-      }
-      
-      break;
+    // case PLUSOP:
+    //   if (DEBUGGEN) {
+    //     printf("PLUSOP: ");
+    //   }
+    //   break;
   }  
 
   if (code->whichval >= PLUSOP && code->whichval <= DIVIDEOP) {
