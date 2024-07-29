@@ -2,6 +2,12 @@
 
 The src directory contains the main project code and build instructions.
 
+# Build Note
+
+Requires gcc 9.5.0
+
+Build script assumes environment has executable gcc-9 
+
 ## Example Usage
 
 >$ cd /src
