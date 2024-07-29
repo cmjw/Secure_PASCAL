@@ -373,6 +373,85 @@ void genc(TOKEN code, int scope) {
   }
 }
 
+/* Communicate symbols */
+/*
+ * Search this privblock for non priv symbols. 
+ * Communicate values from main user prog to priv program.
+ */
+void communicate_symbols_to_priv(TOKEN code) {
+  TOKEN tok, lhs, rhs;
+  int reg, offs;
+  SYMBOL sym;
+
+  //int next_scope = (code->scope ? PRIV_SCOPE : UNPRIV_SCOPE) || scope;
+
+  //FILE *outFile = next_scope ? privProg : userProg;
+
+  if (DEBUGGEN) { 
+    printf("communicate priv block symbols\n");
+	  dbugprinttok(code);
+  }
+  
+  if (code->tokentype != OPERATOR) { 
+    ferror("Bad code token");
+	  dbugprinttok(code);
+    exit(1);
+	}
+  
+  switch (code->whichval) { 
+    /* Block */
+    case PROGNOP:
+	    tok = code->operands;
+	  
+      while (tok != NULL) {  
+        //genc(tok, next_scope);
+        tok = tok->link;
+      }
+      break;
+
+    /* Assignment operator */
+	  case ASSIGNOP:    
+      if (DEBUGGEN) {
+        printf("ASSIGNOP: ");
+      }        
+      //gen_assign(code, scope);
+      break;
+
+    /* Function call */
+    case FUNCALLOP:
+      if (DEBUGGEN) {
+        printf("FUNCALL: ");
+      } 
+      //gen_funcall(code, scope);
+      break;
+
+    case GOTOOP:
+      //int label = code->operands->intval;
+
+      //fprintf(outFile, "goto  %d;\n", label);
+      break;
+
+    case LABELOP:
+      if (DEBUGGEN) {
+        printf("LABELOP: ");
+      } 
+
+      //fprintf(outFile, "label %d:\n", code->operands->intval);
+      break;
+
+    case IFOP:
+      if (DEBUGGEN) {
+        printf("IFOP: ");
+      } 
+      //gen_ifop(code, scope);
+      break;
+  }  
+
+  if (code->whichval >= PLUSOP && code->whichval <= DIVIDEOP) {
+    //gen_arith_op(code, scope);
+  }
+}
+
 /* Generate code for if/then (else) */
 void gen_ifop(TOKEN code, int scope) {
   int next_scope = (code->scope ? PRIV_SCOPE : UNPRIV_SCOPE) || scope;
@@ -529,12 +608,14 @@ void gen_funcall(TOKEN code, int scope) {
       /* priv: wait for value of id */
       fprintf(privProg, "{ Wait for value of %s from UserProg }\n", argId);
       insertReadRPC(privProg, argId, str);
+      
 
       /* user: send value of id */
       fprintf(userProg, "{ Send value of %s to PrivProg }\n", argId);
       insertWriteRPC(userProg, argId);
 
       writeToFile(privProg, "\n");
+      writeToFile(userProg, "\n");
     }
   }
 
