@@ -390,16 +390,23 @@ void gen_ifop(TOKEN code, int scope) {
   writeToFile(outFile, "if ");
   /* condition */
   gen_expression(expr, scope);
-  
-  writeToFile(outFile, "thenpart\n");
+  writeToFile(outFile, " then\n");
+
+  /* statement(s) */
+  genc(thenpart, scope);
+
+  writeToFile(outFile, "\n");
 }
 
 /* Write condition */
-void gen_expression(TOKEN tok, FILE *outFile) {
-  while (tok) {
-    //printVal(outFile, tok);
-    tok = tok->link;
+void gen_expression(TOKEN tok, int scope) {
+  printf("gen expr\n");
+  //printtok(tok);
+  if (tok->tokentype == OPERATOR) {
+    printf("operatortok\n");
   }
+
+  gen_arith_op(tok, scope);
 }
 
 /* Generate code for arirthmetic operators */
@@ -430,7 +437,8 @@ void gen_arith_op(TOKEN code, int scope) {
 void printVal(FILE* file, TOKEN tok) {
   if (tok->tokentype == OPERATOR) {
     printf("parsing error\n");
-    //exit(1);
+    //gencode(tok,0,0);
+    return;
   }
 
   char* id;
