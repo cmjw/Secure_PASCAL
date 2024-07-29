@@ -7,7 +7,8 @@ begin
     i := 1;
 
     priv::begin
-        if i > 0 then
+        if i = 0 then
             writeln(i);
+
     end;
 end.
