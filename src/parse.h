@@ -2,6 +2,27 @@
 /* 16 Apr 04; 23 Feb 05; 17 Nov 05; 18 Apr 06; 26 Jul 12; 07 Aug 13; 11 Oct 17;
  07 Dec 18 */
 
+
+/* Security Policy Levels */
+
+/* 
+No globals may be referenced from priv area. 
+Only "safe", predefined functions may utilize priv data. 
+*/
+#define STRICTEST 2
+
+/* No globals may be referenced from priv area. 
+User-defined, priv functions may access priv data.
+*/
+#define STRICT    1  
+
+/* 
+No restrictions. Priv data may be accessed from unpriv. 
+*/
+#define NONE      0
+
+
+
 TOKEN makefunction();
 
 void instfunction(TOKEN idtok, int scope);
