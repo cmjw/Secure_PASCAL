@@ -46,6 +46,9 @@ extern int yydebug;
 
 TOKEN parseresult;
 
+/* define security policy */
+#define SEC_POLICY STRICT
+
 %}
 
 %define parse.error verbose
