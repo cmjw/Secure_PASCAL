@@ -4,17 +4,27 @@
 
 The Secure Pascal Project is written primarily in C, using bison and flex.
 
-The goal of the project is to demonstrate the mechanics and benefits of automated privilege separation, specifically in the context of Pascal programming. Pascal is the language of choice for this project because it is a strongly-typed language with less ambiguity in its syntax and semantics.
+The goal of the project is to demonstrate the mechanics and benefits of automated privilege separation, specifically in the context of Pascal programming. Pascal is the language of choice for this project because of its nature as a strongly-typed language.
 
-In this demonstration of privilege separation, the desired function is to provide one annotated Pascal program, and receive two unannotated, standard Pascal programs: one "user" and one "privileged" program. 
+The desired functionality is for the user to provide one annotated Pascal program, and receive two unannotated, standard Pascal programs: one "user" and one "privileged" program. The input file is lexed and parsed as an annotated Pascal file, and the resulting AST is used to generate two standard Pascal output files. This process can be broken down into the following steps:
 
-The input file is lexed and parsed as an annotated Pascal file, and the resulting AST is used to generate two standard Pascal output files.
+1. The user annotates a standard Pascal program. Using the keywords `priv` and `unpriv`, the user may mark individual symbols or a section of code as privileged (or less commonly, explicitly unprivileged). The annotated program must follow standard Pascal syntax, as well as the annotation syntax as specified by the desired security policy level (see below).
+
+2. The user will then execute the Secure Pascal compiler, specifying the annotated input file from Step 1 and the security policy level. 
+
+3. The program is lexed.
+
+4. The program is parsed within the rules of the appropriate security level. In the case of a syntax error in regards to standard Pascal conventions or annotation syntax, the parser will halt and alert the user.
+
+
 
 ### Dependencies
 
-gcc 9.5.0
-bison 
-flex
+* `gcc 9.5.0`
+* `flex/lex 2.6.4`
+* `bison/yacc 3.8.2`
+
+Note: newer versions of GCC do not agree with the flex-generated files' formatting. To avoid having to reformat other files, please use gcc 9.5.0 for now.
 
 ## Build Instructions
 
