@@ -40,4 +40,14 @@ An explicity marked "priv" symbol or section may not be referenced in an explici
 
 An exception to this rule is if a user-defined explicilty "priv" function returns an explicily "unpriv" result, an unprivileged section or symbol may access this data.
 
+### Security Policy Levels
+
+In addition to the modified syntax roles imposed by privilege annotation, the user may specify a security policy level for the parser to follow. The default is strict. 
+
+There are four security policy levels:
+* `NONE` : No cross-privilege restrictions. Privileged data may be accessed from any lower privilege level. Global data may be written or read from any privilege level.
+* `STRICT` : Privileged data `may not` be read or written from a lower privilege level. This excludes explicitly "unpriv" return vaues. Global data `may` be read or written from any privilege level. This means global variables are shared across the two files. If a file is `optionally` provided, privileged code may only reference a user-provided list of "safe" functions - all other function calls from privileged sections are disallowed.
+* `STRICTER` : Privileged data `may not` be read or written from a lower privilege level. This excludes explicitly "unpriv" return vaues. Global data `may` be read from privileged sections of code, but `may not` be written from privileged sections. If a file is `optionally` provided, privileged code may only reference a user-provided list of "safe" functions - all other function calls from privileged sections are disallowed.
+* `STRICTEST` : Privileged data `may not` be read or written from a lower privilege level. This excludes explicitly "unpriv" return vaues. Global data `may not` be read `or` written from privileged sections or symbols. The user `must` provide a file that defines a list of "safe" or "allowed" privileged functions. Privileged code may only reference a user-provided list of "safe" functions - all other function calls from privileged sections are disallowed. These "safe" functions may be user defined, in the standard library, or from an arbitrary library.
+
 [See Parser Section](parser.md)
