@@ -3,18 +3,25 @@ program simple(ouput);
 
 var i : integer;
 
-begin
-    i := 1; { last statement has no end semicolon }
-end { no dot }
+const
 
-function foo(jo : integer;): integer;
+begin
+    i := 1; 
+
+
+end 
+
+function foo(j : integer;): integer;
 var result : integer;
 begin
-    jo := 0;
+    j := 0;
 end;
 
-priv::function bar(jo : integer;): integer;
+priv::function bar(k : integer;): integer;
 var result : integer;
 begin
-    jo := 0;
+    k := 0;
 end;
+
+{++++++++++++++++++++++++++++++++++++++++++++++++}
+
