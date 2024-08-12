@@ -1446,10 +1446,10 @@ int main(void)          /*  */
     initsyms();
 
     /* For debugging parser */
-    yydebug = 1;
+    yydebug = 0;
     
     res = yyparse();
-    //printst();       /* to shorten, change to:  printstlevel(1);  */
+    //printst();       
     printstlevel(1);
     printf("yyparse result = %8d\n", res);
     if (DEBUG & DB_PARSERES) dbugprinttok(parseresult);
