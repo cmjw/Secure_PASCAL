@@ -221,7 +221,7 @@ void insertConstBlock() {
 void writeFunctionDefinitions() {
   SYMBOL sym = symtab[1];
 
-  writeToUser("{Func test}\n");
+  //writeToUser("{Func test}\n");
 
   while (sym) {
     if (sym->kind == FUNCTIONSYM) {
@@ -426,12 +426,12 @@ void communicate_symbols_to_priv(TOKEN code) {
         /* RPC logic to send arg value */
         else if (sym->scope == UNPRIV_SCOPE) {
           /* priv: wait for value of id */
-          fprintf(privProg, "{ *** Wait for value of %s from UserProg }\n", argId);
+          fprintf(privProg, "{ Wait for value of %s from UserProg }\n", argId);
           insertReadRPC(privProg, argId, str);
           
 
           /* user: send value of id */
-          fprintf(userProg, "{ *** Send value of %s to PrivProg }\n", argId);
+          fprintf(userProg, "{ Send value of %s to PrivProg }\n", argId);
           insertWriteRPC(userProg, argId);
 
           writeToFile(privProg, "\n");
