@@ -26,11 +26,11 @@ The desired functionality is for the user to provide one annotated Pascal progra
 * `flex/lex 2.6.4`
 * `bison/yacc 3.8.2`
 
-Note: newer versions of GCC do not agree with the flex-generated files' formatting. To avoid having to reformat other files, please use gcc 9.5.0 for now.
+Note: newer versions of GCC do not agree with the flex-generated C files' formatting. To avoid having to reformat other files, please use gcc 9.5.0 for now.
 
 ## Build Instructions
 
-[See Build Section](build.md)
+
 
 ## Lexer Documentation
 
@@ -89,3 +89,5 @@ The complete process will generate three files:
 2. `user.pas` : The user-level Pascal program.
 
 3. `run_me.sh` : A script to create the necessary named pipes, compile, and execute the two output programs simultaneously.
+
+If the user executes `run_me.sh`, the script will create the necessary named pipes, compile the two .pas files, and execute them.
