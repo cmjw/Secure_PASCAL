@@ -10,8 +10,14 @@ A user may mark a symbol (variable, constant, function name) or section of code 
 
 ## Other Syntax Changes
 
-1. The program name must be formatted as: program Example(ouput); - the output parameter list is required even if it is empty.
+* The program name must be formatted as: program Example(ouput); - the output parameter list is required even if it is empty.
 
-2. The program must follow this order: label block, constant block, type definition block, variable block, main function block, function definitions. All blocks are optional except main block.
+* The program must follow this order: label block, constant block, type definition block, variable block, main function block, function definitions. All blocks are optional except main block.
 
-3. The last statement in a block may optionally end with a semicolon.
+* The last statement in a block may optionally end with a semicolon.
+
+### Function Definitions
+
+Function definitions may optionally be included as a part of the input Pascal program, located after the main block. 
+
+TBD - paste formatted example here from func/foo
