@@ -5,23 +5,10 @@
 
 /* Security Policy Levels */
 
-/* 
-No globals may be referenced from priv area. 
-Only "safe", predefined functions may utilize priv data. 
-*/
-#define STRICTEST 2
-
-/* No globals may be referenced from priv area. 
-User-defined, priv functions may access priv data.
-*/
-#define STRICT    1  
-
-/* 
-No restrictions. Priv data may be accessed from unpriv. 
-*/
 #define NONE      0
-
-
+#define STRICT    1  
+#define STRICTER  2
+#define STRICTEST 3
 
 TOKEN makefunction();
 
