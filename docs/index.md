@@ -1,6 +1,4 @@
-# Documentation
-
-## Introduction
+# Introduction
 
 The Secure Pascal Project is written primarily in C, using bison and flex.
 
@@ -30,7 +28,7 @@ Note: newer versions of GCC do not agree with the flex-generated C files' format
 
 ## Build Instructions
 
-
+# Documentation
 
 ## Lexer Documentation
 
@@ -42,17 +40,23 @@ The lexer is written in flex/lex. Input tokens are identified as TOKENs. More de
 
 The parser is written in bison/yacc in C. The parser was built referencing standard Pascal syntax, with some modifications for user annotations.
 
-### Annotations
+For more information on parsing rules and formatting requirements for an annotated Pascal input program, see the page below.
+
+[See Parser Section](parser.md)
+
+# Further Information
+
+## Annotations
 
 The Pascal program used as an input to be processed should be annotated by the user. A user may mark a symbol or section of code as `priv` or `unpriv`. This explicitly tells the compiler to treat a symbol or section as privileged or unprivileged, respectively.
 
-### Appended Syntax Rules
+## Appended Syntax Rules
 
 An explicity marked `priv` symbol or section may not be referenced in an explicitly `unpriv` or implicitly unprivileged section of code, or be assigned to an unpriviliged symbol. 
 
 An exception to this rule is if a user-defined explicilty `priv` function returns an explicily `unpriv` result, an unprivileged section or symbol may access this data.
 
-### Security Policy Levels
+## Security Policy Levels
 
 In addition to the modified syntax roles imposed by privilege annotation, the user may specify a security policy level for the parser to follow. The default is strict. 
 
@@ -76,8 +80,6 @@ There are four security policy levels:
 * Privileged data **may not** be read or written from a lower privilege level. This excludes explicitly `unpriv` return vaues. 
 * Global data **may not** be read **or** written from privileged sections or symbols. 
 * The user **must** provide a file that defines a list of "safe" or "allowed" privileged functions. Privileged code may only reference a user-provided list of "safe" functions - all other function calls from privileged sections are disallowed. These "safe" functions may be user defined, in the standard library, or from an arbitrary library.
-
-[See Parser Section](parser.md)
 
 ## Code Generation
 
