@@ -26,7 +26,19 @@ The desired functionality is for the user to provide one annotated Pascal progra
 
 Note: newer versions of GCC do not agree with the flex-generated C files' formatting. To avoid having to reformat other files, please use gcc 9.5.0 for now.
 
-## Build Instructions
+# How to Run
+
+First, create an annotated version of a Pascal program. Specifications for annotated Pascal syntax can be found in the parse documentation.
+
+Run the following command: $`bash run.sh <input.pas> <options>`
+
+## Options
+
+TBD
+
+# Examples
+
+TBD
 
 # Documentation
 
