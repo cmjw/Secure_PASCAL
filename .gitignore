@@ -31,3 +31,6 @@ src/user.pas
 .vscode/settings.json
 src/priv.pas
 src/user.pas
+outputs/priv.pas
+outputs/user.pas
+outputs/run_me.sh
