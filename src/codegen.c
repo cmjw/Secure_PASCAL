@@ -90,7 +90,7 @@ void writeToFile(FILE* file, char* str) {
 /* Initialize the resulting split programs */
 void initOutputFiles() {
   // User program
-  userProg = fopen("user.pas", "w");
+  userProg = fopen("../outputs/user.pas", "w");
   if (!userProg) {
     perror("Failed to open user.pas");
     exit(1);
@@ -100,7 +100,7 @@ void initOutputFiles() {
   writeToUser("program UserProgam(ouput);\n\n");
 
   // Priviledged program
-  privProg = fopen("priv.pas", "w");
+  privProg = fopen("../outputs/priv.pas", "w");
   if (!privProg) {
     perror("Failed to open priv.pas");
     exit(1);
@@ -112,7 +112,7 @@ void initOutputFiles() {
 
 /* Create the script to run the final pas files */
 void createRunScript() {
-  runProg = fopen("run_me.sh", "w");
+  runProg = fopen("../outputs/run_me.sh", "w");
   if (!runProg) {
     perror("Failed to open run_me.sh\n");
     exit(1);

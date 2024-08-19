@@ -15,5 +15,6 @@ assign(outputPipe, outputName);
 rewrite(outputPipe);
 write(outputPipe, i);
 close(outputPipe);
+
 writeln('user: done');
-end.{Func test}
+end.
