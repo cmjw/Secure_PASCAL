@@ -46,6 +46,9 @@ extern int yydebug;
 
 TOKEN parseresult;
 
+/* define security policy */
+#define SEC_POLICY STRICT
+
 %}
 
 %define parse.error verbose
@@ -94,7 +97,7 @@ TOKEN parseresult;
              ;
 
   /* Constant def. Install in symbal table. */
-  cdef       :  IDENTIFIER EQ constant    { instconst($1, $3, UNPRIV_SCOPE); } 
+  cdef       :  IDENTIFIER EQ constant  { instconst($1, $3, UNPRIV_SCOPE); } 
              |  pcdef
              ; 
   /* Privileged constant def. Can probably be combined back into cdef sometime. */
@@ -1115,9 +1118,32 @@ TOKEN makeif(TOKEN tok, TOKEN exp, TOKEN thenpart, TOKEN elsepart) {
   tok->tokentype = OPERATOR;  /* Make it look like an operator   */
   tok->whichval = IFOP;
   if (elsepart != NULL) elsepart->link = NULL;
+
   thenpart->link = elsepart;
   exp->link = thenpart;
   tok->operands = exp;
+  
+  if (DEBUG & DB_MAKEIF) { 
+    printf("makeif\n");
+    dbugprinttok(tok);
+    dbugprinttok(exp);
+    dbugprinttok(thenpart);
+    dbugprinttok(elsepart);
+  };
+  
+  return tok;
+}
+
+TOKEN makeif_2(TOKEN tok, TOKEN exp, TOKEN thenpart, TOKEN elsepart) {  
+  tok->tokentype = OPERATOR;  /* Make it look like an operator   */
+  tok->whichval = IFOP;
+
+  if (elsepart != NULL) elsepart->link = NULL;
+
+  thenpart->link = elsepart;
+  exp->link = thenpart;
+  tok->operands = exp;
+  
   if (DEBUG & DB_MAKEIF) { 
     printf("makeif\n");
     dbugprinttok(tok);
@@ -1423,10 +1449,10 @@ int main(void)          /*  */
     initsyms();
 
     /* For debugging parser */
-    yydebug = 1;
+    yydebug = 0;
     
     res = yyparse();
-    //printst();       /* to shorten, change to:  printstlevel(1);  */
+    //printst();       
     printstlevel(1);
     printf("yyparse result = %8d\n", res);
     if (DEBUG & DB_PARSERES) dbugprinttok(parseresult);

@@ -2,6 +2,14 @@
 /* 16 Apr 04; 23 Feb 05; 17 Nov 05; 18 Apr 06; 26 Jul 12; 07 Aug 13; 11 Oct 17;
  07 Dec 18 */
 
+
+/* Security Policy Levels */
+
+#define NONE      0
+#define STRICT    1  
+#define STRICTER  2
+#define STRICTEST 3
+
 TOKEN makefunction();
 
 void instfunction(TOKEN idtok, int scope);

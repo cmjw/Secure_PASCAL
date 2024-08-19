@@ -12,10 +12,6 @@ parser: y.tab.o lex.yy.o printtoken.o pprint.o symtab.o codegen.o genasm.o
 	gcc -o parser y.tab.o lex.yy.o printtoken.o pprint.o symtab.o -ll \
              codegen.o genasm.o
 
-# Split
-split: 
-	gcc split.c -o split
-
 # codegen.c
 codegen.o: codegen.c token.h symtab.h genasm.h codegen-utils.h
 	gcc -c codegen.c
@@ -36,7 +32,6 @@ pars1.tab.o: pars1.tab.c
 pprint.o: pprint.c token.h
 	gcc -c pprint.c
 
-
 # symtab.c
 symtab.o: symtab.c token.h symtab.h
 	gcc -c symtab.c
@@ -48,4 +43,4 @@ y.tab.o: y.tab.c
 	gcc -c y.tab.c
 
 clean: 
-	rm *.o lexer parser y.tab.c lex.yy.c parse.tab.c parse.tab.h split
+	rm *.o lexer parser y.tab.c lex.yy.c parse.tab.c parse.tab.h

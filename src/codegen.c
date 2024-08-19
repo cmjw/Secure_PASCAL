@@ -221,7 +221,7 @@ void insertConstBlock() {
 void writeFunctionDefinitions() {
   SYMBOL sym = symtab[1];
 
-  writeToUser("{Func test}\n");
+  //writeToUser("{Func test}\n");
 
   while (sym) {
     if (sym->kind == FUNCTIONSYM) {
@@ -314,17 +314,24 @@ void genc(TOKEN code, int scope) {
   if (DEBUGGEN) {
     printf("genc file scope: %d %d\n", scope, next_scope);
   }
-  
 
   switch (code->whichval) { 
     /* Block */
     case PROGNOP:
+      printf("------ PROGN OP - block start\n");
+
+      /* Symbol communication for privblocks */
+      if (next_scope == PRIV_SCOPE || code->operands->scope == PRIV_SCOPE) {
+        communicate_symbols_to_priv(code->operands);
+      }
+
 	    tok = code->operands;
 	  
       while (tok != NULL) {  
         genc(tok, next_scope);
         tok = tok->link;
       }
+      printf("------ PROGN OP - block end\n");
       break;
 
     /* Assignment operator */
@@ -358,20 +365,115 @@ void genc(TOKEN code, int scope) {
       if (DEBUGGEN) {
         printf("IFOP: ");
       } 
-
+      gen_ifop(code, scope);
       break;
 
-    case PLUSOP:
-      if (DEBUGGEN) {
-        printf("PLUSOP: ");
-      }
-      
-      break;
+    // case PLUSOP:
+    //   if (DEBUGGEN) {
+    //     printf("PLUSOP: ");
+    //   }
+    //   break;
   }  
 
   if (code->whichval >= PLUSOP && code->whichval <= DIVIDEOP) {
     gen_arith_op(code, scope);
   }
+}
+
+/* Communicate symbols */
+/*
+ * Search this privblock for non priv symbols. 
+ * Communicate values from main user prog to priv program.
+ */
+void communicate_symbols_to_priv(TOKEN code) {
+  TOKEN tok, lhs, rhs;
+  int reg, offs;
+  SYMBOL sym;
+
+  if (DEBUGGEN) { 
+    printf("communicate priv block symbols\n");
+	  dbugprinttok(code);
+  }
+
+  while (code != NULL) {  
+    //genc(tok, next_scope);
+
+    if (code->whichval == FUNCALLOP) {
+      printf("FUNCALL IN COMM\n");
+
+      // get sym, comm like in make_funcall and 
+      TOKEN func = code->operands;
+      TOKEN args = func->link;
+
+      char* id = code->operands->stringval;
+          
+      /* Only one arg for now */
+      char* argId = "";
+      if (args) {
+        argId = args->stringval;
+      }  
+
+      /* Check scope of arg */
+      if (args) {
+        bool str = false; 
+
+        sym = searchst(argId);
+        if (!sym) {
+          printf("Arg not found in symbol table\n");
+          printf("Assuming string: %s", argId);
+        }
+
+        /* RPC logic to send arg value */
+        else if (sym->scope == UNPRIV_SCOPE) {
+          /* priv: wait for value of id */
+          fprintf(privProg, "{ Wait for value of %s from UserProg }\n", argId);
+          insertReadRPC(privProg, argId, str);
+          
+
+          /* user: send value of id */
+          fprintf(userProg, "{ Send value of %s to PrivProg }\n", argId);
+          insertWriteRPC(userProg, argId);
+
+          writeToFile(privProg, "\n");
+          writeToFile(userProg, "\n");
+        }
+      }
+    }
+
+    code = code->link;
+  }
+}
+
+/* Generate code for if/then (else) */
+void gen_ifop(TOKEN code, int scope) {
+  int next_scope = (code->scope ? PRIV_SCOPE : UNPRIV_SCOPE) || scope;
+
+  FILE *outFile = next_scope ? privProg : userProg;
+
+  TOKEN expr = code->operands;
+
+  TOKEN thenpart = expr->link;
+
+  writeToFile(outFile, "if ");
+  /* condition */
+  gen_expression(expr, scope);
+  writeToFile(outFile, " then\n");
+
+  /* statement(s) */
+  genc(thenpart, scope);
+
+  writeToFile(outFile, "\n");
+}
+
+/* Write condition */
+void gen_expression(TOKEN tok, int scope) {
+  printf("gen expr\n");
+  //printtok(tok);
+  if (tok->tokentype == OPERATOR) {
+    printf("operatortok\n");
+  }
+
+  gen_arith_op(tok, scope);
 }
 
 /* Generate code for arirthmetic operators */
@@ -402,14 +504,31 @@ void gen_arith_op(TOKEN code, int scope) {
 void printVal(FILE* file, TOKEN tok) {
   if (tok->tokentype == OPERATOR) {
     printf("parsing error\n");
-    exit(1);
+    //gencode(tok,0,0);
+    return;
   }
+
+  char* id;
   
   // some issue seg faulting here
   
   switch (tok->tokentype) {
     case STRINGTOK:
       writeToFile(file, tok->stringval);
+      break;
+
+
+    case IDENTIFIERTOK:
+      id = tok->stringval;
+
+      SYMBOL idsym = searchst(id);
+      if (idsym) {
+        writeToFile(file, tok->stringval);
+      } else {
+        ferror("Unrecognized symbol\n");
+        exit(1);
+      }
+
       break;
 
     case NUMBERTOK:
@@ -477,17 +596,21 @@ void gen_funcall(TOKEN code, int scope) {
     }
 
     /* RPC logic to send arg value */
-    else if (scope == PRIV_SCOPE && sym->scope == UNPRIV_SCOPE) {
-      /* priv: wait for value of id */
-      fprintf(privProg, "{ Wait for value of %s from UserProg }\n", argId);
-      insertReadRPC(privProg, argId, str);
+    // else if (scope == PRIV_SCOPE && sym->scope == UNPRIV_SCOPE) {
+    //   /* priv: wait for value of id */
+    //   fprintf(privProg, "{ Wait for value of %s from UserProg }\n", argId);
+    //   insertReadRPC(privProg, argId, str);
+      
 
-      /* user: send value of id */
-      fprintf(userProg, "{ Send value of %s to PrivProg }\n", argId);
-      insertWriteRPC(userProg, argId);
+    //   /* user: send value of id */
+    //   fprintf(userProg, "{ Send value of %s to PrivProg }\n", argId);
+    //   insertWriteRPC(userProg, argId);
 
-      writeToFile(privProg, "\n");
-    }
+    //   writeToFile(privProg, "\n");
+    //   writeToFile(userProg, "\n");
+    // }
+
+    /* Moved to communicate priv block*/
   }
 
   fprintf(outFile, "%s(%s);\n", id, argId);
