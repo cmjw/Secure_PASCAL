@@ -34,3 +34,7 @@ src/user.pas
 outputs/priv.pas
 outputs/user.pas
 outputs/run_me.sh
+outputs/pipe_to_user
+outputs/priv
+outputs/user
+outputs/pipe_to_priv
