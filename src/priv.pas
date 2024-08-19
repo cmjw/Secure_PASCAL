@@ -8,12 +8,8 @@ begin
 inputName := 'pipe_to_user';
 outputName := 'pipe_to_priv';
 
-{ Wait for value of i from UserProg }
-assign(inputPipe, inputName);
-reset(inputPipe);
-readln(inputPipe, i);
-close(inputPipe);
-
+if i = 0 then
 writeln(i);
+
 writeln('priv: done');
 end.
