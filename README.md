@@ -4,7 +4,7 @@ Secure Pascal is a privilege-separating compiler for Pascal programs. Compilatio
 
 For more in-depth documentation and instructions, see https://cmjw.github.io/Secure_PASCAL/.
 
-# Build
+## Build
 
 Requires gcc 9.5.0.
 
@@ -14,7 +14,7 @@ The build script assumes the environment has the executables `gcc-9` and `g++-9`
 
 >$ bash build.sh
 
-# Example Usage
+## Example Usage
 
 >$ cd src
 
@@ -22,6 +22,6 @@ The build script assumes the environment has the executables `gcc-9` and `g++-9`
 
 >$ bash run.sh ../examples/ex0.pas
 
-# Examples
+## Examples
 
 The examples directory contains sample .pas files.
