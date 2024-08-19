@@ -97,8 +97,7 @@ TOKEN parseresult;
              ;
 
   /* Constant def. Install in symbal table. */
-  cdef       :  IDENTIFIER EQ constant   
-                { instconst($1, $3, UNPRIV_SCOPE); } 
+  cdef       :  IDENTIFIER EQ constant  { instconst($1, $3, UNPRIV_SCOPE); } 
              |  pcdef
              ; 
   /* Privileged constant def. Can probably be combined back into cdef sometime. */
