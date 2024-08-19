@@ -6,11 +6,12 @@ For more in-depth documentation and instructions, see https://cmjw.github.io/Sec
 
 # Build
 
-Requires gcc 9.5.0
+Requires gcc 9.5.0.
 
 The build script assumes the environment has the executables `gcc-9` and `g++-9`, differentiated from `gcc`.
 
 >$ cd src
+
 >$ bash build.sh
 
 # Example Usage
