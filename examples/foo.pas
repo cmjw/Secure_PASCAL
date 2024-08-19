@@ -7,8 +7,6 @@ const
 
 begin
     i := 1; 
-
-
 end 
 
 function foo(j : integer;): integer;
