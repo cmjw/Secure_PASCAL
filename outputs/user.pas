@@ -10,5 +10,11 @@ outputName := 'pipe_to_user';
 
 i := 1;
 
+{ Send value of i to PrivProg }
+assign(outputPipe, outputName);
+rewrite(outputPipe);
+write(outputPipe, i);
+close(outputPipe);
+
 writeln('user: done');
 end.
