@@ -7,7 +7,6 @@
 *)
 
 program ex2(ouput); 
-{ must have output for now }
 
 var i : integer;
 
