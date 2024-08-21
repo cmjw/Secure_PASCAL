@@ -1061,22 +1061,20 @@ TOKEN makefuncall(TOKEN tok, TOKEN fn, TOKEN args) {
   
   else {
     //tok->basicdt = args->basicdt;
+
     SYMBOL funct = searchst(fn->stringval);
 
     if (!funct) {
-      //return NULL;
+
       /* infer name */
+
+      fprintf (stderr, "Invalid function: %s\n", fn->stringval);
+      yyerror("Function name not found or not in safe list.");
 
     } else {
       tok->basicdt = funct->datatype->basicdt;
     }
-    
-    if (DEBUG) {
-      printf("(DEBUG) symbol +++++++++++++++\n");
-      dbugprinttok(funct);
-    }
 
-    
     //tok->symtype = funct;
   }
 
@@ -1439,7 +1437,7 @@ int wordaddress(int n, int wordsize)
  
 void yyerror (char const *s)
 {
-  fprintf (stderr, "%s\n", s);
+  fprintf (stderr, "PARSE ERROR: %s\n", s);
   exit(1);
 }
 
