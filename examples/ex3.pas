@@ -6,7 +6,6 @@
  * Read and write global variables from privileged section
 *)
 
-
 program ex3(ouput); 
 
 var i : integer;
