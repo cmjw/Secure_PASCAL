@@ -1,5 +1,13 @@
-program simple(ouput); 
-{ must have output for now }
+(* 
+ * Example program 1 
+ *
+ * Privilege level : STRICT (compilation will fail at STRICTER/STRICTEST)
+ * 
+ * Communication of global variables across privilege levels
+*)
+
+
+program ex1(ouput); 
 
 var i : integer;
 
