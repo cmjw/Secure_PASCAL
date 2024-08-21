@@ -1,13 +1,13 @@
 (* 
- * Example program 1 
+ * Example program 3
  *
  * Privilege level : STRICT (compilation will fail at STRICTER/STRICTEST)
  * 
- * Communication of global variables across privilege levels
+ * Read and write global variables from privileged section
 *)
 
 
-program ex1(ouput); 
+program ex3(ouput); 
 
 var i : integer;
 
