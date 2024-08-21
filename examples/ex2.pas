@@ -6,7 +6,6 @@
  * Write global variables from privileged section
 *)
 
-
 program ex2(ouput); 
 { must have output for now }
 
