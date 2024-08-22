@@ -2,7 +2,9 @@
  * Example program 4
  * 
  * Security policy level : STRICT or above
- * Safe list: empty
+
+ * example1 must be in library list and/or safe list.
+ * example2 must be in safeist.
  *
  * Invalid function name
 *)
