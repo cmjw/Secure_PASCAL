@@ -34,11 +34,13 @@ Run the following command: $`bash run.sh <input.pas> <options>`
 
 ## Options
 
-TBD
+The user may provide a "safe list" of allowed functions to be called in privileged scope. For the lower security policies, `STRICT` and `STRICTER`, a safe list is optional. A safe list is compulsory for `STRICTEST`.
+
+Place the safe list in the `inputs` directory, named "safelist.txt" with each "safe" function name on a separate line. The program will use this file, if it exists, when parsing.
 
 # Examples
 
-TBD
+Sample input programs are provided in the `examples` directory. Each example has a description that indicates its contents, the necessary security policy, and safe function list if necessary.
 
 # Documentation
 
