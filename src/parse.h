@@ -94,7 +94,7 @@ void  settoktype(TOKEN tok, SYMBOL typ, SYMBOL ent);
 
 /* makefuncall makes a FUNCALL operator and links it to the fn and args.
    tok is a (now) unused token that is recycled. */
-TOKEN makefuncall(TOKEN tok, TOKEN fn, TOKEN args);
+TOKEN makefuncall(TOKEN tok, TOKEN fn, TOKEN args, int scope);
 
 /* makeprogram makes the tree structures for the top-level program */
 TOKEN makeprogram(TOKEN name, TOKEN args, TOKEN statements, TOKEN fblock_defs);
