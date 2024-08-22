@@ -386,12 +386,6 @@ void initsyms() {
     }
   }
 
-  // if no library list
-  // warn
-  // else
-  // get list
-  // if not exist, insert fn.
-
   FILE* libraryList = fopen("../inputs/librarylist.txt", "r");
 
   /* Detect library function list */
