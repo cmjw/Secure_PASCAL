@@ -1,5 +1,9 @@
-program simple(ouput); 
-{ must have output for now }
+(* 
+ * Example program 0 
+ * Simple privileged block, "privblock"
+*)
+
+program ex0(ouput); 
 
 var i : integer;
 

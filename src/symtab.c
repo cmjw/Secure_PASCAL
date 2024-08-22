@@ -337,34 +337,53 @@ SYMBOL insertfn(char name[], SYMBOL resulttp, SYMBOL argtp)
   }
 
 /* Call this to initialize symbols provided by the compiler */
-void initsyms()
-  {  SYMBOL sym, realsym, intsym, charsym, boolsym;
-     blocknumber = 0;               /* Put compiler symbols in block 0 */
-     blockoffs[1] = BASEOFFSET;     /* offset of first variable */
-     realsym = insertbt("real", REAL, 8);
-     intsym  = insertbt("integer", INTEGER, 4);
-     charsym = insertbt("char", STRINGTYPE, 1);
-     boolsym = insertbt("boolean", BOOLETYPE, 4);
-     sym = insertfn("exp", realsym, realsym);
-     sym = insertfn("trexp", realsym, realsym);
-     sym = insertfn("sin", realsym, realsym);
-     sym = insertfn("cos", realsym, realsym);
-     sym = insertfn("trsin", realsym, realsym);
-     sym = insertfn("sqrt", realsym, realsym);
-     sym = insertfn("round", realsym, realsym);
-     sym = insertfn("iround", intsym, realsym); /* C math lib defines round */
-     sym = insertfn("ord", intsym, intsym);
-     sym = insertfn("new", intsym, intsym);
-     sym = insertfn("trnew", intsym, intsym);
-     sym = insertfn("write", NULL, charsym);
-     sym = insertfn("writeln", NULL, charsym);
-     sym = insertfn("writef", NULL, realsym);
-     sym = insertfn("writelnf", NULL, realsym);
-     sym = insertfn("writei", NULL, intsym);
-     sym = insertfn("writelni", NULL, intsym);
-     sym = insertfn("read", NULL, NULL);
-     sym = insertfn("readln", NULL, NULL);
-     sym = insertfn("eof", boolsym, NULL);
-     blocknumber = 1;             /* Start the user program in block 1 */
-     contblock[1] = 0;
-   }
+void initsyms() {  
+  SYMBOL sym, realsym, intsym, charsym, boolsym;
+  blocknumber = 0;               /* Put compiler symbols in block 0 */
+  blockoffs[1] = BASEOFFSET;     /* offset of first variable */
+  realsym = insertbt("real", REAL, 8);
+  intsym  = insertbt("integer", INTEGER, 4);
+  charsym = insertbt("char", STRINGTYPE, 1);
+  boolsym = insertbt("boolean", BOOLETYPE, 4);
+  sym = insertfn("exp", realsym, realsym);
+  sym = insertfn("trexp", realsym, realsym);
+  sym = insertfn("sin", realsym, realsym);
+  sym = insertfn("cos", realsym, realsym);
+  sym = insertfn("trsin", realsym, realsym);
+  sym = insertfn("sqrt", realsym, realsym);
+  sym = insertfn("round", realsym, realsym);
+  sym = insertfn("iround", intsym, realsym); /* C math lib defines round */
+  sym = insertfn("ord", intsym, intsym);
+  sym = insertfn("new", intsym, intsym);
+  sym = insertfn("trnew", intsym, intsym);
+  sym = insertfn("write", NULL, charsym);
+  sym = insertfn("writeln", NULL, charsym);
+  sym = insertfn("writef", NULL, realsym);
+  sym = insertfn("writelnf", NULL, realsym);
+  sym = insertfn("writei", NULL, intsym);
+  sym = insertfn("writelni", NULL, intsym);
+  sym = insertfn("read", NULL, NULL);
+  sym = insertfn("readln", NULL, NULL);
+  sym = insertfn("eof", boolsym, NULL);
+  //sym = insertfn("examplefunction", NULL, intsym);
+
+  /* Insert functions in safe list, if file exists */
+  FILE* safeList = fopen("../inputs/safelist.txt", "r");
+
+  if (!safeList) {
+    printf("WARNING: No safe function list found.\n");
+  }
+
+  else {
+    char* functionname;
+
+    while (fscanf(safeList, "%s\n", &functionname) != EOF) {
+      //printf("%s\n", &functionname);
+
+      sym = insertfn(&functionname, NULL, NULL);
+    }
+  }
+
+  blocknumber = 1;             /* Start the user program in block 1 */
+  contblock[1] = 0;
+}

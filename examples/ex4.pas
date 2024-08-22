@@ -1,14 +1,16 @@
-program simple(ouput); 
-{ must have output for now }
+(* 
+ * Example program 4
+ * 
+ * Security policy level : STRICT or above
+ *
+ * Invalid function name
+*)
+
+program ex4(ouput); 
 
 var i : integer;
 
 begin
     i := 1;
-
-    priv::begin
-        if i = 0 then
-            writeln(i);
-
-    end;
+    examplefunction(i);
 end.

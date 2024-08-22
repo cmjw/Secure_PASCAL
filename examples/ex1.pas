@@ -1,17 +1,20 @@
-program simple(ouput); 
-{ must have output for now }
+(* 
+ * Example program 1
+ * 
+ * Privilege level : STRICT (compilation will fail at STRICTEST)
+ * 
+ * Write global variables from privileged section
+*)
+
+program ex1(ouput); 
 
 var i : integer;
 
 begin
-    i := 1;
+    i := 0;
 
     priv::begin
-        writeln(i); {"1"}
-        i := i + 1;
-        writeln(i); {"2"}
+        if i = 0 then
+            writeln(i); { "0" }
     end;
-
-    i := 10;
-    writeln(i); {"10"}
 end.
