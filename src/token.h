@@ -27,6 +27,9 @@
 #include <stdlib.h>
 #include <ctype.h>
 
+/* define security policy */
+#define SEC_POLICY STRICT
+
 
 /* token data structure */
 typedef struct tokn {
