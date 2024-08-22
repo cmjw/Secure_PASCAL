@@ -1069,14 +1069,19 @@ TOKEN makefuncall(TOKEN tok, TOKEN fn, TOKEN args, int scope) {
 
       /* infer name */
 
-      fprintf (stderr, "Invalid function: %s\n", fn->stringval);
+      fprintf(stderr, "Invalid function: %s\n", fn->stringval);
       yyerror("Function name not found or not in safe list.");
 
-    } else {
-      tok->basicdt = funct->datatype->basicdt;
+    } 
+
+    /* Function exists in st, but is not marked for priv scope */
+    if (funct && scope == PRIV_SCOPE && funct->scope != PRIV_SCOPE) {
+      fprintf(stderr, "Invalid function: %s\n", fn->stringval);
+      yyerror("Library function not marked for privileged scope.\n");
     }
 
     //tok->symtype = funct;
+    tok->basicdt = funct->datatype->basicdt;
   }
 
   //tok->basicdt = args->basicdt;
