@@ -202,6 +202,7 @@ TOKEN parseresult;
              |  IF expression THEN statement endif   { $$ = makeif($1, $2, $4, $5); }
              |  assignment
              |  funcall
+             |  PRIV DOUBLECOLON IDENTIFIER LPAREN expr_list RPAREN { $$ = makefuncall($2, $3, $5, PRIV_SCOPE); }
              |  WHILE expression DO statement                 { $$ = makewhile($1, $2, $3, $4); }
              |  FOR assignment TO expression DO statement     { $$ = makefor(1, $1, $2, $3, $4, $5, $6); }
              |  REPEAT statement_list UNTIL expression        { $$ = makerepeat($1, $2, $3, $4); } 
@@ -210,7 +211,7 @@ TOKEN parseresult;
              |  privblock
              ;
              
-  funcall    :  IDENTIFIER LPAREN expr_list RPAREN    { $$ = makefuncall($2, $1, $3); }
+  funcall    :  IDENTIFIER LPAREN expr_list RPAREN    { $$ = makefuncall($2, $1, $3, UNPRIV_SCOPE); }
              ;
 
   endpart    :  SEMICOLON statement endpart    { $$ = cons($2, $3); }
@@ -1012,7 +1013,7 @@ TOKEN makefor(int sign, TOKEN tok, TOKEN asg, TOKEN tokb, TOKEN endexpr,
 
 /* makefuncall makes a FUNCALL operator and links it to the fn and args.
    tok is a (now) unused token that is recycled. */
-TOKEN makefuncall(TOKEN tok, TOKEN fn, TOKEN args) {
+TOKEN makefuncall(TOKEN tok, TOKEN fn, TOKEN args, int scope) {
   // make tok into funcall token
   //TOKEN funcTok = makeop(FUNCALLOP);
 
@@ -1064,18 +1065,23 @@ TOKEN makefuncall(TOKEN tok, TOKEN fn, TOKEN args) {
 
     SYMBOL funct = searchst(fn->stringval);
 
-    if (!funct) {
+    if (!funct && scope == PRIV_SCOPE) {
 
       /* infer name */
 
-      fprintf (stderr, "Invalid function: %s\n", fn->stringval);
+      fprintf(stderr, "Invalid function: %s\n", fn->stringval);
       yyerror("Function name not found or not in safe list.");
 
-    } else {
-      tok->basicdt = funct->datatype->basicdt;
+    } 
+
+    /* Function exists in st, but is not marked for priv scope */
+    if (funct && scope == PRIV_SCOPE && funct->scope != PRIV_SCOPE) {
+      fprintf(stderr, "Invalid function: %s\n", fn->stringval);
+      yyerror("Library function not marked for privileged scope.\n");
     }
 
     //tok->symtype = funct;
+    tok->basicdt = funct->datatype->basicdt;
   }
 
   //tok->basicdt = args->basicdt;

@@ -357,7 +357,7 @@ void initsyms() {
   sym = insertfn("new", intsym, intsym);
   sym = insertfn("trnew", intsym, intsym);
   sym = insertfn("write", NULL, charsym);
-  sym = insertfn("writeln", NULL, charsym);
+  sym = insertfn("writeln", NULL, charsym); sym->scope = PRIV;
   sym = insertfn("writef", NULL, realsym);
   sym = insertfn("writelnf", NULL, realsym);
   sym = insertfn("writei", NULL, intsym);
@@ -370,17 +370,37 @@ void initsyms() {
   /* Insert functions in safe list, if file exists */
   FILE* safeList = fopen("../inputs/safelist.txt", "r");
 
+  /* Detect safe function list, or lack thereof */
   if (!safeList) {
     printf("WARNING: No safe function list found.\n");
   }
 
   else {
-    char* functionname;
+    char* f;
 
-    while (fscanf(safeList, "%s\n", &functionname) != EOF) {
+    while (fscanf(safeList, "%s\n", &f) != EOF) {
       //printf("%s\n", &functionname);
 
-      sym = insertfn(&functionname, NULL, NULL);
+      sym = insertfn(&f, NULL, NULL);
+      sym->scope = PRIV_SCOPE;
+    }
+  }
+
+  FILE* libraryList = fopen("../inputs/librarylist.txt", "r");
+
+  /* Detect library function list */
+  if (!libraryList) {
+    printf("WARNING: No libray function list found.\n");
+  }
+
+  else {
+    char* f;
+    
+    while (fscanf(libraryList, "%s\n", &f) != EOF) {
+      SYMBOL s = searchst(&f);
+      if (!s) {
+        sym = insertfn(&f, NULL, NULL); 
+      }
     }
   }
 
