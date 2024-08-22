@@ -27,6 +27,13 @@
 #include <stdlib.h>
 #include <ctype.h>
 
+/* Security Policy Levels */
+
+#define NONE      0
+#define STRICT    1  
+#define STRICTER  2
+#define STRICTEST 3
+
 /* define security policy */
 #define SEC_POLICY STRICT
 

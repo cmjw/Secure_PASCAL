@@ -373,6 +373,11 @@ void initsyms() {
   /* Detect safe function list, or lack thereof */
   if (!safeList) {
     printf("WARNING: No safe function list found.\n");
+
+    if (SEC_POLICY == STRICTEST) {
+      fprintf(stderr, "ERROR: Must provide safe list for STRICTEST policy level.\n");
+      exit(1);
+    }
   }
 
   else {
