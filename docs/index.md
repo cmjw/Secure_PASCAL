@@ -38,6 +38,12 @@ The user may provide a "safe list" of allowed functions to be called in privileg
 
 Place the safe list in the `inputs` directory, named "safelist.txt" with each "safe" function name on a separate line. The program will use this file, if it exists, when parsing.
 
+The user may additionally define a list of "library" functions, or functions available to refence during compilation. These are recognized by the compiler for user-level use. This list must be named "librarylist.txt" in the `inputs` directory.
+
+If no safe list is defined and the security policy level is STRICT or STRICTER, the privileged component may reference these symbols.
+
+If a safe list is defined, then only the symbols listed in the safe list may be referenced by the privileged component. This means that any symbols listed in the library function list must be listed again in the safe list.
+
 # Examples
 
 Sample input programs are provided in the `examples` directory. Each example has a description that indicates its contents, the necessary security policy, and safe function list if necessary.
