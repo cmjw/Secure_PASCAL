@@ -357,7 +357,7 @@ void initsyms() {
   sym = insertfn("new", intsym, intsym);
   sym = insertfn("trnew", intsym, intsym);
   sym = insertfn("write", NULL, charsym);
-  sym = insertfn("writeln", NULL, charsym);
+  sym = insertfn("writeln", NULL, charsym); sym->scope = PRIV;
   sym = insertfn("writef", NULL, realsym);
   sym = insertfn("writelnf", NULL, realsym);
   sym = insertfn("writei", NULL, intsym);
@@ -381,6 +381,7 @@ void initsyms() {
       //printf("%s\n", &functionname);
 
       sym = insertfn(&functionname, NULL, NULL);
+      sym->scope = PRIV;
     }
   }
 
